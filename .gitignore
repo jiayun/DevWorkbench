@@ -118,3 +118,6 @@ temp/
 # Tauri build artifacts
 src-tauri/target
 src-tauri/Cargo.lock
+
+# Claude local settings
+.claude/settings.local.json
