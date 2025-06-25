@@ -10,8 +10,10 @@ export function NumberBaseConverter() {
   const [customValue, setCustomValue] = useState("");
   
   const activeFieldRef = useRef<string | null>(null);
-  const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
+  
+  // Track the last field that was updated to prevent circular updates
+  const lastUpdatedField = useRef<string | null>(null);
 
   // Convert decimal to other bases
   const convertFromDecimal = useCallback((decimal: number) => {
@@ -39,30 +41,10 @@ export function NumberBaseConverter() {
     return isNaN(parsed) ? null : parsed;
   };
 
-  // Update all fields except the active one - immediate update without debounce
-  const updateOtherFields = useCallback((sourceField: string, sourceValue: string, sourceBase: number) => {
-    const decimal = convertToDecimal(sourceValue, sourceBase);
+  // Simple field change handler - only updates the current field
+  const handleFieldChange = (field: string, value: string) => {
+    lastUpdatedField.current = field;
     
-    // Only update if conversion is valid
-    if (decimal === null) {
-      return; // Don't update other fields for invalid input
-    }
-    
-    const converted = convertFromDecimal(decimal);
-
-    // Use React's batch updates to prevent multiple re-renders
-    if (sourceField !== 'binary') setBinaryValue(converted.binary);
-    if (sourceField !== 'octal') setOctalValue(converted.octal);
-    if (sourceField !== 'decimal') setDecimalValue(decimal.toString());
-    if (sourceField !== 'hex') setHexValue(converted.hex);
-    if (sourceField !== 'custom') setCustomValue(converted.custom);
-  }, [convertFromDecimal]);
-
-  // Handle field changes - direct update without debouncing
-  const handleFieldChange = (field: string, value: string, base: number) => {
-    activeFieldRef.current = field;
-    
-    // Update the current field first
     switch (field) {
       case 'binary':
         setBinaryValue(value);
@@ -80,20 +62,102 @@ export function NumberBaseConverter() {
         setCustomValue(value.toUpperCase());
         break;
     }
-
-    // Update other fields immediately
-    if (value.trim() === '') {
-      // Clear all other fields if current field is empty
-      if (field !== 'binary') setBinaryValue('');
-      if (field !== 'octal') setOctalValue('');
-      if (field !== 'decimal') setDecimalValue('');
-      if (field !== 'hex') setHexValue('');
-      if (field !== 'custom') setCustomValue('');
-    } else {
-      // Try to update other fields (will skip if invalid)
-      updateOtherFields(field, value, base);
-    }
   };
+
+  // Update other fields when binary changes
+  useEffect(() => {
+    if (lastUpdatedField.current === 'binary' && activeFieldRef.current === 'binary') {
+      const decimal = convertToDecimal(binaryValue, 2);
+      if (decimal !== null) {
+        const converted = convertFromDecimal(decimal);
+        setOctalValue(converted.octal);
+        setDecimalValue(decimal.toString());
+        setHexValue(converted.hex);
+        setCustomValue(converted.custom);
+      } else if (binaryValue === '') {
+        setOctalValue('');
+        setDecimalValue('');
+        setHexValue('');
+        setCustomValue('');
+      }
+    }
+  }, [binaryValue, convertFromDecimal]);
+
+  // Update other fields when octal changes
+  useEffect(() => {
+    if (lastUpdatedField.current === 'octal' && activeFieldRef.current === 'octal') {
+      const decimal = convertToDecimal(octalValue, 8);
+      if (decimal !== null) {
+        const converted = convertFromDecimal(decimal);
+        setBinaryValue(converted.binary);
+        setDecimalValue(decimal.toString());
+        setHexValue(converted.hex);
+        setCustomValue(converted.custom);
+      } else if (octalValue === '') {
+        setBinaryValue('');
+        setDecimalValue('');
+        setHexValue('');
+        setCustomValue('');
+      }
+    }
+  }, [octalValue, convertFromDecimal]);
+
+  // Update other fields when decimal changes
+  useEffect(() => {
+    if (lastUpdatedField.current === 'decimal' && activeFieldRef.current === 'decimal') {
+      const decimal = convertToDecimal(decimalValue, 10);
+      if (decimal !== null) {
+        const converted = convertFromDecimal(decimal);
+        setBinaryValue(converted.binary);
+        setOctalValue(converted.octal);
+        setHexValue(converted.hex);
+        setCustomValue(converted.custom);
+      } else if (decimalValue === '') {
+        setBinaryValue('');
+        setOctalValue('');
+        setHexValue('');
+        setCustomValue('');
+      }
+    }
+  }, [decimalValue, convertFromDecimal]);
+
+  // Update other fields when hex changes
+  useEffect(() => {
+    if (lastUpdatedField.current === 'hex' && activeFieldRef.current === 'hex') {
+      const decimal = convertToDecimal(hexValue, 16);
+      if (decimal !== null) {
+        const converted = convertFromDecimal(decimal);
+        setBinaryValue(converted.binary);
+        setOctalValue(converted.octal);
+        setDecimalValue(decimal.toString());
+        setCustomValue(converted.custom);
+      } else if (hexValue === '') {
+        setBinaryValue('');
+        setOctalValue('');
+        setDecimalValue('');
+        setCustomValue('');
+      }
+    }
+  }, [hexValue, convertFromDecimal]);
+
+  // Update other fields when custom changes
+  useEffect(() => {
+    if (lastUpdatedField.current === 'custom' && activeFieldRef.current === 'custom') {
+      const decimal = convertToDecimal(customValue, customBase);
+      if (decimal !== null) {
+        const converted = convertFromDecimal(decimal);
+        setBinaryValue(converted.binary);
+        setOctalValue(converted.octal);
+        setDecimalValue(decimal.toString());
+        setHexValue(converted.hex);
+      } else if (customValue === '') {
+        setBinaryValue('');
+        setOctalValue('');
+        setDecimalValue('');
+        setHexValue('');
+      }
+    }
+  }, [customValue, customBase, convertFromDecimal]);
 
   // Handle custom base change
   useEffect(() => {
@@ -120,6 +184,7 @@ export function NumberBaseConverter() {
     setHexValue("");
     setCustomValue("");
     activeFieldRef.current = null;
+    lastUpdatedField.current = null;
   };
 
   const InputField = ({ 
@@ -163,7 +228,7 @@ export function NumberBaseConverter() {
         ref={(el) => inputRefs.current[fieldName] = el}
         type="text"
         value={value}
-        onChange={(e) => handleFieldChange(fieldName, e.target.value, base)}
+        onChange={(e) => handleFieldChange(fieldName, e.target.value)}
         onFocus={() => {
           activeFieldRef.current = fieldName;
         }}
@@ -197,7 +262,7 @@ export function NumberBaseConverter() {
               { 
                 label: "Clipboard", 
                 onClick: () => navigator.clipboard.readText()
-                  .then(text => handleFieldChange('binary', text, 2))
+                  .then(text => handleFieldChange('binary', text))
                   .catch(() => {}) 
               },
               { label: "Clear", onClick: clearAll }
@@ -214,7 +279,7 @@ export function NumberBaseConverter() {
               { 
                 label: "Clipboard", 
                 onClick: () => navigator.clipboard.readText()
-                  .then(text => handleFieldChange('octal', text, 8))
+                  .then(text => handleFieldChange('octal', text))
                   .catch(() => {}) 
               },
               { label: "Clear", onClick: clearAll }
@@ -231,7 +296,7 @@ export function NumberBaseConverter() {
               { 
                 label: "Clipboard", 
                 onClick: () => navigator.clipboard.readText()
-                  .then(text => handleFieldChange('decimal', text, 10))
+                  .then(text => handleFieldChange('decimal', text))
                   .catch(() => {}) 
               },
               { label: "Clear", onClick: clearAll }
@@ -248,7 +313,7 @@ export function NumberBaseConverter() {
               { 
                 label: "Clipboard", 
                 onClick: () => navigator.clipboard.readText()
-                  .then(text => handleFieldChange('hex', text, 16))
+                  .then(text => handleFieldChange('hex', text))
                   .catch(() => {}) 
               },
               { label: "Clear", onClick: clearAll }
@@ -276,7 +341,7 @@ export function NumberBaseConverter() {
                 </div>
                 <button
                   onClick={() => navigator.clipboard.readText()
-                    .then(text => handleFieldChange('custom', text, customBase))
+                    .then(text => handleFieldChange('custom', text))
                     .catch(() => {})}
                   className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
                 >
@@ -285,7 +350,7 @@ export function NumberBaseConverter() {
                 <button
                   onClick={() => {
                     const decimal = Math.floor(Math.random() * 1000000);
-                    handleFieldChange('custom', decimal.toString(customBase).toUpperCase(), customBase);
+                    handleFieldChange('custom', decimal.toString(customBase).toUpperCase());
                   }}
                   className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
                 >
@@ -310,7 +375,7 @@ export function NumberBaseConverter() {
               ref={(el) => inputRefs.current['custom'] = el}
               type="text"
               value={customValue}
-              onChange={(e) => handleFieldChange('custom', e.target.value.toUpperCase(), customBase)}
+              onChange={(e) => handleFieldChange('custom', e.target.value.toUpperCase())}
               onFocus={() => {
                 activeFieldRef.current = 'custom';
               }}
