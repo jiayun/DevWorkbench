@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary, FileText } from "lucide-react";
+import { Search, Binary, FileText, Hash } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
 import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
+import { Base58EncoderDecoder } from "./components/Base58EncoderDecoder";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 type Tool = {
@@ -26,6 +27,13 @@ const tools: Tool[] = [
     description: "Encode or decode a string using Base64",
     icon: FileText,
     component: Base64EncoderDecoder,
+  },
+  {
+    id: "base58-encoder-decoder",
+    name: "Base58 String Encode/Decode",
+    description: "Encode or decode a string using Base58 (Bitcoin/IPFS format)",
+    icon: Hash,
+    component: Base58EncoderDecoder,
   },
 ];
 
