@@ -1,6 +1,7 @@
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Search, Binary } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 type Tool = {
   id: string;
@@ -20,7 +21,7 @@ const tools: Tool[] = [
   },
 ];
 
-function App() {
+function AppContent() {
   const [selectedTool, setSelectedTool] = useState<Tool>(tools[0]);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -31,43 +32,94 @@ function App() {
 
   const SelectedComponent = selectedTool.component;
 
+  const [sidebarWidth, setSidebarWidth] = useState(320);
+  const [isResizing, setIsResizing] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsResizing(true);
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isResizing) return;
+    
+    const newWidth = e.clientX;
+    if (newWidth >= 240 && newWidth <= 600) {
+      setSidebarWidth(newWidth);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsResizing(false);
+  };
+
+  React.useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing]);
+
   return (
-    <div className="flex h-screen bg-gray-900 text-white">
+    <div className="flex h-screen bg-primary text-primary">
       {/* Sidebar */}
-      <div className="w-80 bg-gray-800 border-r border-gray-700 flex flex-col">
+      <div 
+        ref={sidebarRef}
+        className="bg-secondary border-r border-primary flex flex-col relative"
+        style={{ width: sidebarWidth }}
+      >
         {/* Search */}
-        <div className="p-4">
+        <div className="p-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary w-4 h-4" />
             <input
               type="text"
               placeholder="Search tools..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
             />
           </div>
         </div>
 
         {/* Tool List */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto px-2">
           {filteredTools.map((tool) => {
             const IconComponent = tool.icon;
             return (
               <button
                 key={tool.id}
                 onClick={() => setSelectedTool(tool)}
-                className={`w-full p-4 text-left hover:bg-gray-700 border-b border-gray-700 transition-colors ${
-                  selectedTool.id === tool.id ? "bg-blue-600" : ""
+                className={`w-full p-4 text-left hover:bg-tertiary border-b border-primary transition-colors rounded-lg mb-1 ${
+                  selectedTool.id === tool.id ? "bg-blue-600 text-white" : ""
                 }`}
               >
                 <div className="flex items-center space-x-3">
-                  <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded flex items-center justify-center">
+                  <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                     <IconComponent className="w-4 h-4 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-white truncate">{tool.name}</div>
-                    <div className="text-sm text-gray-400 truncate">{tool.description}</div>
+                    <div className={`font-medium truncate ${
+                      selectedTool.id === tool.id ? "text-white" : "text-primary"
+                    }`}>{tool.name}</div>
+                    <div className={`text-sm truncate ${
+                      selectedTool.id === tool.id ? "text-blue-100" : "text-secondary"
+                    }`}>{tool.description}</div>
                   </div>
                 </div>
               </button>
@@ -75,26 +127,37 @@ function App() {
           })}
         </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-700">
-          <div className="text-xs text-gray-400">DevUtils.com 1.17.0 (1443)</div>
+        {/* Resize Handle */}
+        <div
+          className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500 transition-colors group"
+          onMouseDown={handleMouseDown}
+        >
+          <div className="w-1 h-full group-hover:bg-blue-500" />
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="bg-gray-800 border-b border-gray-700 px-6 py-4">
-          <h1 className="text-xl font-semibold text-white">{selectedTool.name}</h1>
-          <p className="text-sm text-gray-400 mt-1">{selectedTool.description}</p>
+        <div className="bg-secondary border-b border-primary px-8 py-6">
+          <h1 className="text-xl font-semibold text-primary">{selectedTool.name}</h1>
+          <p className="text-sm text-secondary mt-1">{selectedTool.description}</p>
         </div>
 
         {/* Tool Content */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-8 overflow-auto">
           <SelectedComponent />
         </div>
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 
