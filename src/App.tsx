@@ -95,15 +95,16 @@ function AppContent() {
           className="bg-secondary border-r border-primary flex flex-col flex-1 overflow-hidden"
         >
         {/* Search */}
-        <div className="p-4">
+        <div className="p-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary w-4 h-4 z-10" />
+            <Search className="absolute top-1/2 transform -translate-y-1/2 text-tertiary w-4 h-4 z-10" style={{ left: '12px' }} />
             <input
               type="text"
               placeholder="Search tools..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full pr-3 py-2 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
+              style={{ paddingLeft: '44px' }}
             />
           </div>
         </div>
