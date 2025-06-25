@@ -42,14 +42,19 @@ npm run dev
 npx tsc --noEmit
 ```
 
+## Implemented Features
+
+- [x] **Number Base Converter** - Convert between binary, octal, decimal, hex, and custom bases
+- [x] **Base64 String Encode/Decode** - Encode/decode text using Base64 with smart detection
+- [x] **Base58 String Encode/Decode** - Bitcoin/IPFS-friendly encoding without confusing characters
+
 ## Features to Implement
 
-- [ ] Text utilities (encode/decode, formatting)
 - [ ] JSON formatter and validator
 - [ ] UUID generator
 - [ ] Hash generators (MD5, SHA)
-- [ ] Base64 encoder/decoder
 - [ ] URL encoder/decoder
+- [ ] Text utilities (HTML entities, Unicode)
 - [ ] Color picker and converter
 - [ ] Image tools
 - [ ] Developer tools collection
@@ -60,3 +65,42 @@ npx tsc --noEmit
 - Tailwind CSS for styling with Radix UI components
 - TypeScript for type safety
 - Vite for fast development and building
+
+## Development Guidelines
+
+### Version Management
+- **CRITICAL**: Always sync version numbers before creating releases
+- Update both `package.json` and `src-tauri/tauri.conf.json` to match git tag
+- Tauri uses these version numbers for build artifact filenames
+- Example: v0.2.2 tag requires "version": "0.2.2" in both files
+
+### TypeScript Best Practices
+- Run `npx tsc --noEmit` before commits to catch type errors
+- Remove unused imports to prevent TS6133 errors in CI
+- Strict mode enabled - all imports must be used
+
+### GitHub Actions & CI/CD
+- Multi-platform builds: macOS (Intel + ARM64), Windows, Linux
+- Artifacts are uploaded with version-specific filenames
+- Build failures often due to TypeScript errors or version mismatches
+- Use `shell: bash` for cross-platform compatibility in workflows
+
+### Release Process
+1. Update features in CLAUDE.md
+2. Sync version numbers in package.json and tauri.conf.json
+3. Create git tag matching the version numbers
+4. GitHub Actions automatically builds and creates release
+5. Verify artifact filenames include correct version numbers
+
+### Component Development Patterns
+- Each tool is a separate component in `src/components/`
+- Follow existing patterns from NumberBaseConverter for consistency
+- Include smart detection, mode switching, and error handling
+- Maintain unified UI design with consistent button layouts
+- Support clipboard operations and sample data generation
+
+### Icon and Asset Management
+- Icons stored in `src-tauri/icons/` directory
+- Generate all required formats: PNG (multiple sizes), ICO, ICNS
+- Use Tauri's standard icon naming conventions
+- Remove unnecessary platform-specific icons to reduce bloat
