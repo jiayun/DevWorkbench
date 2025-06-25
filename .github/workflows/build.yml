@@ -76,7 +76,8 @@ jobs:
         with:
           name: artifacts-${{ matrix.platform }}-${{ matrix.target }}
           path: |
-            src-tauri/target/*/release/bundle/**/*
+            src-tauri/target/release/bundle/*/*
+            src-tauri/target/*/release/bundle/*/*
             src-tauri/target/release/devworkbench
             src-tauri/target/release/devworkbench.exe
           if-no-files-found: ignore
@@ -97,14 +98,21 @@ jobs:
         with:
           path: artifacts
 
+      - name: Debug artifacts structure
+        run: |
+          echo "=== Artifacts directory structure ==="
+          find artifacts -type f -name "*.dmg" -o -name "*.deb" -o -name "*.AppImage" -o -name "*.msi" -o -name "*.exe" | head -20
+          echo "=== All files in artifacts ==="
+          ls -la artifacts/*/
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            artifacts/**/*.dmg
-            artifacts/**/*.deb
-            artifacts/**/*.AppImage
-            artifacts/**/*.msi
+            artifacts/**/bundle/**/*.dmg
+            artifacts/**/bundle/**/*.deb
+            artifacts/**/bundle/**/*.AppImage
+            artifacts/**/bundle/**/*.msi
             artifacts/**/*.exe
           body: |
             ## What's Changed
