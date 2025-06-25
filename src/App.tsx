@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary } from "lucide-react";
+import { Search, Binary, FileText } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
+import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 type Tool = {
@@ -18,6 +19,13 @@ const tools: Tool[] = [
     description: "Convert between binary, octal, decimal, hex, and other number bases",
     icon: Binary,
     component: NumberBaseConverter,
+  },
+  {
+    id: "base64-encoder-decoder",
+    name: "Base64 String Encode/Decode",
+    description: "Encode or decode a string using Base64",
+    icon: FileText,
+    component: Base64EncoderDecoder,
   },
 ];
 
