@@ -196,14 +196,12 @@ export function NumberBaseConverter() {
     label, 
     value, 
     fieldName,
-    base,
     placeholder = "",
     buttons = []
   }: {
     label: string;
     value: string;
     fieldName: string;
-    base: number;
     placeholder?: string;
     buttons?: Array<{ label: string; onClick: () => void }>;
   }) => (
@@ -261,7 +259,6 @@ export function NumberBaseConverter() {
             label="Base 2 (Binary)"
             value={binaryValue}
             fieldName="binary"
-            base={2}
             placeholder="10010001000101000000010110010010"
             buttons={[
               { 
@@ -278,7 +275,6 @@ export function NumberBaseConverter() {
             label="Base 8 (Octal)"
             value={octalValue}
             fieldName="octal"
-            base={8}
             placeholder="1114540322"
             buttons={[
               { 
@@ -295,7 +291,6 @@ export function NumberBaseConverter() {
             label="Base 10 (Decimal)"
             value={decimalValue}
             fieldName="decimal"
-            base={10}
             placeholder="1234567890"
             buttons={[
               { 
@@ -312,7 +307,6 @@ export function NumberBaseConverter() {
             label="Base 16 (Hex)"
             value={hexValue}
             fieldName="hex"
-            base={16}
             placeholder="499602D2"
             buttons={[
               { 
@@ -380,7 +374,7 @@ export function NumberBaseConverter() {
               ref={(el) => inputRefs.current['custom'] = el}
               type="text"
               value={customValue}
-              onChange={(e) => handleFieldChange('custom', e.target.value.toUpperCase())}
+              onChange={(e) => handleFieldChange('custom', e.target.value)}
               onFocus={() => {
                 activeFieldRef.current = 'custom';
               }}
