@@ -39,7 +39,6 @@ function AppContent() {
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    console.log('Mouse down on resize handle'); // Debug log
     setIsResizing(true);
     setStartX(e.clientX);
     setStartWidth(sidebarWidth);
@@ -50,7 +49,6 @@ function AppContent() {
   const handleMouseMove = React.useCallback((e: MouseEvent) => {
     if (!isResizing) return;
     
-    console.log('Mouse move, clientX:', e.clientX); // Debug log
     const deltaX = e.clientX - startX;
     const newWidth = startWidth + deltaX;
     
@@ -60,7 +58,6 @@ function AppContent() {
   }, [isResizing, startX, startWidth]);
 
   const handleMouseUp = React.useCallback(() => {
-    console.log('Mouse up'); // Debug log
     setIsResizing(false);
   }, []);
 
@@ -143,7 +140,7 @@ function AppContent() {
 
         </div>
         
-        {/* Resize Handle - Subtle and elegant */}
+        {/* Resize Handle - Invisible until hover */}
         <div
           style={{
             width: '4px',
@@ -161,23 +158,24 @@ function AppContent() {
             const indicator = e.currentTarget.querySelector('.resize-indicator') as HTMLElement;
             if (indicator) {
               indicator.style.backgroundColor = '#3b82f6';
-              indicator.style.width = '3px';
+              indicator.style.opacity = '1';
             }
           }}
           onMouseLeave={(e) => {
             const indicator = e.currentTarget.querySelector('.resize-indicator') as HTMLElement;
             if (indicator) {
-              indicator.style.backgroundColor = '#4b5563';
-              indicator.style.width = '1px';
+              indicator.style.backgroundColor = 'transparent';
+              indicator.style.opacity = '0';
             }
           }}
         >
           <div
             className="resize-indicator"
             style={{
-              width: '1px',
+              width: '2px',
               height: '100%',
-              backgroundColor: '#4b5563',
+              backgroundColor: 'transparent',
+              opacity: '0',
               transition: 'all 0.2s ease'
             }}
           ></div>

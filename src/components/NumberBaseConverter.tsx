@@ -196,7 +196,7 @@ export function NumberBaseConverter() {
   return (
     <div className="w-full h-full">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <p className="text-secondary text-sm leading-relaxed mb-8">
+        <p className="text-secondary text-sm leading-relaxed mb-6">
           Enter your number in any of the text field. The other text fields will automatically be calculated.
         </p>
 
@@ -243,7 +243,7 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="10010001000101000000010110010010"
-              className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+              className="w-full px-4 py-3.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
             />
           </div>
 
@@ -289,7 +289,7 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="1114540322"
-              className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+              className="w-full px-4 py-3.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
             />
           </div>
 
@@ -335,7 +335,7 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="1234567890"
-              className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+              className="w-full px-4 py-3.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
             />
           </div>
 
@@ -381,7 +381,7 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="499602d2"
-              className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+              className="w-full px-4 py-3.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
             />
           </div>
 
@@ -451,7 +451,7 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="Custom base value"
-              className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+              className="w-full px-4 py-3.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
             />
           </div>
         </div>
