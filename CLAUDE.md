@@ -1,11 +1,11 @@
-# DevWrokbench
+# DevWorkbench
 
-DevWrokbench is a developer utilities application built with Tauri and React, similar to DevToys/DevUtils.
+DevWorkbench is a developer utilities application built with Tauri and React, similar to DevToys/DevUtils.
 
 ## Project Structure
 
 ```
-DevWrokbench/
+DevWorkbench/
 ├── src/                   # React frontend
 │   ├── components/        # UI components
 │   ├── lib/               # Utilities
