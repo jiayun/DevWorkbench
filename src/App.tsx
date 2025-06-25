@@ -15,7 +15,7 @@ const tools: Tool[] = [
   {
     id: "number-base-converter",
     name: "Number Base Converter",
-    description: "Convert between binary, octal, decimal, hex",
+    description: "Convert between binary, octal, decimal, hex, and other number bases",
     icon: Binary,
     component: NumberBaseConverter,
   },
