@@ -33,8 +33,10 @@ jobs:
           node-version: 'lts/*'
           cache: 'npm'
 
-      - name: Install frontend dependencies
-        run: npm ci
+      - name: Clean and install frontend dependencies
+        run: |
+          rm -f package-lock.json
+          npm install
 
       - name: Run TypeScript check
         run: npx tsc --noEmit
