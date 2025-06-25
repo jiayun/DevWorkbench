@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Copy, Settings, Hash } from "lucide-react";
+import { Copy, Settings } from "lucide-react";
 
 export function Base58EncoderDecoder() {
   const [input, setInput] = useState("");
