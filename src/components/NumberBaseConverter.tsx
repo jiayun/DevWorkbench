@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Copy, ChevronDown } from "lucide-react";
+import { Copy } from "lucide-react";
 
 export function NumberBaseConverter() {
   const [binaryValue, setBinaryValue] = useState("");
@@ -195,7 +195,7 @@ export function NumberBaseConverter() {
 
   return (
     <div className="w-full h-full">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="w-full px-4 py-6">
         <p className="text-secondary text-sm leading-relaxed mb-6">
           Enter your number in any of the text field. The other text fields will automatically be calculated.
         </p>
@@ -388,22 +388,22 @@ export function NumberBaseConverter() {
           {/* Custom Base Selector */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-secondary">Select base:</label>
+              <div className="flex items-center gap-3">
+                <label className="text-sm font-medium text-secondary">Select base:</label>
+                <select
+                  value={customBase}
+                  onChange={(e) => setCustomBase(parseInt(e.target.value))}
+                  className="px-3 py-2 bg-tertiary border border-primary rounded-lg text-primary text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors cursor-pointer hover:bg-secondary"
+                  style={{ minWidth: '80px' }}
+                >
+                  {Array.from({ length: 35 }, (_, i) => i + 2).map(base => (
+                    <option key={base} value={base}>
+                      Base {base}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="flex items-center gap-2">
-                <div className="relative">
-                  <select
-                    value={customBase}
-                    onChange={(e) => setCustomBase(parseInt(e.target.value))}
-                    className="appearance-none px-3 py-1.5 pr-8 bg-tertiary border border-primary rounded-md text-primary text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  >
-                    {Array.from({ length: 35 }, (_, i) => i + 2).map(base => (
-                      <option key={base} value={base} className="bg-tertiary text-primary">
-                        {base}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-tertiary pointer-events-none" />
-                </div>
                 <button
                   onClick={() => navigator.clipboard.readText()
                     .then(text => handleFieldChange('custom', text))

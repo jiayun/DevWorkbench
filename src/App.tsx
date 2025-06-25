@@ -32,10 +32,10 @@ function AppContent() {
 
   const SelectedComponent = selectedTool.component;
 
-  const [sidebarWidth, setSidebarWidth] = useState(320);
+  const [sidebarWidth, setSidebarWidth] = useState(280);
   const [isResizing, setIsResizing] = useState(false);
   const [startX, setStartX] = useState(0);
-  const [startWidth, setStartWidth] = useState(320);
+  const [startWidth, setStartWidth] = useState(280);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -92,7 +92,7 @@ function AppContent() {
         {/* Sidebar */}
         <div 
           ref={sidebarRef}
-          className="bg-secondary border-r border-primary flex flex-col flex-1"
+          className="bg-secondary border-r border-primary flex flex-col flex-1 overflow-hidden"
         >
         {/* Search */}
         <div className="p-4">
@@ -116,7 +116,7 @@ function AppContent() {
               <button
                 key={tool.id}
                 onClick={() => setSelectedTool(tool)}
-                className={`w-full p-4 text-left hover:bg-tertiary border-b border-primary transition-colors rounded-lg mb-1 ${
+                className={`w-full p-3 text-left hover:bg-tertiary border-b border-primary transition-colors rounded-lg mb-1 overflow-hidden ${
                   selectedTool.id === tool.id ? "bg-blue-600 text-white" : ""
                 }`}
               >
@@ -124,7 +124,7 @@ function AppContent() {
                   <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                     <IconComponent className="w-4 h-4 text-white" />
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 overflow-hidden">
                     <div className={`font-medium truncate ${
                       selectedTool.id === tool.id ? "text-white" : "text-primary"
                     }`}>{tool.name}</div>
@@ -183,7 +183,7 @@ function AppContent() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0" style={{ minWidth: '400px' }}>
         {/* Header */}
         <div className="bg-secondary border-b border-primary px-8 py-6">
           <h1 className="text-xl font-semibold text-primary">{selectedTool.name}</h1>
@@ -191,7 +191,7 @@ function AppContent() {
         </div>
 
         {/* Tool Content */}
-        <div className="flex-1 p-8 overflow-auto">
+        <div className="flex-1 p-4 overflow-auto">
           <SelectedComponent />
         </div>
       </div>
