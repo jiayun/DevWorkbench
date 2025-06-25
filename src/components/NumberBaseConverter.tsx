@@ -33,15 +33,21 @@ export function NumberBaseConverter() {
   }, [customBase]);
 
   // Convert from any base to decimal
-  const convertToDecimal = (value: string, base: number): number => {
-    if (!value) return 0;
+  const convertToDecimal = (value: string, base: number): number | null => {
+    if (!value.trim()) return null;
     const parsed = parseInt(value, base);
-    return isNaN(parsed) ? 0 : parsed;
+    return isNaN(parsed) ? null : parsed;
   };
 
   // Update all fields except the active one - immediate update without debounce
   const updateOtherFields = useCallback((sourceField: string, sourceValue: string, sourceBase: number) => {
     const decimal = convertToDecimal(sourceValue, sourceBase);
+    
+    // Only update if conversion is valid
+    if (decimal === null) {
+      return; // Don't update other fields for invalid input
+    }
+    
     const converted = convertFromDecimal(decimal);
 
     // Use React's batch updates to prevent multiple re-renders
@@ -75,16 +81,17 @@ export function NumberBaseConverter() {
         break;
     }
 
-    // Update other fields immediately only if the value is valid
-    if (value.trim() !== '') {
-      updateOtherFields(field, value, base);
-    } else {
+    // Update other fields immediately
+    if (value.trim() === '') {
       // Clear all other fields if current field is empty
       if (field !== 'binary') setBinaryValue('');
       if (field !== 'octal') setOctalValue('');
       if (field !== 'decimal') setDecimalValue('');
       if (field !== 'hex') setHexValue('');
       if (field !== 'custom') setCustomValue('');
+    } else {
+      // Try to update other fields (will skip if invalid)
+      updateOtherFields(field, value, base);
     }
   };
 
