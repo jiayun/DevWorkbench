@@ -39,16 +39,12 @@ export function NumberBaseConverter() {
     return isNaN(parsed) ? 0 : parsed;
   };
 
-  // Update all fields except the active one
+  // Update all fields except the active one - immediate update without debounce
   const updateOtherFields = useCallback((sourceField: string, sourceValue: string, sourceBase: number) => {
-    // Double check the active field to prevent updates during user typing
-    if (activeFieldRef.current !== sourceField) {
-      return; // Don't update if user switched to a different field
-    }
-
     const decimal = convertToDecimal(sourceValue, sourceBase);
     const converted = convertFromDecimal(decimal);
 
+    // Use React's batch updates to prevent multiple re-renders
     if (sourceField !== 'binary') setBinaryValue(converted.binary);
     if (sourceField !== 'octal') setOctalValue(converted.octal);
     if (sourceField !== 'decimal') setDecimalValue(decimal.toString());
@@ -56,24 +52,11 @@ export function NumberBaseConverter() {
     if (sourceField !== 'custom') setCustomValue(converted.custom);
   }, [convertFromDecimal]);
 
-  // Debounced update function
-  const debouncedUpdate = useCallback((field: string, value: string, base: number) => {
-    if (updateTimeoutRef.current) {
-      clearTimeout(updateTimeoutRef.current);
-    }
-
-    updateTimeoutRef.current = setTimeout(() => {
-      // Only update if this field is still the active one
-      if (activeFieldRef.current === field) {
-        updateOtherFields(field, value, base);
-      }
-    }, 150); // Reduced debounce time for better responsiveness
-  }, [updateOtherFields]);
-
-  // Handle field changes
+  // Handle field changes - direct update without debouncing
   const handleFieldChange = (field: string, value: string, base: number) => {
     activeFieldRef.current = field;
     
+    // Update the current field first
     switch (field) {
       case 'binary':
         setBinaryValue(value);
@@ -92,7 +75,17 @@ export function NumberBaseConverter() {
         break;
     }
 
-    debouncedUpdate(field, value, base);
+    // Update other fields immediately only if the value is valid
+    if (value.trim() !== '') {
+      updateOtherFields(field, value, base);
+    } else {
+      // Clear all other fields if current field is empty
+      if (field !== 'binary') setBinaryValue('');
+      if (field !== 'octal') setOctalValue('');
+      if (field !== 'decimal') setDecimalValue('');
+      if (field !== 'hex') setHexValue('');
+      if (field !== 'custom') setCustomValue('');
+    }
   };
 
   // Handle custom base change
@@ -168,14 +161,10 @@ export function NumberBaseConverter() {
           activeFieldRef.current = fieldName;
         }}
         onBlur={() => {
-          // Only clear active field if user actually moved away
-          setTimeout(() => {
-            if (document.activeElement !== inputRefs.current[fieldName]) {
-              if (activeFieldRef.current === fieldName) {
-                activeFieldRef.current = null;
-              }
-            }
-          }, 0);
+          // Simple blur handler
+          if (activeFieldRef.current === fieldName) {
+            activeFieldRef.current = null;
+          }
         }}
         placeholder={placeholder}
         className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
@@ -319,14 +308,10 @@ export function NumberBaseConverter() {
                 activeFieldRef.current = 'custom';
               }}
               onBlur={() => {
-                // Only clear active field if user actually moved away
-                setTimeout(() => {
-                  if (document.activeElement !== inputRefs.current['custom']) {
-                    if (activeFieldRef.current === 'custom') {
-                      activeFieldRef.current = null;
-                    }
-                  }
-                }, 0);
+                // Simple blur handler
+                if (activeFieldRef.current === 'custom') {
+                  activeFieldRef.current = null;
+                }
               }}
               className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
             />
