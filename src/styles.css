@@ -7,6 +7,7 @@
     --color-bg-primary: #ffffff;
     --color-bg-secondary: #f9fafb;
     --color-bg-tertiary: #f3f4f6;
+    --color-bg-hover: #e5e7eb;
     --color-text-primary: #111827;
     --color-text-secondary: #4b5563;
     --color-text-tertiary: #9ca3af;
@@ -18,6 +19,7 @@
     --color-bg-primary: #111827;
     --color-bg-secondary: #1f2937;
     --color-bg-tertiary: #374151;
+    --color-bg-hover: #4b5563;
     --color-text-primary: #ffffff;
     --color-text-secondary: #d1d5db;
     --color-text-tertiary: #9ca3af;
@@ -29,8 +31,22 @@
 .bg-primary { background-color: var(--color-bg-primary); }
 .bg-secondary { background-color: var(--color-bg-secondary); }
 .bg-tertiary { background-color: var(--color-bg-tertiary); }
+.bg-hover { background-color: var(--color-bg-hover); }
 .text-primary { color: var(--color-text-primary); }
 .text-secondary { color: var(--color-text-secondary); }
 .text-tertiary { color: var(--color-text-tertiary); }
 .border-primary { border-color: var(--color-border); }
 .border-hover { border-color: var(--color-border-hover); }
+
+/* Ensure hover states work with Tailwind */
+.hover\:bg-secondary:hover { background-color: var(--color-bg-secondary); }
+.hover\:bg-tertiary:hover { background-color: var(--color-bg-tertiary); }
+.hover\:text-primary:hover { color: var(--color-text-primary); }
+
+/* Fix select dropdown styling for dark mode */
+@layer components {
+  select option {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+  }
+}
