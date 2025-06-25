@@ -4,6 +4,18 @@
 
 @layer base {
   :root {
+    --color-bg-primary: #111827;
+    --color-bg-secondary: #1f2937;
+    --color-bg-tertiary: #374151;
+    --color-bg-hover: #4b5563;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #d1d5db;
+    --color-text-tertiary: #9ca3af;
+    --color-border: #374151;
+    --color-border-hover: #4b5563;
+  }
+  
+  .light {
     --color-bg-primary: #ffffff;
     --color-bg-secondary: #f9fafb;
     --color-bg-tertiary: #f3f4f6;
@@ -48,5 +60,17 @@
   select option {
     background-color: var(--color-bg-tertiary);
     color: var(--color-text-primary);
+  }
+  
+  /* Force input backgrounds to use theme colors */
+  input[type="text"] {
+    background-color: var(--color-bg-tertiary) !important;
+    color: var(--color-text-primary) !important;
+    border-color: var(--color-border) !important;
+  }
+  
+  input[type="text"]:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
   }
 }

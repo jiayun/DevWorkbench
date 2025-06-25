@@ -84,9 +84,9 @@ function AppContent() {
         style={{ width: sidebarWidth }}
       >
         {/* Search */}
-        <div className="p-6">
+        <div className="p-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-tertiary w-4 h-4 z-10" />
             <input
               type="text"
               placeholder="Search tools..."
@@ -129,11 +129,10 @@ function AppContent() {
 
         {/* Resize Handle */}
         <div
-          className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500 transition-colors group"
+          className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500 transition-colors group bg-gray-600"
           onMouseDown={handleMouseDown}
-        >
-          <div className="w-1 h-full group-hover:bg-blue-500" />
-        </div>
+          title="Drag to resize sidebar"
+        />
       </div>
 
       {/* Main Content */}

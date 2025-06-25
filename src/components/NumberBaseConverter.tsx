@@ -450,6 +450,7 @@ export function NumberBaseConverter() {
                   activeFieldRef.current = null;
                 }
               }}
+              placeholder="Custom base value"
               className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
             />
           </div>
