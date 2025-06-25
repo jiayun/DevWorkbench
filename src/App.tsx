@@ -34,25 +34,35 @@ function AppContent() {
 
   const [sidebarWidth, setSidebarWidth] = useState(320);
   const [isResizing, setIsResizing] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [startWidth, setStartWidth] = useState(320);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    console.log('Mouse down on resize handle'); // Debug log
     setIsResizing(true);
+    setStartX(e.clientX);
+    setStartWidth(sidebarWidth);
     e.preventDefault();
+    e.stopPropagation();
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = React.useCallback((e: MouseEvent) => {
     if (!isResizing) return;
     
-    const newWidth = e.clientX;
-    if (newWidth >= 240 && newWidth <= 600) {
+    console.log('Mouse move, clientX:', e.clientX); // Debug log
+    const deltaX = e.clientX - startX;
+    const newWidth = startWidth + deltaX;
+    
+    if (newWidth >= 200 && newWidth <= 800) {
       setSidebarWidth(newWidth);
     }
-  };
+  }, [isResizing, startX, startWidth]);
 
-  const handleMouseUp = () => {
+  const handleMouseUp = React.useCallback(() => {
+    console.log('Mouse up'); // Debug log
     setIsResizing(false);
-  };
+  }, []);
 
   React.useEffect(() => {
     if (isResizing) {
@@ -73,16 +83,20 @@ function AppContent() {
       document.body.style.cursor = '';
       document.body.style.userSelect = '';
     };
-  }, [isResizing]);
+  }, [isResizing, handleMouseMove, handleMouseUp]);
 
   return (
     <div className="flex h-screen bg-primary text-primary">
-      {/* Sidebar */}
+      {/* Sidebar Container */}
       <div 
-        ref={sidebarRef}
-        className="bg-secondary border-r border-primary flex flex-col relative"
+        className="flex"
         style={{ width: sidebarWidth }}
       >
+        {/* Sidebar */}
+        <div 
+          ref={sidebarRef}
+          className="bg-secondary border-r border-primary flex flex-col flex-1"
+        >
         {/* Search */}
         <div className="p-4">
           <div className="relative">
@@ -98,7 +112,7 @@ function AppContent() {
         </div>
 
         {/* Tool List */}
-        <div className="flex-1 overflow-y-auto px-2">
+        <div className="flex-1 overflow-y-auto px-3">
           {filteredTools.map((tool) => {
             const IconComponent = tool.icon;
             return (
@@ -127,12 +141,47 @@ function AppContent() {
           })}
         </div>
 
-        {/* Resize Handle */}
+        </div>
+        
+        {/* Resize Handle - Subtle and elegant */}
         <div
-          className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500 transition-colors group bg-gray-600"
+          style={{
+            width: '4px',
+            backgroundColor: 'transparent',
+            cursor: 'col-resize',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            position: 'relative'
+          }}
           onMouseDown={handleMouseDown}
           title="Drag to resize sidebar"
-        />
+          onMouseEnter={(e) => {
+            const indicator = e.currentTarget.querySelector('.resize-indicator') as HTMLElement;
+            if (indicator) {
+              indicator.style.backgroundColor = '#3b82f6';
+              indicator.style.width = '3px';
+            }
+          }}
+          onMouseLeave={(e) => {
+            const indicator = e.currentTarget.querySelector('.resize-indicator') as HTMLElement;
+            if (indicator) {
+              indicator.style.backgroundColor = '#4b5563';
+              indicator.style.width = '1px';
+            }
+          }}
+        >
+          <div
+            className="resize-indicator"
+            style={{
+              width: '1px',
+              height: '100%',
+              backgroundColor: '#4b5563',
+              transition: 'all 0.2s ease'
+            }}
+          ></div>
+        </div>
       </div>
 
       {/* Main Content */}

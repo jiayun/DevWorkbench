@@ -200,7 +200,7 @@ export function NumberBaseConverter() {
           Enter your number in any of the text field. The other text fields will automatically be calculated.
         </p>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Binary Input */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -210,13 +210,13 @@ export function NumberBaseConverter() {
                   onClick={() => navigator.clipboard.readText()
                     .then(text => handleFieldChange('binary', text))
                     .catch(() => {})}
-                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
                   Clipboard
                 </button>
                 <button
                   onClick={clearAll}
-                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
                   Clear
                 </button>
@@ -256,13 +256,13 @@ export function NumberBaseConverter() {
                   onClick={() => navigator.clipboard.readText()
                     .then(text => handleFieldChange('octal', text))
                     .catch(() => {})}
-                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
                   Clipboard
                 </button>
                 <button
                   onClick={clearAll}
-                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
                   Clear
                 </button>
@@ -302,13 +302,13 @@ export function NumberBaseConverter() {
                   onClick={() => navigator.clipboard.readText()
                     .then(text => handleFieldChange('decimal', text))
                     .catch(() => {})}
-                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
                   Clipboard
                 </button>
                 <button
                   onClick={clearAll}
-                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
                   Clear
                 </button>
@@ -348,13 +348,13 @@ export function NumberBaseConverter() {
                   onClick={() => navigator.clipboard.readText()
                     .then(text => handleFieldChange('hex', text))
                     .catch(() => {})}
-                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
                   Clipboard
                 </button>
                 <button
                   onClick={clearAll}
-                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
                   Clear
                 </button>
@@ -408,7 +408,7 @@ export function NumberBaseConverter() {
                   onClick={() => navigator.clipboard.readText()
                     .then(text => handleFieldChange('custom', text))
                     .catch(() => {})}
-                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
                   Clipboard
                 </button>
@@ -417,13 +417,13 @@ export function NumberBaseConverter() {
                     const decimal = Math.floor(Math.random() * 1000000);
                     handleFieldChange('custom', decimal.toString(customBase).toLowerCase());
                   }}
-                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
                   Sample
                 </button>
                 <button
                   onClick={clearAll}
-                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
                   Clear
                 </button>
