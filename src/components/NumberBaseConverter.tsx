@@ -29,8 +29,8 @@ export function NumberBaseConverter() {
     return {
       binary: decimal.toString(2),
       octal: decimal.toString(8),
-      hex: decimal.toString(16).toUpperCase(),
-      custom: decimal.toString(customBase).toUpperCase(),
+      hex: decimal.toString(16).toLowerCase(),
+      custom: decimal.toString(customBase).toLowerCase(),
     };
   }, [customBase]);
 
@@ -56,10 +56,10 @@ export function NumberBaseConverter() {
         setDecimalValue(value);
         break;
       case 'hex':
-        setHexValue(value.toUpperCase());
+        setHexValue(value.toLowerCase());
         break;
       case 'custom':
-        setCustomValue(value.toUpperCase());
+        setCustomValue(value.toLowerCase());
         break;
     }
   };
@@ -169,7 +169,7 @@ export function NumberBaseConverter() {
     if (decimalValue && activeFieldRef.current !== 'custom') {
       const decimal = parseInt(decimalValue);
       if (!isNaN(decimal)) {
-        setCustomValue(decimal.toString(customBase).toUpperCase());
+        setCustomValue(decimal.toString(customBase).toLowerCase());
       }
     }
   }, [customBase, decimalValue]);
@@ -380,7 +380,7 @@ export function NumberBaseConverter() {
                   activeFieldRef.current = null;
                 }
               }}
-              placeholder="499602D2"
+              placeholder="499602d2"
               className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
             />
           </div>
@@ -415,7 +415,7 @@ export function NumberBaseConverter() {
                 <button
                   onClick={() => {
                     const decimal = Math.floor(Math.random() * 1000000);
-                    handleFieldChange('custom', decimal.toString(customBase).toUpperCase());
+                    handleFieldChange('custom', decimal.toString(customBase).toLowerCase());
                   }}
                   className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
                 >
