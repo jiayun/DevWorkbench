@@ -59,6 +59,7 @@ jobs:
           cache: 'npm'
 
       - name: Clean and install frontend dependencies
+        shell: bash
         run: |
           rm -f package-lock.json
           npm install
