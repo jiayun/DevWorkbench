@@ -1,0 +1,138 @@
+name: 'Build and Release'
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest'
+            args: '--target aarch64-apple-darwin'
+            target: 'aarch64-apple-darwin'
+          - platform: 'macos-latest'
+            args: '--target x86_64-apple-darwin'
+            target: 'x86_64-apple-darwin'
+          - platform: 'ubuntu-22.04'
+            args: ''
+            target: 'x86_64-unknown-linux-gnu'
+          - platform: 'windows-latest'
+            args: ''
+            target: 'x86_64-pc-windows-msvc'
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Sync node version and setup cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build the app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: ${{ matrix.args }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.platform }}-${{ matrix.target }}
+          path: |
+            src-tauri/target/*/release/bundle/**/*
+            src-tauri/target/release/devworkbench
+            src-tauri/target/release/devworkbench.exe
+          if-no-files-found: ignore
+
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-22.04
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/**/*.dmg
+            artifacts/**/*.deb
+            artifacts/**/*.AppImage
+            artifacts/**/*.msi
+            artifacts/**/*.exe
+          body: |
+            ## What's Changed
+            
+            See the full changelog at [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md)
+            
+            ## Downloads
+            
+            - **macOS**: Download the `.dmg` file
+            - **Windows**: Download the `.msi` or `.exe` file  
+            - **Linux**: Download the `.deb` file or `.AppImage`
+            
+            ## Installation
+            
+            ### macOS
+            1. Download `DevWorkbench_x.x.x_x64.dmg`
+            2. Open the DMG file and drag DevWorkbench to Applications
+            
+            ### Windows
+            1. Download `DevWorkbench_x.x.x_x64.msi`
+            2. Run the installer and follow the setup wizard
+            
+            ### Linux
+            1. **Debian/Ubuntu**: Download and install the `.deb` file
+               ```bash
+               sudo dpkg -i DevWorkbench_x.x.x_amd64.deb
+               ```
+            2. **Other distributions**: Download the `.AppImage` file
+               ```bash
+               chmod +x DevWorkbench_x.x.x_amd64.AppImage
+               ./DevWorkbench_x.x.x_amd64.AppImage
+               ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
