@@ -66,95 +66,100 @@ export function NumberBaseConverter() {
 
   // Update other fields when binary changes
   useEffect(() => {
-    if (lastUpdatedField.current === 'binary' && activeFieldRef.current === 'binary') {
+    if (lastUpdatedField.current === 'binary') {
       const decimal = convertToDecimal(binaryValue, 2);
       if (decimal !== null) {
         const converted = convertFromDecimal(decimal);
-        setOctalValue(converted.octal);
-        setDecimalValue(decimal.toString());
-        setHexValue(converted.hex);
-        setCustomValue(converted.custom);
+        // Only update fields that are NOT currently being edited
+        if (activeFieldRef.current !== 'octal') setOctalValue(converted.octal);
+        if (activeFieldRef.current !== 'decimal') setDecimalValue(decimal.toString());
+        if (activeFieldRef.current !== 'hex') setHexValue(converted.hex);
+        if (activeFieldRef.current !== 'custom') setCustomValue(converted.custom);
       } else if (binaryValue === '') {
-        setOctalValue('');
-        setDecimalValue('');
-        setHexValue('');
-        setCustomValue('');
+        if (activeFieldRef.current !== 'octal') setOctalValue('');
+        if (activeFieldRef.current !== 'decimal') setDecimalValue('');
+        if (activeFieldRef.current !== 'hex') setHexValue('');
+        if (activeFieldRef.current !== 'custom') setCustomValue('');
       }
     }
   }, [binaryValue, convertFromDecimal]);
 
   // Update other fields when octal changes
   useEffect(() => {
-    if (lastUpdatedField.current === 'octal' && activeFieldRef.current === 'octal') {
+    if (lastUpdatedField.current === 'octal') {
       const decimal = convertToDecimal(octalValue, 8);
       if (decimal !== null) {
         const converted = convertFromDecimal(decimal);
-        setBinaryValue(converted.binary);
-        setDecimalValue(decimal.toString());
-        setHexValue(converted.hex);
-        setCustomValue(converted.custom);
+        // Only update fields that are NOT currently being edited
+        if (activeFieldRef.current !== 'binary') setBinaryValue(converted.binary);
+        if (activeFieldRef.current !== 'decimal') setDecimalValue(decimal.toString());
+        if (activeFieldRef.current !== 'hex') setHexValue(converted.hex);
+        if (activeFieldRef.current !== 'custom') setCustomValue(converted.custom);
       } else if (octalValue === '') {
-        setBinaryValue('');
-        setDecimalValue('');
-        setHexValue('');
-        setCustomValue('');
+        if (activeFieldRef.current !== 'binary') setBinaryValue('');
+        if (activeFieldRef.current !== 'decimal') setDecimalValue('');
+        if (activeFieldRef.current !== 'hex') setHexValue('');
+        if (activeFieldRef.current !== 'custom') setCustomValue('');
       }
     }
   }, [octalValue, convertFromDecimal]);
 
   // Update other fields when decimal changes
   useEffect(() => {
-    if (lastUpdatedField.current === 'decimal' && activeFieldRef.current === 'decimal') {
+    if (lastUpdatedField.current === 'decimal') {
       const decimal = convertToDecimal(decimalValue, 10);
       if (decimal !== null) {
         const converted = convertFromDecimal(decimal);
-        setBinaryValue(converted.binary);
-        setOctalValue(converted.octal);
-        setHexValue(converted.hex);
-        setCustomValue(converted.custom);
+        // Only update fields that are NOT currently being edited
+        if (activeFieldRef.current !== 'binary') setBinaryValue(converted.binary);
+        if (activeFieldRef.current !== 'octal') setOctalValue(converted.octal);
+        if (activeFieldRef.current !== 'hex') setHexValue(converted.hex);
+        if (activeFieldRef.current !== 'custom') setCustomValue(converted.custom);
       } else if (decimalValue === '') {
-        setBinaryValue('');
-        setOctalValue('');
-        setHexValue('');
-        setCustomValue('');
+        if (activeFieldRef.current !== 'binary') setBinaryValue('');
+        if (activeFieldRef.current !== 'octal') setOctalValue('');
+        if (activeFieldRef.current !== 'hex') setHexValue('');
+        if (activeFieldRef.current !== 'custom') setCustomValue('');
       }
     }
   }, [decimalValue, convertFromDecimal]);
 
   // Update other fields when hex changes
   useEffect(() => {
-    if (lastUpdatedField.current === 'hex' && activeFieldRef.current === 'hex') {
+    if (lastUpdatedField.current === 'hex') {
       const decimal = convertToDecimal(hexValue, 16);
       if (decimal !== null) {
         const converted = convertFromDecimal(decimal);
-        setBinaryValue(converted.binary);
-        setOctalValue(converted.octal);
-        setDecimalValue(decimal.toString());
-        setCustomValue(converted.custom);
+        // Only update fields that are NOT currently being edited
+        if (activeFieldRef.current !== 'binary') setBinaryValue(converted.binary);
+        if (activeFieldRef.current !== 'octal') setOctalValue(converted.octal);
+        if (activeFieldRef.current !== 'decimal') setDecimalValue(decimal.toString());
+        if (activeFieldRef.current !== 'custom') setCustomValue(converted.custom);
       } else if (hexValue === '') {
-        setBinaryValue('');
-        setOctalValue('');
-        setDecimalValue('');
-        setCustomValue('');
+        if (activeFieldRef.current !== 'binary') setBinaryValue('');
+        if (activeFieldRef.current !== 'octal') setOctalValue('');
+        if (activeFieldRef.current !== 'decimal') setDecimalValue('');
+        if (activeFieldRef.current !== 'custom') setCustomValue('');
       }
     }
   }, [hexValue, convertFromDecimal]);
 
   // Update other fields when custom changes
   useEffect(() => {
-    if (lastUpdatedField.current === 'custom' && activeFieldRef.current === 'custom') {
+    if (lastUpdatedField.current === 'custom') {
       const decimal = convertToDecimal(customValue, customBase);
       if (decimal !== null) {
         const converted = convertFromDecimal(decimal);
-        setBinaryValue(converted.binary);
-        setOctalValue(converted.octal);
-        setDecimalValue(decimal.toString());
-        setHexValue(converted.hex);
+        // Only update fields that are NOT currently being edited
+        if (activeFieldRef.current !== 'binary') setBinaryValue(converted.binary);
+        if (activeFieldRef.current !== 'octal') setOctalValue(converted.octal);
+        if (activeFieldRef.current !== 'decimal') setDecimalValue(decimal.toString());
+        if (activeFieldRef.current !== 'hex') setHexValue(converted.hex);
       } else if (customValue === '') {
-        setBinaryValue('');
-        setOctalValue('');
-        setDecimalValue('');
-        setHexValue('');
+        if (activeFieldRef.current !== 'binary') setBinaryValue('');
+        if (activeFieldRef.current !== 'octal') setOctalValue('');
+        if (activeFieldRef.current !== 'decimal') setDecimalValue('');
+        if (activeFieldRef.current !== 'hex') setHexValue('');
       }
     }
   }, [customValue, customBase, convertFromDecimal]);
