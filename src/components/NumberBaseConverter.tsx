@@ -192,60 +192,6 @@ export function NumberBaseConverter() {
     lastUpdatedField.current = null;
   };
 
-  const InputField = ({ 
-    label, 
-    value, 
-    fieldName,
-    placeholder = "",
-    buttons = []
-  }: {
-    label: string;
-    value: string;
-    fieldName: string;
-    placeholder?: string;
-    buttons?: Array<{ label: string; onClick: () => void }>;
-  }) => (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-secondary">{label}</label>
-        <div className="flex items-center gap-2">
-          {buttons.map((button, index) => (
-            <button
-              key={index}
-              onClick={button.onClick}
-              className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
-            >
-              {button.label}
-            </button>
-          ))}
-          <button
-            onClick={() => copyToClipboard(value)}
-            className="p-1.5 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
-            title="Copy"
-          >
-            <Copy className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-      <input
-        ref={(el) => inputRefs.current[fieldName] = el}
-        type="text"
-        value={value}
-        onChange={(e) => handleFieldChange(fieldName, e.target.value)}
-        onFocus={() => {
-          activeFieldRef.current = fieldName;
-        }}
-        onBlur={() => {
-          // Simple blur handler
-          if (activeFieldRef.current === fieldName) {
-            activeFieldRef.current = null;
-          }
-        }}
-        placeholder={placeholder}
-        className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
-      />
-    </div>
-  );
 
   return (
     <div className="w-full h-full">
@@ -255,69 +201,189 @@ export function NumberBaseConverter() {
         </p>
 
         <div className="space-y-6">
-          <InputField
-            label="Base 2 (Binary)"
-            value={binaryValue}
-            fieldName="binary"
-            placeholder="10010001000101000000010110010010"
-            buttons={[
-              { 
-                label: "Clipboard", 
-                onClick: () => navigator.clipboard.readText()
-                  .then(text => handleFieldChange('binary', text))
-                  .catch(() => {}) 
-              },
-              { label: "Clear", onClick: clearAll }
-            ]}
-          />
+          {/* Binary Input */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-secondary">Base 2 (Binary)</label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => navigator.clipboard.readText()
+                    .then(text => handleFieldChange('binary', text))
+                    .catch(() => {})}
+                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                >
+                  Clipboard
+                </button>
+                <button
+                  onClick={clearAll}
+                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={() => copyToClipboard(binaryValue)}
+                  className="p-1.5 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
+                  title="Copy"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <input
+              ref={(el) => inputRefs.current['binary'] = el}
+              type="text"
+              value={binaryValue}
+              onChange={(e) => handleFieldChange('binary', e.target.value)}
+              onFocus={() => {
+                activeFieldRef.current = 'binary';
+              }}
+              onBlur={() => {
+                if (activeFieldRef.current === 'binary') {
+                  activeFieldRef.current = null;
+                }
+              }}
+              placeholder="10010001000101000000010110010010"
+              className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+            />
+          </div>
 
-          <InputField
-            label="Base 8 (Octal)"
-            value={octalValue}
-            fieldName="octal"
-            placeholder="1114540322"
-            buttons={[
-              { 
-                label: "Clipboard", 
-                onClick: () => navigator.clipboard.readText()
-                  .then(text => handleFieldChange('octal', text))
-                  .catch(() => {}) 
-              },
-              { label: "Clear", onClick: clearAll }
-            ]}
-          />
+          {/* Octal Input */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-secondary">Base 8 (Octal)</label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => navigator.clipboard.readText()
+                    .then(text => handleFieldChange('octal', text))
+                    .catch(() => {})}
+                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                >
+                  Clipboard
+                </button>
+                <button
+                  onClick={clearAll}
+                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={() => copyToClipboard(octalValue)}
+                  className="p-1.5 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
+                  title="Copy"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <input
+              ref={(el) => inputRefs.current['octal'] = el}
+              type="text"
+              value={octalValue}
+              onChange={(e) => handleFieldChange('octal', e.target.value)}
+              onFocus={() => {
+                activeFieldRef.current = 'octal';
+              }}
+              onBlur={() => {
+                if (activeFieldRef.current === 'octal') {
+                  activeFieldRef.current = null;
+                }
+              }}
+              placeholder="1114540322"
+              className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+            />
+          </div>
 
-          <InputField
-            label="Base 10 (Decimal)"
-            value={decimalValue}
-            fieldName="decimal"
-            placeholder="1234567890"
-            buttons={[
-              { 
-                label: "Clipboard", 
-                onClick: () => navigator.clipboard.readText()
-                  .then(text => handleFieldChange('decimal', text))
-                  .catch(() => {}) 
-              },
-              { label: "Clear", onClick: clearAll }
-            ]}
-          />
+          {/* Decimal Input */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-secondary">Base 10 (Decimal)</label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => navigator.clipboard.readText()
+                    .then(text => handleFieldChange('decimal', text))
+                    .catch(() => {})}
+                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                >
+                  Clipboard
+                </button>
+                <button
+                  onClick={clearAll}
+                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={() => copyToClipboard(decimalValue)}
+                  className="p-1.5 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
+                  title="Copy"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <input
+              ref={(el) => inputRefs.current['decimal'] = el}
+              type="text"
+              value={decimalValue}
+              onChange={(e) => handleFieldChange('decimal', e.target.value)}
+              onFocus={() => {
+                activeFieldRef.current = 'decimal';
+              }}
+              onBlur={() => {
+                if (activeFieldRef.current === 'decimal') {
+                  activeFieldRef.current = null;
+                }
+              }}
+              placeholder="1234567890"
+              className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+            />
+          </div>
 
-          <InputField
-            label="Base 16 (Hex)"
-            value={hexValue}
-            fieldName="hex"
-            placeholder="499602D2"
-            buttons={[
-              { 
-                label: "Clipboard", 
-                onClick: () => navigator.clipboard.readText()
-                  .then(text => handleFieldChange('hex', text))
-                  .catch(() => {}) 
-              },
-              { label: "Clear", onClick: clearAll }
-            ]}
-          />
+          {/* Hex Input */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-secondary">Base 16 (Hex)</label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => navigator.clipboard.readText()
+                    .then(text => handleFieldChange('hex', text))
+                    .catch(() => {})}
+                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                >
+                  Clipboard
+                </button>
+                <button
+                  onClick={clearAll}
+                  className="px-3 py-1.5 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-md transition-colors"
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={() => copyToClipboard(hexValue)}
+                  className="p-1.5 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
+                  title="Copy"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <input
+              ref={(el) => inputRefs.current['hex'] = el}
+              type="text"
+              value={hexValue}
+              onChange={(e) => handleFieldChange('hex', e.target.value)}
+              onFocus={() => {
+                activeFieldRef.current = 'hex';
+              }}
+              onBlur={() => {
+                if (activeFieldRef.current === 'hex') {
+                  activeFieldRef.current = null;
+                }
+              }}
+              placeholder="499602D2"
+              className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+            />
+          </div>
 
           {/* Custom Base Selector */}
           <div className="space-y-3">
