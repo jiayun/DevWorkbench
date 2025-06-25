@@ -11,6 +11,7 @@ export function NumberBaseConverter() {
   
   const activeFieldRef = useRef<string | null>(null);
   const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
 
   // Convert decimal to other bases
   const convertFromDecimal = useCallback((decimal: number) => {
@@ -40,6 +41,11 @@ export function NumberBaseConverter() {
 
   // Update all fields except the active one
   const updateOtherFields = useCallback((sourceField: string, sourceValue: string, sourceBase: number) => {
+    // Double check the active field to prevent updates during user typing
+    if (activeFieldRef.current !== sourceField) {
+      return; // Don't update if user switched to a different field
+    }
+
     const decimal = convertToDecimal(sourceValue, sourceBase);
     const converted = convertFromDecimal(decimal);
 
@@ -57,8 +63,11 @@ export function NumberBaseConverter() {
     }
 
     updateTimeoutRef.current = setTimeout(() => {
-      updateOtherFields(field, value, base);
-    }, 300);
+      // Only update if this field is still the active one
+      if (activeFieldRef.current === field) {
+        updateOtherFields(field, value, base);
+      }
+    }, 150); // Reduced debounce time for better responsiveness
   }, [updateOtherFields]);
 
   // Handle field changes
@@ -151,10 +160,23 @@ export function NumberBaseConverter() {
         </div>
       </div>
       <input
+        ref={(el) => inputRefs.current[fieldName] = el}
         type="text"
         value={value}
         onChange={(e) => handleFieldChange(fieldName, e.target.value, base)}
-        onFocus={() => activeFieldRef.current = fieldName}
+        onFocus={() => {
+          activeFieldRef.current = fieldName;
+        }}
+        onBlur={() => {
+          // Only clear active field if user actually moved away
+          setTimeout(() => {
+            if (document.activeElement !== inputRefs.current[fieldName]) {
+              if (activeFieldRef.current === fieldName) {
+                activeFieldRef.current = null;
+              }
+            }
+          }, 0);
+        }}
         placeholder={placeholder}
         className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
       />
@@ -289,10 +311,23 @@ export function NumberBaseConverter() {
               </div>
             </div>
             <input
+              ref={(el) => inputRefs.current['custom'] = el}
               type="text"
               value={customValue}
               onChange={(e) => handleFieldChange('custom', e.target.value.toUpperCase(), customBase)}
-              onFocus={() => activeFieldRef.current = 'custom'}
+              onFocus={() => {
+                activeFieldRef.current = 'custom';
+              }}
+              onBlur={() => {
+                // Only clear active field if user actually moved away
+                setTimeout(() => {
+                  if (document.activeElement !== inputRefs.current['custom']) {
+                    if (activeFieldRef.current === 'custom') {
+                      activeFieldRef.current = null;
+                    }
+                  }
+                }, 0);
+              }}
               className="w-full px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
             />
           </div>
