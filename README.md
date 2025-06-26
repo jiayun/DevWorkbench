@@ -31,13 +31,38 @@ A developer utilities application built with Tauri and React, similar to DevToys
 
 ## 📦 Installation
 
-### Prerequisites
+### Download Pre-built Binaries
+
+Download the latest release from the [Releases page](https://github.com/jiayun/DevWorkbench/releases).
+
+#### macOS Installation
+
+If you see "DevWorkbench.app is damaged" error on macOS:
+
+**Option 1: Remove quarantine attribute (Recommended)**
+```bash
+xattr -cr /Applications/DevWorkbench.app
+```
+
+**Option 2: Right-click to open**
+1. Right-click (or Control-click) on DevWorkbench.app
+2. Select "Open" from the context menu
+3. Click "Open" in the dialog that appears
+
+**Option 3: System Settings**
+1. Go to System Settings → Privacy & Security
+2. Find the blocked app notification
+3. Click "Open Anyway"
+
+### Build from Source
+
+#### Prerequisites
 
 - Node.js 18+ and npm
 - Rust 1.70+
 - Platform-specific dependencies for Tauri
 
-### Development
+#### Development
 
 ```bash
 # Clone the repository
