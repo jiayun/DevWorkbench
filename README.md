@@ -2,9 +2,11 @@
 
 A developer utilities application built with Tauri and React, similar to DevToys/DevUtils.
 
-## 🤖 100% AI-Generated Code
+## 🤖 100% AI-Generated Code - A Totally Vibed Application
 
 **This entire project was built using Vibe Coding through Claude Code, without any manual code editing by humans.** Every line of code, configuration, and even this README was generated through natural language conversations with AI. This demonstrates the power of AI-assisted development in creating fully functional applications.
+
+DevWorkbench is a **Totally Vibed Application** - conceived, designed, and implemented entirely through AI collaboration.
 
 ## 🌟 Features
 
