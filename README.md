@@ -14,6 +14,7 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
 - 🔢 **Number Base Converter** - Convert between binary, octal, decimal, hex, and custom bases
 - 📊 **Base64 String Encode/Decode** - Encode/decode text using Base64 with smart features
 - 🔤 **Base58 String Encode/Decode** - Bitcoin/IPFS-friendly encoding without confusing characters
+- 📝 **Multi-line to JSON Array** - Convert multi-line text to JSON array with auto-trim and smart type detection
 
 ### 🚧 Coming Soon
 - 📝 **JSON Tools** - Formatter, validator, minifier
