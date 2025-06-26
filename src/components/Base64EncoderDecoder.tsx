@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Copy, Settings } from "lucide-react";
 
 export function Base64EncoderDecoder() {
@@ -7,47 +7,11 @@ export function Base64EncoderDecoder() {
   const [isEncodeMode, setIsEncodeMode] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState({
-    autoDetect: true,
     removeDataUri: true,
     removeNullBytes: true
   });
 
-  // Base64 validation regex
-  const isValidBase64 = useCallback((str: string): boolean => {
-    if (!str || str.length === 0) return false;
-    // Remove whitespace and check if it's valid Base64
-    const cleanStr = str.replace(/\s/g, '');
-    try {
-      // Check if it's valid Base64 format
-      const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
-      if (!base64Regex.test(cleanStr)) return false;
-      
-      // Try to decode it
-      atob(cleanStr);
-      return true;
-    } catch {
-      return false;
-    }
-  }, []);
 
-  // Track manual mode changes to prevent auto-switching immediately after
-  const [lastManualModeChange, setLastManualModeChange] = useState<number>(0);
-
-  // Auto-detect and switch mode (but not immediately after manual change)
-  useEffect(() => {
-    if (settings.autoDetect && input.trim()) {
-      const now = Date.now();
-      // Don't auto-switch for 1 second after manual mode change
-      if (now - lastManualModeChange > 1000) {
-        const isBase64Input = isValidBase64(input.trim());
-        if (isBase64Input && isEncodeMode) {
-          setIsEncodeMode(false);
-        } else if (!isBase64Input && !isEncodeMode) {
-          setIsEncodeMode(true);
-        }
-      }
-    }
-  }, [input, settings.autoDetect, isValidBase64, isEncodeMode, lastManualModeChange]);
 
   // Encoding/Decoding logic
   useEffect(() => {
@@ -124,7 +88,6 @@ export function Base64EncoderDecoder() {
 
   const restoreDefaults = () => {
     setSettings({
-      autoDetect: true,
       removeDataUri: true,
       removeNullBytes: true
     });
@@ -139,10 +102,7 @@ export function Base64EncoderDecoder() {
             {/* Mode Toggle */}
             <div className="flex bg-tertiary rounded-lg p-1 border border-primary">
               <button
-                onClick={() => {
-                  setIsEncodeMode(true);
-                  setLastManualModeChange(Date.now());
-                }}
+                onClick={() => setIsEncodeMode(true)}
                 className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                   isEncodeMode
                     ? "bg-blue-600 text-white"
@@ -152,10 +112,7 @@ export function Base64EncoderDecoder() {
                 Encode
               </button>
               <button
-                onClick={() => {
-                  setIsEncodeMode(false);
-                  setLastManualModeChange(Date.now());
-                }}
+                onClick={() => setIsEncodeMode(false)}
                 className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                   !isEncodeMode
                     ? "bg-blue-600 text-white"
@@ -181,16 +138,6 @@ export function Base64EncoderDecoder() {
         {showSettings && (
           <div className="mb-6 p-4 bg-tertiary rounded-lg border border-primary">
             <div className="space-y-3">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.autoDetect}
-                  onChange={(e) => setSettings(prev => ({ ...prev, autoDetect: e.target.checked }))}
-                  className="w-4 h-4 text-blue-600 bg-secondary border-primary rounded focus:ring-blue-500"
-                />
-                <span className="text-sm text-primary">Auto detect when input is a Base64 and decodeable to UTF8</span>
-              </label>
-              
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"

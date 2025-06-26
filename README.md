@@ -1,14 +1,22 @@
-# DevWrokbench
+# DevWorkbench
 
 A developer utilities application built with Tauri and React, similar to DevToys/DevUtils.
 
-## 🌟 Features (Planned)
+## 🤖 100% AI-Generated Code
 
-- 🔤 **Text Utilities** - Encode/decode, formatting, case conversion
+**This entire project was built using Vibe Coding through Claude Code, without any manual code editing by humans.** Every line of code, configuration, and even this README was generated through natural language conversations with AI. This demonstrates the power of AI-assisted development in creating fully functional applications.
+
+## 🌟 Features
+
+### ✅ Implemented
+- 🔢 **Number Base Converter** - Convert between binary, octal, decimal, hex, and custom bases
+- 📊 **Base64 String Encode/Decode** - Encode/decode text using Base64 with smart features
+- 🔤 **Base58 String Encode/Decode** - Bitcoin/IPFS-friendly encoding without confusing characters
+
+### 🚧 Coming Soon
 - 📝 **JSON Tools** - Formatter, validator, minifier
 - 🆔 **UUID Generator** - Various UUID formats
 - 🔐 **Hash Generators** - MD5, SHA-1, SHA-256, etc.
-- 📊 **Base64 Tools** - Encoder/decoder for text and files
 - 🌐 **URL Tools** - Encoder/decoder, parser
 - 🎨 **Color Picker** - Color converter and palette generator
 - 🖼️ **Image Tools** - Resize, format conversion, optimization
@@ -33,8 +41,8 @@ A developer utilities application built with Tauri and React, similar to DevToys
 
 ```bash
 # Clone the repository
-git clone https://github.com/jiayun/DevWrokbench.git
-cd DevWrokbench
+git clone https://github.com/jiayun/DevWorkbench.git
+cd DevWorkbench
 
 # Install dependencies
 npm install
@@ -66,7 +74,7 @@ cd src-tauri && cargo fmt
 ## 📁 Project Structure
 
 ```
-DevWrokbench/
+DevWorkbench/
 ├── src/                   # React frontend
 │   ├── components/        # UI components
 │   ├── lib/               # Utilities
