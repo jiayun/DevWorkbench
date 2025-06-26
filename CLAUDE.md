@@ -47,6 +47,7 @@ npx tsc --noEmit
 - [x] **Number Base Converter** - Convert between binary, octal, decimal, hex, and custom bases
 - [x] **Base64 String Encode/Decode** - Encode/decode text using Base64 with smart detection
 - [x] **Base58 String Encode/Decode** - Bitcoin/IPFS-friendly encoding without confusing characters
+- [x] **Multi-line to JSON Array** - Convert multi-line text to JSON array with auto-trim and smart type detection
 
 ## Features to Implement
 

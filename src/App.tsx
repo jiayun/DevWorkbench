@@ -1,8 +1,9 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary, FileText, Hash } from "lucide-react";
+import { Search, Binary, FileText, Hash, List } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
 import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
 import { Base58EncoderDecoder } from "./components/Base58EncoderDecoder";
+import { MultiLineToJsonArray } from "./components/MultiLineToJsonArray";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 type Tool = {
@@ -34,6 +35,13 @@ const tools: Tool[] = [
     description: "Encode or decode a string using Base58 (Bitcoin/IPFS format)",
     icon: Hash,
     component: Base58EncoderDecoder,
+  },
+  {
+    id: "multiline-to-json-array",
+    name: "Multi-line to JSON Array",
+    description: "Convert multi-line text to JSON array with auto-trim and smart type detection",
+    icon: List,
+    component: MultiLineToJsonArray,
   },
 ];
 
