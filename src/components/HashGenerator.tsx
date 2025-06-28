@@ -4,8 +4,6 @@ import { invoke } from "@tauri-apps/api/core";
 import { open } from '@tauri-apps/plugin-dialog';
 
 interface HashResults {
-  md2: string;
-  md4: string;
   md5: string;
   sha1: string;
   sha224: string;
@@ -18,8 +16,6 @@ interface HashResults {
 export function HashGenerator() {
   const [input, setInput] = useState("");
   const [results, setResults] = useState<HashResults>({
-    md2: "",
-    md4: "",
     md5: "",
     sha1: "",
     sha224: "",
@@ -43,8 +39,6 @@ export function HashGenerator() {
 
       if (!input.trim()) {
         setResults({
-          md2: "",
-          md4: "",
           md5: "",
           sha1: "",
           sha224: "",
@@ -67,8 +61,6 @@ export function HashGenerator() {
         });
         
         setResults({
-          md2: hashResults.md2 || "",
-          md4: hashResults.md4 || "",
           md5: hashResults.md5 || "",
           sha1: hashResults.sha1 || "",
           sha224: hashResults.sha224 || "",
@@ -106,12 +98,11 @@ export function HashGenerator() {
     setInput("testeee1");
   };
 
+
   const clearAll = () => {
     setInput("");
     setIsFileMode(false);
     setResults({
-      md2: "",
-      md4: "",
       md5: "",
       sha1: "",
       sha224: "",
@@ -153,8 +144,6 @@ export function HashGenerator() {
         });
         
         setResults({
-          md2: hashResults.md2 || "",
-          md4: hashResults.md4 || "",
           md5: hashResults.md5 || "",
           sha1: hashResults.sha1 || "",
           sha224: hashResults.sha224 || "",
@@ -182,8 +171,6 @@ export function HashGenerator() {
   };
 
   const hashAlgorithms = [
-    { name: "MD2", key: "md2" as keyof HashResults },
-    { name: "MD4", key: "md4" as keyof HashResults },
     { name: "MD5", key: "md5" as keyof HashResults },
     { name: "SHA1", key: "sha1" as keyof HashResults },
     { name: "SHA224", key: "sha224" as keyof HashResults },

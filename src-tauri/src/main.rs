@@ -2,8 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use hex;
-use md2::Md2;
-use md4::Md4;
 use md5;
 use sha1::Sha1;
 use sha2::{Sha224, Sha256, Sha384, Sha512, Digest};
@@ -12,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
-use std::sync::Arc;
+use std::time::Instant;
 use rayon::prelude::*;
 
 #[derive(Serialize, Deserialize)]
@@ -29,92 +27,84 @@ fn greet(name: &str) -> String {
 
 #[tauri::command]
 fn hash_string(input: &str, lowercase: bool) -> HashMap<String, String> {
-    // Convert string to bytes once and share between threads
-    let bytes = Arc::new(input.as_bytes().to_vec());
+    let start_time = Instant::now();
+    let bytes = input.as_bytes();
     
-    // Define all hash algorithms to compute
-    let algorithms = vec![
-        ("md2", 0),
-        ("md4", 1), 
-        ("md5", 2),
-        ("sha1", 3),
-        ("sha224", 4),
-        ("sha256", 5),
-        ("sha384", 6),
-        ("sha512", 7),
-        ("keccak256", 8),
-    ];
+    // Pre-allocate HashMap with known capacity for better performance
+    let mut results = HashMap::with_capacity(7);
     
-    // Use rayon for efficient parallel computation
-    let results: HashMap<String, String> = algorithms
+    // Helper closure for consistent hex formatting
+    let format_hex = |data: &[u8]| -> String {
+        if lowercase {
+            hex::encode(data)
+        } else {
+            hex::encode(data).to_uppercase()
+        }
+    };
+    
+    // Compute all hashes in parallel using rayon
+    let algorithms = vec!["md5", "sha1", "sha224", "sha256", "sha384", "sha512", "keccak256"];
+    let hash_results: Vec<(&str, String)> = algorithms
         .into_par_iter()
-        .map(|(name, algo_type)| {
-            let bytes = Arc::clone(&bytes);
-            let hash = match algo_type {
-                0 => { // MD2
-                    let mut hasher = Md2::new();
-                    hasher.update(&*bytes);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
-                }
-                1 => { // MD4
-                    let mut hasher = Md4::new();
-                    hasher.update(&*bytes);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
-                }
-                2 => { // MD5
-                    let digest = md5::compute(&*bytes);
+        .map(|name| {
+            let hash = match name {
+                "md5" => {
+                    let digest = md5::compute(bytes);
                     if lowercase { format!("{:x}", digest) } else { format!("{:X}", digest) }
                 }
-                3 => { // SHA1
+                "sha1" => {
                     let mut hasher = Sha1::new();
-                    hasher.update(&*bytes);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(bytes);
+                    format_hex(&hasher.finalize())
                 }
-                4 => { // SHA224
+                "sha224" => {
                     let mut hasher = Sha224::new();
-                    hasher.update(&*bytes);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(bytes);
+                    format_hex(&hasher.finalize())
                 }
-                5 => { // SHA256
+                "sha256" => {
                     let mut hasher = Sha256::new();
-                    hasher.update(&*bytes);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(bytes);
+                    format_hex(&hasher.finalize())
                 }
-                6 => { // SHA384
+                "sha384" => {
                     let mut hasher = Sha384::new();
-                    hasher.update(&*bytes);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(bytes);
+                    format_hex(&hasher.finalize())
                 }
-                7 => { // SHA512
+                "sha512" => {
                     let mut hasher = Sha512::new();
-                    hasher.update(&*bytes);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(bytes);
+                    format_hex(&hasher.finalize())
                 }
-                8 => { // Keccak-256
+                "keccak256" => {
                     let mut hasher = Keccak256::new();
-                    hasher.update(&*bytes);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(bytes);
+                    format_hex(&hasher.finalize())
                 }
                 _ => unreachable!()
             };
-            (name.to_string(), hash)
+            (name, hash)
         })
         .collect();
+    
+    // Insert results into HashMap
+    for (name, hash) in hash_results {
+        results.insert(name.to_string(), hash);
+    }
+    
+    let duration = start_time.elapsed();
+    println!("Hash string computation took: {:.2?} for {} bytes", duration, bytes.len());
     
     results
 }
 
 #[tauri::command]
 fn hash_file(path: &str, lowercase: bool) -> Result<HashMap<String, String>, String> {
+    let start_time = Instant::now();
+    
     // Read file content once
+    let read_start = Instant::now();
     let mut file = File::open(path).map_err(|e| {
         format!("Failed to open file: {}", e)
     })?;
@@ -122,89 +112,80 @@ fn hash_file(path: &str, lowercase: bool) -> Result<HashMap<String, String>, Str
     file.read_to_end(&mut buffer).map_err(|e| {
         format!("Failed to read file: {}", e)
     })?;
+    let read_duration = read_start.elapsed();
+    println!("File read took: {:.2?} for {} bytes", read_duration, buffer.len());
     
-    // Use Arc to share the buffer between threads efficiently
-    let buffer = Arc::new(buffer);
+    // Pre-allocate HashMap with known capacity for better performance
+    let mut results = HashMap::with_capacity(7);
     
-    // Define all hash algorithms to compute
-    let algorithms = vec![
-        ("md2", 0),
-        ("md4", 1), 
-        ("md5", 2),
-        ("sha1", 3),
-        ("sha224", 4),
-        ("sha256", 5),
-        ("sha384", 6),
-        ("sha512", 7),
-        ("keccak256", 8),
-    ];
+    // Helper closure for consistent hex formatting
+    let format_hex = |data: &[u8]| -> String {
+        if lowercase {
+            hex::encode(data)
+        } else {
+            hex::encode(data).to_uppercase()
+        }
+    };
     
-    // Use rayon for efficient parallel computation
-    let results: HashMap<String, String> = algorithms
+    // Compute all hashes in parallel using rayon
+    let algorithms = vec!["md5", "sha1", "sha224", "sha256", "sha384", "sha512", "keccak256"];
+    let hash_results: Vec<(&str, String)> = algorithms
         .into_par_iter()
-        .map(|(name, algo_type)| {
-            let buffer = Arc::clone(&buffer);
-            let hash = match algo_type {
-                0 => { // MD2
-                    let mut hasher = Md2::new();
-                    hasher.update(&*buffer);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
-                }
-                1 => { // MD4
-                    let mut hasher = Md4::new();
-                    hasher.update(&*buffer);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
-                }
-                2 => { // MD5
-                    let digest = md5::compute(&*buffer);
+        .map(|name| {
+            let hash = match name {
+                "md5" => {
+                    let digest = md5::compute(&buffer);
                     if lowercase { format!("{:x}", digest) } else { format!("{:X}", digest) }
                 }
-                3 => { // SHA1
+                "sha1" => {
                     let mut hasher = Sha1::new();
-                    hasher.update(&*buffer);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(&buffer);
+                    format_hex(&hasher.finalize())
                 }
-                4 => { // SHA224
+                "sha224" => {
                     let mut hasher = Sha224::new();
-                    hasher.update(&*buffer);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(&buffer);
+                    format_hex(&hasher.finalize())
                 }
-                5 => { // SHA256
+                "sha256" => {
                     let mut hasher = Sha256::new();
-                    hasher.update(&*buffer);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(&buffer);
+                    format_hex(&hasher.finalize())
                 }
-                6 => { // SHA384
+                "sha384" => {
                     let mut hasher = Sha384::new();
-                    hasher.update(&*buffer);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(&buffer);
+                    format_hex(&hasher.finalize())
                 }
-                7 => { // SHA512
+                "sha512" => {
                     let mut hasher = Sha512::new();
-                    hasher.update(&*buffer);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(&buffer);
+                    format_hex(&hasher.finalize())
                 }
-                8 => { // Keccak-256
+                "keccak256" => {
                     let mut hasher = Keccak256::new();
-                    hasher.update(&*buffer);
-                    let result = hasher.finalize();
-                    if lowercase { hex::encode(&result) } else { hex::encode(&result).to_uppercase() }
+                    hasher.update(&buffer);
+                    format_hex(&hasher.finalize())
                 }
                 _ => unreachable!()
             };
-            (name.to_string(), hash)
+            (name, hash)
         })
         .collect();
     
+    // Insert results into HashMap
+    for (name, hash) in hash_results {
+        results.insert(name.to_string(), hash);
+    }
+    
+    let total_duration = start_time.elapsed();
+    let hash_duration = total_duration - read_duration;
+    println!("Hash file computation took: {:.2?} (hash: {:.2?}) for {} bytes", 
+             total_duration, hash_duration, buffer.len());
+    
     Ok(results)
 }
+
 
 fn main() {
     tauri::Builder::default()
