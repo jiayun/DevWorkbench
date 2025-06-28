@@ -15,11 +15,11 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
 - 📊 **Base64 String Encode/Decode** - Encode/decode text using Base64 with smart features
 - 🔤 **Base58 String Encode/Decode** - Bitcoin/IPFS-friendly encoding without confusing characters
 - 📝 **Multi-line to JSON Array** - Convert multi-line text to JSON array with auto-trim and smart type detection
+- 🔐 **Hash Generator** - Generate MD2/MD4/MD5/SHA1/SHA2/SHA3/Keccak hashes using Rust for high performance
 
 ### 🚧 Coming Soon
 - 📝 **JSON Tools** - Formatter, validator, minifier
 - 🆔 **UUID Generator** - Various UUID formats
-- 🔐 **Hash Generators** - MD5, SHA-1, SHA-256, etc.
 - 🌐 **URL Tools** - Encoder/decoder, parser
 - 🎨 **Color Picker** - Color converter and palette generator
 - 🖼️ **Image Tools** - Resize, format conversion, optimization
