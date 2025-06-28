@@ -127,14 +127,8 @@ export function HashGenerator() {
     try {
       setIsProcessingFile(true);
       
-      console.log("Opening file dialog...");
-      
-      // Open file dialog - try simplest version first
+      // Open file dialog
       const result = await open();
-      
-      console.log("Open dialog result:", result);
-      console.log("Result type:", typeof result);
-      console.log("Is array:", Array.isArray(result));
       
       // Handle different return types from open()
       let filePath: string | null = null;
@@ -143,29 +137,20 @@ export function HashGenerator() {
       } else if (result && Array.isArray(result) && (result as any[]).length > 0) {
         filePath = (result as any[])[0] as string;
       } else if (result === null || result === undefined) {
-        console.log("User cancelled file selection");
         setIsProcessingFile(false);
         return; // Exit early if user cancelled
       }
-      
-      console.log("Processed file path:", filePath);
 
       if (filePath && filePath.trim()) {
-        console.log("File path received:", filePath);
-        console.log("File path type:", typeof filePath);
-        
         // Get file name for display
         const fileName = filePath.split('/').pop() || filePath.split('\\').pop() || 'Unknown';
         setInputInfo(`Processing file: ${fileName}`);
         
         // Calculate file hashes
-        console.log("Calling hash_file with:", { path: filePath, lowercase: isLowercase });
         const hashResults = await invoke<Record<string, string>>("hash_file", {
           path: filePath,
           lowercase: isLowercase,
         });
-        
-        console.log("Hash results received:", hashResults);
         
         setResults({
           md2: hashResults.md2 || "",
