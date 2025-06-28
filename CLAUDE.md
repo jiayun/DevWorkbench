@@ -48,6 +48,7 @@ npx tsc --noEmit
 - [x] **Base64 String Encode/Decode** - Encode/decode text using Base64 with smart detection
 - [x] **Base58 String Encode/Decode** - Bitcoin/IPFS-friendly encoding without confusing characters
 - [x] **Multi-line to JSON Array** - Convert multi-line text to JSON array with auto-trim and smart type detection
+- [x] **Hash Generator** - Generate MD5/SHA1/SHA2/SHA3/Keccak hashes using Rust for high performance
 
 ## Features to Implement
 

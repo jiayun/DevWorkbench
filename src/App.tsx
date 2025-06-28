@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary, FileText, Hash, List } from "lucide-react";
+import { Search, Binary, FileText, Hash, List, Shield } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
 import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
 import { Base58EncoderDecoder } from "./components/Base58EncoderDecoder";
 import { MultiLineToJsonArray } from "./components/MultiLineToJsonArray";
+import { HashGenerator } from "./components/HashGenerator";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 type Tool = {
@@ -42,6 +43,13 @@ const tools: Tool[] = [
     description: "Convert multi-line text to JSON array with auto-trim and smart type detection",
     icon: List,
     component: MultiLineToJsonArray,
+  },
+  {
+    id: "hash-generator",
+    name: "Hash Generator",
+    description: "Generate MD5/SHA1/SHA2 hash from a string or file",
+    icon: Shield,
+    component: HashGenerator,
   },
 ];
 
