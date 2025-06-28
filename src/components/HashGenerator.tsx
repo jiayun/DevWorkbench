@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Copy } from "lucide-react";
 import { invoke } from "@tauri-apps/api/core";
+import { open } from '@tauri-apps/plugin-dialog';
 
 interface HashResults {
   md2: string;
@@ -29,10 +30,17 @@ export function HashGenerator() {
   });
   const [isLowercase, setIsLowercase] = useState(false);
   const [inputInfo, setInputInfo] = useState("0 bytes (string)");
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
+  const [isFileMode, setIsFileMode] = useState(false);
 
-  // Generate hashes whenever input or case preference changes
+  // Generate hashes whenever input or case preference changes (only in text mode)
   useEffect(() => {
     const generateHashes = async () => {
+      // If we're in file mode, don't process text input
+      if (isFileMode) {
+        return;
+      }
+
       if (!input.trim()) {
         setResults({
           md2: "",
@@ -75,7 +83,7 @@ export function HashGenerator() {
     };
 
     generateHashes();
-  }, [input, isLowercase]);
+  }, [input, isLowercase, isFileMode]);
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -100,11 +108,92 @@ export function HashGenerator() {
 
   const clearAll = () => {
     setInput("");
+    setIsFileMode(false);
+    setResults({
+      md2: "",
+      md4: "",
+      md5: "",
+      sha1: "",
+      sha224: "",
+      sha256: "",
+      sha384: "",
+      sha512: "",
+      keccak256: "",
+    });
+    setInputInfo("0 bytes (string)");
   };
 
   const handleFileLoad = async () => {
-    // File loading functionality can be implemented later
-    console.log("Load file functionality to be implemented");
+    try {
+      setIsProcessingFile(true);
+      
+      console.log("Opening file dialog...");
+      
+      // Open file dialog - try simplest version first
+      const result = await open();
+      
+      console.log("Open dialog result:", result);
+      console.log("Result type:", typeof result);
+      console.log("Is array:", Array.isArray(result));
+      
+      // Handle different return types from open()
+      let filePath: string | null = null;
+      if (typeof result === 'string') {
+        filePath = result;
+      } else if (result && Array.isArray(result) && (result as any[]).length > 0) {
+        filePath = (result as any[])[0] as string;
+      } else if (result === null || result === undefined) {
+        console.log("User cancelled file selection");
+        setIsProcessingFile(false);
+        return; // Exit early if user cancelled
+      }
+      
+      console.log("Processed file path:", filePath);
+
+      if (filePath && filePath.trim()) {
+        console.log("File path received:", filePath);
+        console.log("File path type:", typeof filePath);
+        
+        // Get file name for display
+        const fileName = filePath.split('/').pop() || filePath.split('\\').pop() || 'Unknown';
+        setInputInfo(`Processing file: ${fileName}`);
+        
+        // Calculate file hashes
+        console.log("Calling hash_file with:", { path: filePath, lowercase: isLowercase });
+        const hashResults = await invoke<Record<string, string>>("hash_file", {
+          path: filePath,
+          lowercase: isLowercase,
+        });
+        
+        console.log("Hash results received:", hashResults);
+        
+        setResults({
+          md2: hashResults.md2 || "",
+          md4: hashResults.md4 || "",
+          md5: hashResults.md5 || "",
+          sha1: hashResults.sha1 || "",
+          sha224: hashResults.sha224 || "",
+          sha256: hashResults.sha256 || "",
+          sha384: hashResults.sha384 || "",
+          sha512: hashResults.sha512 || "",
+          keccak256: hashResults.keccak256 || "",
+        });
+        
+        // Update info with hash completion
+        setInputInfo(`Hashes calculated for: ${fileName}`);
+        
+        // Switch to file mode and clear text input
+        setIsFileMode(true);
+        setInput("");
+      }
+    } catch (error) {
+      console.error("Detailed error:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error message:", error instanceof Error ? error.message : String(error));
+      setInputInfo(`Error: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setIsProcessingFile(false);
+    }
   };
 
   const hashAlgorithms = [
@@ -141,9 +230,14 @@ export function HashGenerator() {
               </button>
               <button
                 onClick={handleFileLoad}
-                className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
+                disabled={isProcessingFile}
+                className={`px-3 py-2 text-xs border border-primary rounded-lg transition-colors ${
+                  isProcessingFile 
+                    ? 'bg-blue-600 text-white cursor-not-allowed' 
+                    : 'bg-tertiary hover:bg-secondary text-primary'
+                }`}
               >
-                Load file...
+                {isProcessingFile ? 'Processing...' : 'Load file...'}
               </button>
               <button
                 onClick={clearAll}
@@ -172,7 +266,12 @@ export function HashGenerator() {
         <div className="mb-6">
           <textarea
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              setInput(e.target.value);
+              if (e.target.value.trim()) {
+                setIsFileMode(false);
+              }
+            }}
             placeholder="Enter text to hash..."
             className="w-full h-32 px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors resize-none"
           />
