@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Copy, FileText, Hash, Shield } from "lucide-react";
+import { Copy } from "lucide-react";
 import { invoke } from "@tauri-apps/api/core";
 
 interface HashResults {
