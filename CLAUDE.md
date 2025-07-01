@@ -49,11 +49,10 @@ npx tsc --noEmit
 - [x] **Base58 String Encode/Decode** - Bitcoin/IPFS-friendly encoding without confusing characters
 - [x] **Multi-line to JSON Array** - Convert multi-line text to JSON array with auto-trim and smart type detection
 - [x] **Hash Generator** - Generate MD5/SHA1/SHA2/SHA3/Keccak hashes using Rust for high performance
+- [x] **JSON Formatter & Validator** - Format, validate, and beautify JSON with collapsible viewer
+- [x] **UUID Generator** - Generate and validate UUIDs v1/v3/v4/v5/v7 with bulk generation support
 
 ## Features to Implement
-
-- [ ] JSON formatter and validator
-- [ ] UUID generator
 - [ ] Hash generators (MD5, SHA)
 - [ ] URL encoder/decoder
 - [ ] Text utilities (HTML entities, Unicode)

@@ -1,11 +1,12 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary, FileText, Hash, List, Shield, Braces } from "lucide-react";
+import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
 import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
 import { Base58EncoderDecoder } from "./components/Base58EncoderDecoder";
 import { MultiLineToJsonArray } from "./components/MultiLineToJsonArray";
 import { HashGenerator } from "./components/HashGenerator";
 import { JsonFormatter } from "./components/JsonFormatter";
+import UuidGenerator from "./components/UuidGenerator";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 type Tool = {
@@ -58,6 +59,13 @@ const tools: Tool[] = [
     description: "Format, validate, and beautify JSON with custom options",
     icon: Braces,
     component: JsonFormatter,
+  },
+  {
+    id: "uuid-generator",
+    name: "UUID Generator",
+    description: "Generate and validate UUIDs with multiple versions and formats",
+    icon: Fingerprint,
+    component: UuidGenerator,
   },
 ];
 
