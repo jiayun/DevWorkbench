@@ -78,14 +78,26 @@
   }
   
   /* Force input backgrounds to use theme colors */
-  input[type="text"] {
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
     background-color: var(--color-bg-tertiary) !important;
     color: var(--color-text-primary) !important;
     border-color: var(--color-border) !important;
   }
   
-  input[type="text"]:focus {
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  select:focus,
+  textarea:focus {
     border-color: #3b82f6 !important;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+  }
+  
+  /* Placeholder text styling */
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-text-tertiary) !important;
   }
 }
