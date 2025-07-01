@@ -13,6 +13,9 @@ use std::io::Read;
 use std::time::Instant;
 use rayon::prelude::*;
 
+mod uuid_generator;
+use uuid_generator::{parse_uuid, generate_uuids};
+
 #[derive(Serialize, Deserialize)]
 struct HashResult {
     algorithm: String,
@@ -193,7 +196,7 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_fs::init())
-        .invoke_handler(tauri::generate_handler![greet, hash_string, hash_file])
+        .invoke_handler(tauri::generate_handler![greet, hash_string, hash_file, parse_uuid, generate_uuids])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
