@@ -27,6 +27,11 @@ sha1 = "0.10"
 hex = "0.4"
 rayon = "1.8"
 uuid = { version = "1.10", features = ["v1", "v3", "v4", "v5", "v7", "serde"] }
+jsonwebtoken = "9.3"
+rsa = { version = "0.9", features = ["pem"] }
+base64 = "0.22"
+chrono = { version = "0.4", features = ["serde"] }
+rand = "0.8"
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]

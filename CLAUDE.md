@@ -51,6 +51,7 @@ npx tsc --noEmit
 - [x] **Hash Generator** - Generate MD5/SHA1/SHA2/SHA3/Keccak hashes using Rust for high performance
 - [x] **JSON Formatter & Validator** - Format, validate, and beautify JSON with collapsible viewer
 - [x] **UUID Generator** - Generate and validate UUIDs v1/v3/v4/v5/v7 with bulk generation support
+- [x] **JWT Token Tool** - Decode, encode, and verify JSON Web Tokens with multiple algorithms (HS256/384/512, RS256/384/512)
 
 ## Features to Implement
 - [ ] Hash generators (MD5, SHA)

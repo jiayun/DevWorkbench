@@ -16,6 +16,9 @@ use rayon::prelude::*;
 mod uuid_generator;
 use uuid_generator::{parse_uuid, generate_uuids};
 
+mod jwt_tool;
+use jwt_tool::{decode_jwt, encode_jwt, verify_jwt, generate_rsa_keypair, generate_jwt_secret};
+
 #[derive(Serialize, Deserialize)]
 struct HashResult {
     algorithm: String,
@@ -196,7 +199,18 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_fs::init())
-        .invoke_handler(tauri::generate_handler![greet, hash_string, hash_file, parse_uuid, generate_uuids])
+        .invoke_handler(tauri::generate_handler![
+            greet, 
+            hash_string, 
+            hash_file, 
+            parse_uuid, 
+            generate_uuids,
+            decode_jwt,
+            encode_jwt,
+            verify_jwt,
+            generate_rsa_keypair,
+            generate_jwt_secret
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

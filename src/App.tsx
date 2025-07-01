@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint } from "lucide-react";
+import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
 import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
 import { Base58EncoderDecoder } from "./components/Base58EncoderDecoder";
@@ -7,6 +7,7 @@ import { MultiLineToJsonArray } from "./components/MultiLineToJsonArray";
 import { HashGenerator } from "./components/HashGenerator";
 import { JsonFormatter } from "./components/JsonFormatter";
 import UuidGenerator from "./components/UuidGenerator";
+import JwtTool from "./components/JwtTool";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 type Tool = {
@@ -66,6 +67,13 @@ const tools: Tool[] = [
     description: "Generate and validate UUIDs with multiple versions and formats",
     icon: Fingerprint,
     component: UuidGenerator,
+  },
+  {
+    id: "jwt-tool",
+    name: "JWT Token Tool",
+    description: "Decode, encode, and verify JSON Web Tokens with multiple algorithms",
+    icon: KeySquare,
+    component: JwtTool,
   },
 ];
 

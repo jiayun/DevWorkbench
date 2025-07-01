@@ -120,7 +120,7 @@ src-tauri/target
 src-tauri/Cargo.lock
 
 # Claude local settings
-.claude/settings.local.json
+.claude/
 
 # AI Assistant files
 GEMINI.md
