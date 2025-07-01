@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-import { Copy, Key, Lock, Unlock, RefreshCw, FileText, Check, AlertCircle } from 'lucide-react';
+import { Copy, Key, Lock, Unlock, RefreshCw, Check, AlertCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface JwtParts {
   header: Record<string, any>;
@@ -36,6 +38,78 @@ const DEFAULT_PAYLOAD = {
 
 const SAMPLE_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
+// JWT Token Syntax Highlighter Component
+const JwtTokenHighlighter = ({ token, className = '' }: { token: string; className?: string }) => {
+  if (!token.trim()) {
+    return (
+      <div className={`font-mono text-sm text-gray-500 dark:text-gray-400 ${className}`}>
+        Paste your JWT token here...
+      </div>
+    );
+  }
+
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    return (
+      <div className={`font-mono text-sm ${className}`}>
+        {token}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`font-mono text-sm leading-relaxed ${className}`}>
+      <span className="text-pink-400">{parts[0]}</span>
+      <span className="text-gray-400">.</span>
+      <span className="text-cyan-400">{parts[1]}</span>
+      <span className="text-gray-400">.</span>
+      <span className="text-yellow-400">{parts[2]}</span>
+    </div>
+  );
+};
+
+// JSON Syntax Highlighter Component
+const JsonHighlighter = ({ json, className = '' }: { json: any; className?: string }) => {
+  const jsonString = JSON.stringify(json, null, 2);
+  
+  return (
+    <SyntaxHighlighter
+      language="json"
+      style={oneDark}
+      className={className}
+      customStyle={{
+        background: 'transparent',
+        padding: 0,
+        margin: 0,
+        fontSize: '0.875rem',
+        lineHeight: '1.5',
+      }}
+      showLineNumbers={false}
+    >
+      {jsonString}
+    </SyntaxHighlighter>
+  );
+};
+
+// Verification Status Bar Component
+const VerificationStatusBar = ({ isValid, error }: { isValid: boolean; error?: string | null }) => {
+  if (isValid) {
+    return (
+      <div className="w-full bg-green-500 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
+        <Check className="w-5 h-5" />
+        Signature Verified
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full bg-red-500 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
+      <AlertCircle className="w-5 h-5" />
+      {error || 'Signature Invalid'}
+    </div>
+  );
+};
+
 // Button component
 const Button = ({ variant = 'default', size = 'default', className = '', children, ...props }: any) => {
   const baseStyles = 'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
@@ -63,73 +137,16 @@ const Textarea = ({ className = '', ...props }: any) => (
   />
 );
 
-// Select components
-const Select = ({ value, onValueChange, children }: any) => {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  const triggerChild = React.Children.toArray(children).find((child: any) => child.type === SelectTrigger);
-  const contentChild = React.Children.toArray(children).find((child: any) => child.type === SelectContent);
-  
-  return (
-    <div className="relative">
-      {triggerChild && React.cloneElement(triggerChild as any, { 
-        onClick: () => setIsOpen(!isOpen),
-        value,
-        isOpen
-      })}
-      {isOpen && contentChild && React.cloneElement(contentChild as any, {
-        onSelect: (v: string) => {
-          onValueChange(v);
-          setIsOpen(false);
-        }
-      })}
-    </div>
-  );
-};
-
-const SelectTrigger = ({ className = '', children, onClick, value, isOpen }: any) => {
-  // Find the SelectValue child and pass the current value
-  const modifiedChildren = React.Children.map(children, (child: any) => {
-    if (child.type === SelectValue) {
-      return React.cloneElement(child, { currentValue: value });
-    }
-    return child;
-  });
-
-  return (
-    <button
-      className={`flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 ${className}`}
-      onClick={onClick}
-    >
-      {modifiedChildren}
-      <svg className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-      </svg>
-    </button>
-  );
-};
-
-const SelectValue = ({ placeholder, currentValue }: any) => (
-  <span className="text-left">
-    {currentValue || placeholder}
-  </span>
-);
-
-const SelectContent = ({ children, onSelect }: any) => (
-  <div className="absolute z-50 top-full left-0 w-full mt-1 overflow-hidden rounded-md border border-gray-300 bg-white p-1 text-gray-950 shadow-lg dark:border-gray-600 dark:bg-gray-800 dark:text-gray-50">
-    {React.Children.map(children, (child: any) => 
-      React.cloneElement(child, { onSelect })
-    )}
-  </div>
-);
-
-const SelectItem = ({ value, children, onSelect }: any) => (
-  <div
-    className="relative flex w-full cursor-pointer select-none items-center rounded-sm py-2 px-2 text-sm outline-none hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-    onClick={() => onSelect(value)}
+// Native Select Component
+const NativeSelect = ({ value, onChange, children, className = '', ...props }: any) => (
+  <select
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    className={`h-10 w-full rounded-md border border-gray-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:text-gray-100 ${className}`}
+    {...props}
   >
     {children}
-  </div>
+  </select>
 );
 
 // Tabs components
@@ -184,7 +201,7 @@ const Label = ({ className = '', children, ...props }: any) => (
 
 // Card components
 const Card = ({ className = '', children }: any) => (
-  <div className={`rounded-lg border border-gray-200 bg-white text-gray-950 shadow-sm dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50 ${className}`}>
+  <div className={`rounded-lg border border-gray-200 bg-white text-gray-950 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50 ${className}`}>
     {children}
   </div>
 );
@@ -320,7 +337,16 @@ export default function JwtTool() {
 
   const formatDate = (timestamp: number | null) => {
     if (!timestamp) return 'N/A';
-    return new Date(timestamp * 1000).toLocaleString();
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
   };
 
   const getExpiryStatus = (expiresAt: number | null, isExpired: boolean) => {
@@ -461,7 +487,7 @@ export default function JwtTool() {
 
           <TabsContent value="decode" className="flex-1 flex flex-col">
             <div className="space-y-4 flex-1 flex flex-col">
-              <div className="flex gap-2">
+              <div className="flex gap-1">
                 <Button
                   variant="outline"
                   size="sm"
@@ -469,14 +495,15 @@ export default function JwtTool() {
                     const text = await navigator.clipboard.readText();
                     setInputToken(text);
                   }}
+                  className="px-3 py-1.5 text-xs"
                 >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Paste
+                  Clipboard
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setInputToken(SAMPLE_JWT)}
+                  className="px-3 py-1.5 text-xs"
                 >
                   Sample
                 </Button>
@@ -484,16 +511,25 @@ export default function JwtTool() {
                   variant="outline"
                   size="sm"
                   onClick={() => setInputToken('')}
+                  className="px-3 py-1.5 text-xs"
                 >
                   Clear
                 </Button>
               </div>
-              <Textarea
-                placeholder="Paste your JWT token here..."
-                value={inputToken}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputToken(e.target.value)}
-                className="flex-1 font-mono text-sm min-h-[200px]"
-              />
+              <div className="flex-1 relative">
+                <Textarea
+                  placeholder="Paste your JWT token here..."
+                  value={inputToken}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInputToken(e.target.value)}
+                  className="flex-1 font-mono text-sm min-h-[200px] bg-transparent relative z-10"
+                  style={{ color: inputToken ? 'transparent' : undefined }}
+                />
+                {inputToken && (
+                  <div className="absolute inset-0 p-3 pointer-events-none z-0 overflow-auto">
+                    <JwtTokenHighlighter token={inputToken} className="min-h-[200px] whitespace-pre-wrap break-all" />
+                  </div>
+                )}
+              </div>
               {decodeError && (
                 <div className="text-red-500 text-sm flex items-center gap-2">
                   <AlertCircle className="w-4 h-4" />
@@ -504,34 +540,32 @@ export default function JwtTool() {
           </TabsContent>
 
           <TabsContent value="encode" className="flex-1 flex flex-col">
-            <div className="space-y-4 flex-1 flex flex-col">
+            <div className="space-y-4 h-full flex flex-col">
               <div>
-                <Label>Algorithm</Label>
+                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Algorithm</Label>
                 <div className="flex gap-2 mt-2">
-                  <Select value={algorithm} onValueChange={(v: string) => setAlgorithm(v as Algorithm)}>
-                    <SelectTrigger className="w-32">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {ALGORITHMS.map((alg) => (
-                        <SelectItem key={alg} value={alg}>
-                          {alg}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <NativeSelect 
+                    value={algorithm} 
+                    onChange={(v: string) => setAlgorithm(v as Algorithm)}
+                    className="w-32"
+                  >
+                    {ALGORITHMS.map((alg) => (
+                      <option key={alg} value={alg}>
+                        {alg}
+                      </option>
+                    ))}
+                  </NativeSelect>
                   {algorithm.startsWith('RS') && (
                     <div className="flex gap-2">
-                      <Select value={keySize} onValueChange={(v: string) => setKeySize(v as any)}>
-                        <SelectTrigger className="w-24">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="2048">2048</SelectItem>
-                          <SelectItem value="3072">3072</SelectItem>
-                          <SelectItem value="4096">4096</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <NativeSelect 
+                        value={keySize} 
+                        onChange={(v: string) => setKeySize(v as any)}
+                        className="w-24"
+                      >
+                        <option value="2048">2048</option>
+                        <option value="3072">3072</option>
+                        <option value="4096">4096</option>
+                      </NativeSelect>
                       <Button variant="outline" size="sm" onClick={generateKeyPair}>
                         <Key className="w-4 h-4 mr-2" />
                         Generate RSA Keys
@@ -548,22 +582,24 @@ export default function JwtTool() {
               </div>
 
               <div>
-                <Label>{algorithm.startsWith('RS') ? 'Private Key' : 'Secret'}</Label>
+                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {algorithm.startsWith('RS') ? 'Private Key' : 'Secret'}
+                </Label>
                 <Textarea
                   placeholder={algorithm.startsWith('RS') ? '-----BEGIN RSA PRIVATE KEY-----' : 'your-secret-key'}
                   value={secret}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setSecret(e.target.value)}
-                  className="mt-2 font-mono text-sm h-24"
+                  className="mt-2 font-mono text-sm min-h-[100px]"
                 />
               </div>
 
               <div className="flex-1">
-                <Label>Payload (JSON)</Label>
+                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Payload (JSON)</Label>
                 <Textarea
                   placeholder="JWT payload..."
                   value={payloadJson}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPayloadJson(e.target.value)}
-                  className="mt-2 font-mono text-sm flex-1"
+                  className="mt-2 font-mono text-sm h-full min-h-[200px]"
                 />
               </div>
 
@@ -582,44 +618,47 @@ export default function JwtTool() {
           </TabsContent>
 
           <TabsContent value="verify" className="flex-1 flex flex-col">
-            <div className="space-y-4 flex-1 flex flex-col">
+            <div className="space-y-4">
               <div>
-                <Label>JWT Token</Label>
+                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">JWT Token</Label>
                 <Textarea
                   placeholder="Paste JWT token to verify..."
                   value={verifyToken}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setVerifyToken(e.target.value)}
-                  className="mt-2 font-mono text-sm min-h-[80px]"
+                  className="mt-2 font-mono text-sm min-h-[120px]"
                 />
               </div>
 
               <div>
-                <Label>Algorithm</Label>
-                <Select value={verifyAlgorithm} onValueChange={(v: string) => setVerifyAlgorithm(v as Algorithm)}>
-                  <SelectTrigger className="mt-2 w-32">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
+                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Algorithm</Label>
+                <div className="mt-2">
+                  <NativeSelect 
+                    value={verifyAlgorithm} 
+                    onChange={(v: string) => setVerifyAlgorithm(v as Algorithm)}
+                    className="w-40"
+                  >
                     {ALGORITHMS.map((alg) => (
-                      <SelectItem key={alg} value={alg}>
+                      <option key={alg} value={alg}>
                         {alg}
-                      </SelectItem>
+                      </option>
                     ))}
-                  </SelectContent>
-                </Select>
+                  </NativeSelect>
+                </div>
               </div>
 
               <div>
-                <Label>{verifyAlgorithm.startsWith('RS') ? 'Public Key' : 'Secret'}</Label>
+                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {verifyAlgorithm.startsWith('RS') ? 'Public Key' : 'Secret'}
+                </Label>
                 <Textarea
                   placeholder={verifyAlgorithm.startsWith('RS') ? '-----BEGIN RSA PUBLIC KEY-----' : 'your-secret-key'}
                   value={verifySecret}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setVerifySecret(e.target.value)}
-                  className="mt-2 font-mono text-sm min-h-[80px]"
+                  className="mt-2 font-mono text-sm min-h-[120px]"
                 />
               </div>
 
-              <Button onClick={handleVerify} className="w-full">
+              <Button onClick={handleVerify} className="w-full mt-4">
                 <Check className="w-4 h-4 mr-2" />
                 Verify JWT
               </Button>
@@ -649,8 +688,8 @@ export default function JwtTool() {
             >
               <Card className="h-full flex flex-col">
                 <CardContent className="p-4 flex flex-col h-full">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">Header</h3>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Header</h3>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -659,9 +698,9 @@ export default function JwtTool() {
                       {copiedField === 'header' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     </Button>
                   </div>
-                  <pre className="text-sm font-mono overflow-auto flex-1">
-                    {JSON.stringify(decodedData.header, null, 2)}
-                  </pre>
+                  <div className="flex-1 overflow-auto">
+                    <JsonHighlighter json={decodedData.header} />
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -680,8 +719,8 @@ export default function JwtTool() {
             >
               <Card className="h-full flex flex-col">
                 <CardContent className="p-4 flex flex-col h-full">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">Payload</h3>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Payload</h3>
                     <div className="flex items-center gap-2">
                       {getExpiryStatus(decodedData.expiresAt, decodedData.isExpired)}
                       <Button
@@ -693,16 +732,27 @@ export default function JwtTool() {
                       </Button>
                     </div>
                   </div>
-                  <pre className="text-sm font-mono overflow-auto flex-1">
-                    {JSON.stringify(decodedData.payload, null, 2)}
-                  </pre>
+                  <div className="flex-1 overflow-auto">
+                    <JsonHighlighter json={decodedData.payload} />
+                  </div>
                   {(decodedData.issuedAt || decodedData.expiresAt) && (
-                    <div className="mt-4 text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                    <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-2">
                       {decodedData.issuedAt && (
-                        <div>Issued: {formatDate(decodedData.issuedAt)}</div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-gray-500 dark:text-gray-400 font-medium">Issued At:</span>
+                          <span className="text-gray-900 dark:text-gray-100 font-mono">{formatDate(decodedData.issuedAt)}</span>
+                        </div>
                       )}
                       {decodedData.expiresAt && (
-                        <div>Expires: {formatDate(decodedData.expiresAt)}</div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-gray-500 dark:text-gray-400 font-medium">Expires At:</span>
+                          <span className="text-gray-900 dark:text-gray-100 font-mono">{formatDate(decodedData.expiresAt)}</span>
+                          {getExpiryStatus(decodedData.expiresAt, decodedData.isExpired) && (
+                            <span className="ml-2">
+                              {getExpiryStatus(decodedData.expiresAt, decodedData.isExpired)}
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
                   )}
@@ -724,8 +774,8 @@ export default function JwtTool() {
             >
               <Card className="h-full flex flex-col">
                 <CardContent className="p-4 flex flex-col h-full">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">Signature</h3>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Signature</h3>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -811,45 +861,30 @@ export default function JwtTool() {
         )}
 
         {mode === 'verify' && verifyResult && (
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col space-y-4">
+            <VerificationStatusBar 
+              isValid={verifyResult.isValid} 
+              error={verifyResult.error} 
+            />
+            
             <Card className="flex-1">
               <CardContent className="p-4 flex flex-col h-full">
-                <div className="flex items-center gap-2 mb-4">
-                  {verifyResult.isValid ? (
-                    <>
-                      <Check className="w-5 h-5 text-green-500" />
-                      <span className="text-green-500 font-semibold">Valid Signature</span>
-                    </>
-                  ) : (
-                    <>
-                      <AlertCircle className="w-5 h-5 text-red-500" />
-                      <span className="text-red-500 font-semibold">Invalid Signature</span>
-                    </>
-                  )}
-                </div>
-
-                {verifyResult.error && (
-                  <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded">
-                    {verifyResult.error}
-                  </div>
-                )}
-
                 <div className="flex-1 overflow-auto space-y-4">
                   {verifyResult.decodedHeader && (
                     <div>
-                      <h4 className="font-semibold mb-2">Header</h4>
-                      <pre className="text-sm font-mono overflow-auto bg-gray-100 dark:bg-gray-800 p-2 rounded">
-                        {JSON.stringify(verifyResult.decodedHeader, null, 2)}
-                      </pre>
+                      <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Header</h4>
+                      <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
+                        <JsonHighlighter json={verifyResult.decodedHeader} />
+                      </div>
                     </div>
                   )}
 
                   {verifyResult.decodedPayload && (
                     <div>
-                      <h4 className="font-semibold mb-2">Payload</h4>
-                      <pre className="text-sm font-mono overflow-auto bg-gray-100 dark:bg-gray-800 p-2 rounded">
-                        {JSON.stringify(verifyResult.decodedPayload, null, 2)}
-                      </pre>
+                      <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Payload</h4>
+                      <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
+                        <JsonHighlighter json={verifyResult.decodedPayload} />
+                      </div>
                     </div>
                   )}
                 </div>
