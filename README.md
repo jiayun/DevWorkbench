@@ -2,6 +2,8 @@
 
 A developer utilities application built with Tauri and React, similar to DevToys/DevUtils.
 
+![DevWorkbench Screenshot](./screenshots/DevWorkbench_v0.2.7.png)
+
 ## 🤖 100% AI-Generated Code - A Totally Vibed Application
 
 **This entire project was built using Vibe Coding through Claude Code, without any manual code editing by humans.** Every line of code, configuration, and even this README was generated through natural language conversations with AI. This demonstrates the power of AI-assisted development in creating fully functional applications.
@@ -15,11 +17,11 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
 - 📊 **Base64 String Encode/Decode** - Encode/decode text using Base64 with smart features
 - 🔤 **Base58 String Encode/Decode** - Bitcoin/IPFS-friendly encoding without confusing characters
 - 📝 **Multi-line to JSON Array** - Convert multi-line text to JSON array with auto-trim and smart type detection
-- 🔐 **Hash Generator** - Generate MD2/MD4/MD5/SHA1/SHA2/SHA3/Keccak hashes using Rust for high performance
+- 🔐 **Hash Generator** - Generate MD5/SHA1/SHA2/SHA3/Keccak hashes using Rust for high performance
+- 📝 **JSON Formatter & Validator** - Format, validate, and beautify JSON with collapsible viewer
+- 🆔 **UUID Generator** - Generate and validate UUIDs v1/v3/v4/v5/v7 with bulk generation support
 
 ### 🚧 Coming Soon
-- 📝 **JSON Tools** - Formatter, validator, minifier
-- 🆔 **UUID Generator** - Various UUID formats
 - 🌐 **URL Tools** - Encoder/decoder, parser
 - 🎨 **Color Picker** - Color converter and palette generator
 - 🖼️ **Image Tools** - Resize, format conversion, optimization
