@@ -1,13 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Copy, Settings, Check, X } from "lucide-react";
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { useTheme } from '../contexts/ThemeContext';
+import { JsonViewer } from './JsonViewer';
 
 export function JsonFormatter() {
-  const { actualTheme } = useTheme();
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
+  const [parsedData, setParsedData] = useState<any>(null);
   const [error, setError] = useState("");
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState({
@@ -17,10 +15,16 @@ export function JsonFormatter() {
     quoteStyle: "double" as "double" | "single"
   });
 
+  // Resizable panels state
+  const [leftPanelWidth, setLeftPanelWidth] = useState(50); // percentage
+  const [isResizing, setIsResizing] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   // Format/Validate JSON logic
   useEffect(() => {
     if (!input.trim()) {
       setOutput("");
+      setParsedData(null);
       setError("");
       return;
     }
@@ -36,7 +40,10 @@ export function JsonFormatter() {
         finalObject = sortObjectKeys(parsed);
       }
 
-      // Format with custom settings
+      // Store parsed data for JsonViewer
+      setParsedData(finalObject);
+
+      // Format with custom settings for text output
       const indentChar = settings.useTabs ? "\t" : " ".repeat(settings.indentSize);
       const formatted = JSON.stringify(finalObject, null, indentChar);
 
@@ -49,6 +56,7 @@ export function JsonFormatter() {
     } catch (error) {
       setError(error instanceof Error ? error.message : "Invalid JSON");
       setOutput("");
+      setParsedData(null);
     }
   }, [input, settings]);
 
@@ -98,6 +106,51 @@ export function JsonFormatter() {
     };
     setInput(JSON.stringify(sample, null, 2));
   };
+
+  // Resizable panels handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsResizing(true);
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isResizing || !containerRef.current) return;
+    
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const containerWidth = containerRect.width;
+    const offsetX = e.clientX - containerRect.left;
+    const newWidthPercent = (offsetX / containerWidth) * 100;
+    
+    if (newWidthPercent >= 20 && newWidthPercent <= 80) {
+      setLeftPanelWidth(newWidthPercent);
+    }
+  }, [isResizing]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing, handleMouseMove, handleMouseUp]);
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -179,11 +232,12 @@ export function JsonFormatter() {
         </div>
       )}
 
-      <div className="flex-1 grid grid-cols-2 gap-4 min-h-0">
-        <div className="flex flex-col min-h-0">
-          <div className="flex items-center justify-between mb-2 flex-shrink-0">
+      <div className="flex-1 flex min-h-0" ref={containerRef}>
+        {/* Left Panel - Input */}
+        <div className="flex flex-col min-h-0" style={{ width: `${leftPanelWidth}%` }}>
+          <div className="flex items-center justify-between mb-2 flex-shrink-0 min-h-[32px]">
             <label className="block text-sm font-medium">Input</label>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <button
                 onClick={handleSampleData}
                 className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
@@ -214,8 +268,17 @@ export function JsonFormatter() {
           />
         </div>
 
-        <div className="flex flex-col min-h-0">
-          <div className="flex items-center justify-between mb-2 flex-shrink-0">
+        {/* Resize Handle */}
+        <div
+          className="w-2 bg-gray-300 dark:bg-gray-600 cursor-col-resize hover:bg-blue-500 dark:hover:bg-blue-400 transition-colors flex-shrink-0 mx-1 rounded-sm"
+          onMouseDown={handleMouseDown}
+          title="Drag to resize panels"
+          style={{ minWidth: '8px' }}
+        />
+
+        {/* Right Panel - Output */}
+        <div className="flex flex-col min-h-0" style={{ width: `${100 - leftPanelWidth}%` }}>
+          <div className="flex items-center justify-between mb-2 flex-shrink-0 min-h-[32px]">
             <label className="block text-sm font-medium">Formatted Output</label>
             <button
               onClick={() => handleCopy(output)}
@@ -227,21 +290,8 @@ export function JsonFormatter() {
             </button>
           </div>
           <div className="flex-1 w-full border rounded relative overflow-hidden border-primary bg-secondary">
-            {output ? (
-              <SyntaxHighlighter
-                language="json"
-                style={actualTheme === 'dark' ? oneDark : oneLight}
-                customStyle={{
-                  margin: 0,
-                  height: '100%',
-                  backgroundColor: 'transparent',
-                  fontSize: '0.875rem',
-                  fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace'
-                }}
-                wrapLongLines={true}
-              >
-                {output}
-              </SyntaxHighlighter>
+            {parsedData !== null ? (
+              <JsonViewer data={parsedData} />
             ) : (
               <div className="flex items-center justify-center h-full text-sm text-tertiary">
                 Formatted JSON will appear here...
