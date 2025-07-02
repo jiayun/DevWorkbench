@@ -75,19 +75,16 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, depth = 0 }) => {
 
   if (Array.isArray(data)) {
     const info = getCollectionInfo(data);
-    return (
-      <div>
-        <div className="flex items-center">
+    
+    if (isCollapsed) {
+      return (
+        <span className="inline-flex items-center">
           <button
             onClick={toggleCollapse}
             className="flex items-center justify-center w-4 h-4 mr-2 opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
             style={{ background: 'none', border: 'none', padding: 0 }}
           >
-            {isCollapsed ? (
-              <ChevronRight className="w-3 h-3" style={{ color: actualTheme === 'dark' ? '#9ca3af' : '#6b7280' }} />
-            ) : (
-              <ChevronDown className="w-3 h-3" style={{ color: actualTheme === 'dark' ? '#9ca3af' : '#6b7280' }} />
-            )}
+            <ChevronRight className="w-3 h-3" style={{ color: actualTheme === 'dark' ? '#9ca3af' : '#6b7280' }} />
           </button>
           {keyName && (
             <>
@@ -96,49 +93,13 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, depth = 0 }) => {
             </>
           )}
           <span style={{ color: getPunctuationColor() }}>[</span>
-          {isCollapsed && (
-            <span style={{ color: getCommentColor() }} className="ml-1">
-              {info?.count} items
-            </span>
-          )}
-          {!isCollapsed && data.length === 0 && (
-            <span style={{ color: getPunctuationColor() }}>]</span>
-          )}
-        </div>
-
-        {!isCollapsed && data.length > 0 && (
-          <div>
-            {data.map((item, index) => (
-              <div key={index} style={{ marginLeft: '1rem' }}>
-                <div className="flex items-center">
-                  <JsonNode
-                    data={item}
-                    isLast={true}
-                    depth={depth + 1}
-                  />
-                  {index < data.length - 1 && (
-                    <span style={{ color: getPunctuationColor() }}>,</span>
-                  )}
-                </div>
-              </div>
-            ))}
-            <div>
-              <span style={{ color: getPunctuationColor() }}>]</span>
-            </div>
-          </div>
-        )}
-
-        {isCollapsed && (
+          <span style={{ color: getCommentColor() }} className="ml-1">
+            {info?.count} items
+          </span>
           <span style={{ color: getPunctuationColor() }}>]</span>
-        )}
-
-      </div>
-    );
-  }
-
-  if (data && typeof data === 'object') {
-    const keys = Object.keys(data);
-    const info = getCollectionInfo(data);
+        </span>
+      );
+    }
     
     return (
       <div>
@@ -148,11 +109,55 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, depth = 0 }) => {
             className="flex items-center justify-center w-4 h-4 mr-2 opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
             style={{ background: 'none', border: 'none', padding: 0 }}
           >
-            {isCollapsed ? (
-              <ChevronRight className="w-3 h-3" style={{ color: actualTheme === 'dark' ? '#9ca3af' : '#6b7280' }} />
-            ) : (
-              <ChevronDown className="w-3 h-3" style={{ color: actualTheme === 'dark' ? '#9ca3af' : '#6b7280' }} />
-            )}
+            <ChevronDown className="w-3 h-3" style={{ color: actualTheme === 'dark' ? '#9ca3af' : '#6b7280' }} />
+          </button>
+          {keyName && (
+            <>
+              <span style={{ color: getKeyColor() }}>"{keyName}"</span>
+              <span style={{ color: getPunctuationColor() }}>: </span>
+            </>
+          )}
+          <span style={{ color: getPunctuationColor() }}>[</span>
+          {data.length === 0 && (
+            <span style={{ color: getPunctuationColor() }}>]</span>
+          )}
+        </div>
+        {data.length > 0 && (
+          <>
+            {data.map((item, index) => (
+              <div key={index} style={{ marginLeft: '1rem' }}>
+                <JsonNode
+                  data={item}
+                  isLast={true}
+                  depth={depth + 1}
+                />
+                {index < data.length - 1 && (
+                  <span style={{ color: getPunctuationColor() }}>,</span>
+                )}
+              </div>
+            ))}
+            <div>
+              <span style={{ color: getPunctuationColor() }}>]</span>
+            </div>
+          </>
+        )}
+      </div>
+    );
+  }
+
+  if (data && typeof data === 'object') {
+    const keys = Object.keys(data);
+    const info = getCollectionInfo(data);
+    
+    if (isCollapsed) {
+      return (
+        <span className="inline-flex items-center">
+          <button
+            onClick={toggleCollapse}
+            className="flex items-center justify-center w-4 h-4 mr-2 opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+            style={{ background: 'none', border: 'none', padding: 0 }}
+          >
+            <ChevronRight className="w-3 h-3" style={{ color: actualTheme === 'dark' ? '#9ca3af' : '#6b7280' }} />
           </button>
           {keyName && (
             <>
@@ -161,50 +166,62 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, depth = 0 }) => {
             </>
           )}
           <span style={{ color: getPunctuationColor() }}>{"{"}</span>
-          {isCollapsed && (
-            <span style={{ color: getCommentColor() }} className="ml-1">
-              {info?.count} keys
-            </span>
+          <span style={{ color: getCommentColor() }} className="ml-1">
+            {info?.count} keys
+          </span>
+          <span style={{ color: getPunctuationColor() }}>{"}"}</span>
+        </span>
+      );
+    }
+    
+    return (
+      <div>
+        <div className="flex items-center">
+          <button
+            onClick={toggleCollapse}
+            className="flex items-center justify-center w-4 h-4 mr-2 opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+            style={{ background: 'none', border: 'none', padding: 0 }}
+          >
+            <ChevronDown className="w-3 h-3" style={{ color: actualTheme === 'dark' ? '#9ca3af' : '#6b7280' }} />
+          </button>
+          {keyName && (
+            <>
+              <span style={{ color: getKeyColor() }}>"{keyName}"</span>
+              <span style={{ color: getPunctuationColor() }}>: </span>
+            </>
           )}
-          {!isCollapsed && keys.length === 0 && (
+          <span style={{ color: getPunctuationColor() }}>{"{"}</span>
+          {keys.length === 0 && (
             <span style={{ color: getPunctuationColor() }}>{"}"}</span>
           )}
         </div>
-
-        {!isCollapsed && keys.length > 0 && (
-          <div>
+        {keys.length > 0 && (
+          <>
             {keys.map((key, index) => (
               <div key={key} style={{ marginLeft: '1rem' }}>
-                <div className="flex items-center">
-                  <JsonNode
-                    data={data[key]}
-                    keyName={key}
-                    isLast={true}
-                    depth={depth + 1}
-                  />
-                  {index < keys.length - 1 && (
-                    <span style={{ color: getPunctuationColor() }}>,</span>
-                  )}
-                </div>
+                <JsonNode
+                  data={data[key]}
+                  keyName={key}
+                  isLast={true}
+                  depth={depth + 1}
+                />
+                {index < keys.length - 1 && (
+                  <span style={{ color: getPunctuationColor() }}>,</span>
+                )}
               </div>
             ))}
             <div>
               <span style={{ color: getPunctuationColor() }}>{"}"}</span>
             </div>
-          </div>
+          </>
         )}
-
-        {isCollapsed && (
-          <span style={{ color: getPunctuationColor() }}>{"}"}</span>
-        )}
-
       </div>
     );
   }
 
   // Primitive values
   return (
-    <div className="flex items-center">
+    <span className="inline">
       {keyName && (
         <>
           <span style={{ color: getKeyColor() }}>"{keyName}"</span>
@@ -212,7 +229,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, depth = 0 }) => {
         </>
       )}
       {renderPrimitiveValue(data)}
-    </div>
+    </span>
   );
 };
 
