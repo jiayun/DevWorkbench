@@ -14,7 +14,7 @@ interface JsonNodeProps {
   depth?: number;
 }
 
-const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, isLast = true, depth = 0 }) => {
+const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, depth = 0 }) => {
   const { actualTheme } = useTheme();
   const [isCollapsed, setIsCollapsed] = useState(false);
 

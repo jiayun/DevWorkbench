@@ -54,7 +54,6 @@ npx tsc --noEmit
 - [x] **JWT Token Tool** - Decode, encode, and verify JSON Web Tokens with multiple algorithms (HS256/384/512, RS256/384/512)
 
 ## Features to Implement
-- [ ] Hash generators (MD5, SHA)
 - [ ] URL encoder/decoder
 - [ ] Text utilities (HTML entities, Unicode)
 - [ ] Color picker and converter
