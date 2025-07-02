@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Copy, Settings } from "lucide-react";
+import { Copy, Settings, Clipboard, Shuffle, Trash2, ArrowUp, RotateCcw } from "lucide-react";
 
 export function Base58EncoderDecoder() {
   const [input, setInput] = useState("");
@@ -180,155 +180,275 @@ export function Base58EncoderDecoder() {
   };
 
   return (
-    <div className="w-full h-full">
-      <div className="w-full px-4 py-6">
-        {/* Header Controls */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            {/* Mode Toggle */}
-            <div className="flex bg-tertiary rounded-lg p-1 border border-primary">
-              <button
-                onClick={() => {
-                  setIsEncodeMode(true);
-                  setLastManualModeChange(Date.now());
-                }}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                  isEncodeMode
-                    ? "bg-blue-600 text-white"
-                    : "text-secondary hover:text-primary"
-                }`}
-              >
-                Encode
-              </button>
-              <button
-                onClick={() => {
-                  setIsEncodeMode(false);
-                  setLastManualModeChange(Date.now());
-                }}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                  !isEncodeMode
-                    ? "bg-blue-600 text-white"
-                    : "text-secondary hover:text-primary"
-                }`}
-              >
-                Decode
-              </button>
-            </div>
-          </div>
-
-          {/* Settings Button */}
+    <div className="w-full max-w-4xl mx-auto space-y-8">
+      
+      {/* Header Controls - Left/Right Layout */}
+      <div className="flex justify-between items-center">
+        {/* Mode Toggle */}
+        <div className="flex rounded-lg p-1" style={{ backgroundColor: 'var(--color-tertiary-bg)' }}>
           <button
-            onClick={() => setShowSettings(!showSettings)}
-            className="p-2 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
-            title="Settings"
+            onClick={() => {
+              setIsEncodeMode(true);
+              setLastManualModeChange(Date.now());
+            }}
+            className={`px-6 py-2 rounded-md font-semibold focus:outline-none transition-colors duration-150 ${
+              isEncodeMode 
+                ? 'text-white' 
+                : 'hover:text-white'
+            }`}
+            style={{
+              backgroundColor: isEncodeMode ? 'var(--color-blue-primary)' : 'transparent',
+              color: isEncodeMode ? 'white' : 'var(--color-secondary-text)'
+            }}
           >
-            <Settings className="w-5 h-5" />
+            Encode
+          </button>
+          <button
+            onClick={() => {
+              setIsEncodeMode(false);
+              setLastManualModeChange(Date.now());
+            }}
+            className={`px-6 py-2 rounded-md font-semibold focus:outline-none transition-colors duration-150 ${
+              !isEncodeMode 
+                ? 'text-white' 
+                : 'hover:text-white'
+            }`}
+            style={{
+              backgroundColor: !isEncodeMode ? 'var(--color-blue-primary)' : 'transparent',
+              color: !isEncodeMode ? 'white' : 'var(--color-secondary-text)'
+            }}
+          >
+            Decode
           </button>
         </div>
 
-        {/* Settings Panel */}
-        {showSettings && (
-          <div className="mb-6 p-4 bg-tertiary rounded-lg border border-primary">
-            <div className="space-y-3">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={settings.autoDetect}
-                  onChange={(e) => setSettings(prev => ({ ...prev, autoDetect: e.target.checked }))}
-                  className="w-4 h-4 text-blue-600 bg-secondary border-primary rounded focus:ring-blue-500"
-                />
-                <span className="text-sm text-primary">Auto detect when input is a Base58 and switch to decode mode</span>
-              </label>
-            </div>
-            
+        {/* Settings Button */}
+        <button
+          onClick={() => setShowSettings(!showSettings)}
+          className="p-3 rounded-full transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2"
+          style={{ 
+            color: 'var(--color-secondary-text)',
+            backgroundColor: showSettings ? 'var(--color-tertiary-bg)' : 'transparent'
+          }}
+          title="Settings"
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = showSettings ? 'var(--color-tertiary-bg)' : 'transparent'}
+        >
+          <Settings className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Settings Panel */}
+      {showSettings && (
+        <div className="space-y-4 p-4 rounded-lg" style={{ backgroundColor: 'var(--color-tertiary-bg)' }}>
+          <h3 className="text-lg font-semibold" style={{ color: 'var(--color-primary-text)' }}>Base58 Settings</h3>
+          <div className="space-y-3">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={settings.autoDetect}
+                onChange={(e) => setSettings(prev => ({ ...prev, autoDetect: e.target.checked }))}
+                className="w-4 h-4 rounded focus:ring-2"
+                style={{ 
+                  accentColor: 'var(--color-blue-primary)',
+                  backgroundColor: 'var(--color-secondary-bg)'
+                }}
+              />
+              <span className="text-sm" style={{ color: 'var(--color-primary-text)' }}>
+                Auto detect when input is a Base58 and switch to decode mode
+              </span>
+            </label>
+          </div>
+          
+          <button
+            onClick={restoreDefaults}
+            className="px-4 py-2 rounded-lg font-medium transition-colors duration-150 focus:outline-none focus:ring-2 border text-sm"
+            style={{ 
+              backgroundColor: 'var(--color-secondary-bg)',
+              borderColor: 'var(--color-primary-border)',
+              color: 'var(--color-primary-text)'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-secondary-bg)'}
+          >
+            <RotateCcw className="w-3 h-3 mr-2 inline" />
+            Restore to Defaults
+          </button>
+        </div>
+      )}
+
+      {/* Info Section */}
+      <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary-bg)', border: '1px solid var(--color-primary-border)' }}>
+        <p className="text-sm" style={{ color: 'var(--color-secondary-text)' }}>
+          <strong style={{ color: 'var(--color-primary-text)' }}>Base58</strong> is a binary-to-text encoding used in Bitcoin and IPFS. 
+          It uses 58 characters (excludes 0, O, I, l to avoid confusion) and is designed to be more human-friendly than Base64.
+        </p>
+        <p className="text-xs mt-2" style={{ color: 'var(--color-tertiary-text)' }}>
+          Common uses: Bitcoin addresses, IPFS hashes, short URLs, database keys
+        </p>
+      </div>
+
+      {/* Input Section */}
+      <section className="space-y-4">
+        <div className="flex justify-between items-center gap-4">
+          <h2 className="text-xl font-semibold" style={{ color: 'var(--color-primary-text)' }}>
+            Input: {isEncodeMode ? "Text to encode" : "Base58 to decode"}
+          </h2>
+          <div className="flex gap-2">
             <button
-              onClick={restoreDefaults}
-              className="mt-4 px-3 py-2 text-xs bg-secondary hover:bg-hover border border-primary text-primary rounded-lg transition-colors"
+              onClick={pasteFromClipboard}
+              className="px-4 py-2 rounded-lg font-medium transition-colors duration-150 focus:outline-none text-sm"
+              style={{ 
+                backgroundColor: 'var(--color-tertiary-bg)',
+                color: 'var(--color-secondary-text)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary-border)';
+                e.currentTarget.style.color = 'var(--color-primary-text)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)';
+                e.currentTarget.style.color = 'var(--color-secondary-text)';
+              }}
             >
-              Restore to Defaults
+              <Clipboard className="w-4 h-4 mr-2 inline" />
+              Paste
+            </button>
+            <button
+              onClick={generateSample}
+              className="px-4 py-2 rounded-lg font-medium transition-colors duration-150 focus:outline-none text-sm"
+              style={{ 
+                backgroundColor: 'var(--color-tertiary-bg)',
+                color: 'var(--color-secondary-text)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary-border)';
+                e.currentTarget.style.color = 'var(--color-primary-text)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)';
+                e.currentTarget.style.color = 'var(--color-secondary-text)';
+              }}
+            >
+              <Shuffle className="w-4 h-4 mr-2 inline" />
+              Sample
+            </button>
+            <button
+              onClick={clearAll}
+              className="px-4 py-2 rounded-lg font-medium transition-colors duration-150 focus:outline-none text-sm"
+              style={{ 
+                backgroundColor: 'var(--color-tertiary-bg)',
+                color: 'var(--color-secondary-text)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary-border)';
+                e.currentTarget.style.color = 'var(--color-primary-text)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)';
+                e.currentTarget.style.color = 'var(--color-secondary-text)';
+              }}
+            >
+              <Trash2 className="w-4 h-4 mr-2 inline" />
+              Clear
             </button>
           </div>
-        )}
-
-        {/* Info Section */}
-        <div className="mb-6 p-4 bg-secondary rounded-lg border border-primary">
-          <p className="text-sm text-secondary">
-            <strong className="text-primary">Base58</strong> is a binary-to-text encoding used in Bitcoin and IPFS. 
-            It uses 58 characters (excludes 0, O, I, l to avoid confusion) and is designed to be more human-friendly than Base64.
-          </p>
-          <p className="text-xs text-tertiary mt-2">
-            Common uses: Bitcoin addresses, IPFS hashes, short URLs, database keys
-          </p>
         </div>
+        <textarea
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder={isEncodeMode ? "Enter text to encode..." : "Enter Base58 string to decode (e.g., Bitcoin address)..."}
+          className="w-full p-4 rounded-lg font-mono text-sm focus:ring-2 focus:outline-none resize-none"
+          style={{ 
+            backgroundColor: 'var(--color-secondary-bg)',
+            borderColor: 'var(--color-primary-border)',
+            color: 'var(--color-primary-text)',
+            border: '1px solid var(--color-primary-border)',
+            height: '320px',
+            minHeight: '320px'
+          }}
+          onFocus={(e) => e.currentTarget.style.borderColor = 'var(--color-blue-primary)'}
+          onBlur={(e) => e.currentTarget.style.borderColor = 'var(--color-primary-border)'}
+        />
+      </section>
 
-        <div className="space-y-6">
-          {/* Input Section */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-secondary">
-                Input: {isEncodeMode ? "Text to encode" : "Base58 to decode"}
-              </label>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={pasteFromClipboard}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
-                >
-                  Clipboard
-                </button>
-                <button
-                  onClick={generateSample}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
-                >
-                  Sample
-                </button>
-                <button
-                  onClick={clearAll}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
-                >
-                  Clear
-                </button>
-              </div>
-            </div>
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={isEncodeMode ? "Enter text to encode..." : "Enter Base58 string to decode (e.g., Bitcoin address)..."}
-              className="w-full h-32 px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors resize-none"
-            />
-          </div>
-
-          {/* Output Section */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-secondary">
-                Output: {isEncodeMode ? "Base58 encoded" : "Decoded text"}
-              </label>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => copyToClipboard(output)}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors flex items-center gap-1"
-                >
-                  <Copy className="w-3 h-3" />
-                  Copy
-                </button>
-                <button
-                  onClick={useAsInput}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
-                  disabled={!output}
-                >
-                  Use as Input ↑
-                </button>
-              </div>
-            </div>
-            <textarea
-              value={output}
-              readOnly
-              placeholder="Output will appear here..."
-              className="w-full h-32 px-4 py-3 bg-secondary border border-primary rounded-lg text-primary placeholder-tertiary font-mono text-sm resize-none cursor-default"
-            />
+      {/* Output Section */}
+      <section className="space-y-4">
+        <div className="flex justify-between items-center gap-4">
+          <h2 className="text-xl font-semibold" style={{ color: 'var(--color-primary-text)' }}>
+            Output: {isEncodeMode ? "Base58 encoded" : "Decoded text"}
+          </h2>
+          <div className="flex gap-2">
+            <button
+              onClick={() => copyToClipboard(output)}
+              disabled={!output}
+              className="px-4 py-2 rounded-lg font-medium transition-colors duration-150 focus:outline-none text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ 
+                backgroundColor: 'var(--color-tertiary-bg)',
+                color: 'var(--color-secondary-text)'
+              }}
+              onMouseEnter={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'var(--color-primary-border)';
+                  e.currentTarget.style.color = 'var(--color-primary-text)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)';
+                  e.currentTarget.style.color = 'var(--color-secondary-text)';
+                }
+              }}
+            >
+              <Copy className="w-4 h-4 mr-2 inline" />
+              Copy
+            </button>
+            <button
+              onClick={useAsInput}
+              disabled={!output}
+              className="px-4 py-2 rounded-lg font-medium transition-colors duration-150 focus:outline-none text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ 
+                backgroundColor: 'var(--color-tertiary-bg)',
+                color: 'var(--color-secondary-text)'
+              }}
+              onMouseEnter={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'var(--color-primary-border)';
+                  e.currentTarget.style.color = 'var(--color-primary-text)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!e.currentTarget.disabled) {
+                  e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)';
+                  e.currentTarget.style.color = 'var(--color-secondary-text)';
+                }
+              }}
+              title="Use output as input"
+            >
+              <ArrowUp className="w-4 h-4 mr-2 inline" />
+              Use as Input
+            </button>
           </div>
         </div>
-      </div>
+        <div
+          className="w-full p-4 rounded-lg font-mono text-sm border"
+          style={{ 
+            backgroundColor: 'var(--color-secondary-bg)',
+            borderColor: 'var(--color-primary-border)',
+            color: output ? 'var(--color-primary-text)' : 'var(--color-secondary-text)',
+            display: 'flex',
+            alignItems: output ? 'flex-start' : 'center',
+            justifyContent: output ? 'flex-start' : 'center',
+            textAlign: output ? 'left' : 'center',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-all',
+            height: '320px',
+            minHeight: '320px'
+          }}
+        >
+          {output || "Output will appear here..."}
+        </div>
+      </section>
     </div>
   );
 }
