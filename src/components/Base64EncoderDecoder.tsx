@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Copy, Settings, Clipboard, Shuffle, Trash2, ArrowUp, RotateCcw } from "lucide-react";
-import { Button, Textarea, Card, Panel } from "./ui";
 
 export function Base64EncoderDecoder() {
   const [input, setInput] = useState("");

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Copy, Clipboard, Shuffle, Trash2 } from "lucide-react";
-import { Button, Input, Select, Card, Panel } from "./ui";
 
 export function NumberBaseConverter() {
   const [binaryValue, setBinaryValue] = useState("");
