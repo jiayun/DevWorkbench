@@ -110,14 +110,16 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, isLast = true, depth
           <div>
             {data.map((item, index) => (
               <div key={index} style={{ marginLeft: '1rem' }}>
-                <JsonNode
-                  data={item}
-                  isLast={index === data.length - 1}
-                  depth={depth + 1}
-                />
-                {index < data.length - 1 && (
-                  <span style={{ color: getPunctuationColor() }}>,</span>
-                )}
+                <div className="flex items-center">
+                  <JsonNode
+                    data={item}
+                    isLast={true}
+                    depth={depth + 1}
+                  />
+                  {index < data.length - 1 && (
+                    <span style={{ color: getPunctuationColor() }}>,</span>
+                  )}
+                </div>
               </div>
             ))}
             <div>
@@ -130,7 +132,6 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, isLast = true, depth
           <span style={{ color: getPunctuationColor() }}>]</span>
         )}
 
-        {!isLast && <span style={{ color: getPunctuationColor() }}>,</span>}
       </div>
     );
   }
@@ -174,15 +175,17 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, isLast = true, depth
           <div>
             {keys.map((key, index) => (
               <div key={key} style={{ marginLeft: '1rem' }}>
-                <JsonNode
-                  data={data[key]}
-                  keyName={key}
-                  isLast={index === keys.length - 1}
-                  depth={depth + 1}
-                />
-                {index < keys.length - 1 && (
-                  <span style={{ color: getPunctuationColor() }}>,</span>
-                )}
+                <div className="flex items-center">
+                  <JsonNode
+                    data={data[key]}
+                    keyName={key}
+                    isLast={true}
+                    depth={depth + 1}
+                  />
+                  {index < keys.length - 1 && (
+                    <span style={{ color: getPunctuationColor() }}>,</span>
+                  )}
+                </div>
               </div>
             ))}
             <div>
@@ -195,7 +198,6 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, isLast = true, depth
           <span style={{ color: getPunctuationColor() }}>{"}"}</span>
         )}
 
-        {!isLast && <span style={{ color: getPunctuationColor() }}>,</span>}
       </div>
     );
   }
@@ -210,7 +212,6 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, keyName, isLast = true, depth
         </>
       )}
       {renderPrimitiveValue(data)}
-      {!isLast && <span style={{ color: getPunctuationColor() }}>,</span>}
     </div>
   );
 };
