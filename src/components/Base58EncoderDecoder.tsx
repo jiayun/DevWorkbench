@@ -277,17 +277,6 @@ export function Base58EncoderDecoder() {
         </div>
       )}
 
-      {/* Info Section */}
-      <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary-bg)', border: '1px solid var(--color-primary-border)' }}>
-        <p className="text-sm" style={{ color: 'var(--color-secondary-text)' }}>
-          <strong style={{ color: 'var(--color-primary-text)' }}>Base58</strong> is a binary-to-text encoding used in Bitcoin and IPFS. 
-          It uses 58 characters (excludes 0, O, I, l to avoid confusion) and is designed to be more human-friendly than Base64.
-        </p>
-        <p className="text-xs mt-2" style={{ color: 'var(--color-tertiary-text)' }}>
-          Common uses: Bitcoin addresses, IPFS hashes, short URLs, database keys
-        </p>
-      </div>
-
       {/* Input Section */}
       <section className="space-y-4">
         <div className="flex justify-between items-center gap-4">

@@ -310,15 +310,14 @@ function AppContent() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0" style={{ minWidth: '400px' }}>
         {/* Header */}
-        <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: '2.5rem 2.5rem 0 2.5rem' }}>
+        <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: '1.5rem 2.5rem 0.5rem 2.5rem' }}>
           <div>
             <h2 className="text-3xl font-bold" style={{ color: 'var(--color-primary-text)' }}>{selectedTool.name}</h2>
-            <p className="mt-2" style={{ color: 'var(--color-secondary-text)' }}>{selectedTool.description}</p>
           </div>
         </div>
 
         {/* Tool Content */}
-        <div className="flex-1 overflow-auto" style={{ backgroundColor: 'var(--color-primary-bg)', padding: '2.5rem' }}>
+        <div className="flex-1 overflow-auto" style={{ backgroundColor: 'var(--color-primary-bg)', padding: '1rem 2.5rem 2.5rem 2.5rem' }}>
           <SelectedComponent />
         </div>
       </div>

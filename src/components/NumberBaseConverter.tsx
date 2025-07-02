@@ -195,11 +195,7 @@ export function NumberBaseConverter() {
 
 
   return (
-    <div className="w-full max-w-4xl space-y-6 mt-4">
-      <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--color-secondary-text)' }}>
-        Enter your number in any text field. The other fields will automatically be calculated.
-      </p>
-
+    <div className="w-full max-w-4xl space-y-6">
       <div className="space-y-6">
         {/* Binary Input */}
         <div>
