@@ -187,8 +187,8 @@ function AppContent() {
           className="flex flex-col flex-1 overflow-hidden"
           style={{ backgroundColor: 'var(--color-secondary-bg)', borderRight: '1px solid var(--color-primary-border)' }}
         >
-        {/* Header with Logo and Theme Toggle */}
-        <div className="p-4 space-y-4">
+        {/* Header with Logo */}
+        <div className="p-6 pb-4">
           <div className="flex items-center space-x-2 mb-6">
             <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
               <Binary className="w-5 h-5 text-white" />
@@ -202,18 +202,19 @@ function AppContent() {
               placeholder="Search tools..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+              className="w-full pr-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               style={{ 
                 backgroundColor: 'var(--color-tertiary-bg)', 
                 borderColor: 'var(--color-primary-border)', 
-                color: 'var(--color-primary-text)' 
+                color: 'var(--color-primary-text)',
+                paddingLeft: '2.75rem'
               }}
             />
           </div>
         </div>
 
         {/* Tool List */}
-        <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
+        <nav className="flex-1 overflow-y-auto px-6 py-2 space-y-1">
           {filteredTools.map((tool) => {
             const IconComponent = tool.icon;
             const isSelected = selectedTool.id === tool.id;
@@ -221,7 +222,7 @@ function AppContent() {
               <button
                 key={tool.id}
                 onClick={() => setSelectedTool(tool)}
-                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
+                className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
                   isSelected 
                     ? "text-white shadow-md" 
                     : "text-gray-300 hover:text-gray-100"
@@ -251,6 +252,16 @@ function AppContent() {
             );
           })}
         </nav>
+
+        {/* Theme Toggle at Bottom */}
+        <div className="p-6 pt-4 border-t" style={{ borderColor: 'var(--color-primary-border)' }}>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium" style={{ color: 'var(--color-secondary-text)' }}>
+              Theme
+            </span>
+            <ThemeToggle />
+          </div>
+        </div>
 
         </div>
         
@@ -299,7 +310,7 @@ function AppContent() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0" style={{ minWidth: '400px' }}>
         {/* Header */}
-        <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: '2rem 2rem 0 2rem' }}>
+        <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: '2.5rem 2.5rem 0 2.5rem' }}>
           <div>
             <h2 className="text-3xl font-bold" style={{ color: 'var(--color-primary-text)' }}>{selectedTool.name}</h2>
             <p className="mt-2" style={{ color: 'var(--color-secondary-text)' }}>{selectedTool.description}</p>
@@ -307,7 +318,7 @@ function AppContent() {
         </div>
 
         {/* Tool Content */}
-        <div className="flex-1 overflow-auto" style={{ backgroundColor: 'var(--color-primary-bg)', padding: '2rem' }}>
+        <div className="flex-1 overflow-auto" style={{ backgroundColor: 'var(--color-primary-bg)', padding: '2.5rem' }}>
           <SelectedComponent />
         </div>
       </div>

@@ -9,7 +9,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Dark theme colors matching the reference design */
+/* Dark theme colors */
 :root {
   /* Main backgrounds */
   --color-primary-bg: #111827;     /* Main content background */
@@ -29,6 +29,33 @@ body {
   --color-blue-primary: #3B82F6;   /* Primary blue */
   --color-blue-hover: #2563EB;     /* Blue hover state */
   --color-blue-dark: #1D4ED8;      /* Dark blue accent */
+  
+  /* Status colors */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+}
+
+/* Light theme colors */
+:root.light {
+  /* Main backgrounds */
+  --color-primary-bg: #F8FAFC;     /* Main content background - slate-50 */
+  --color-secondary-bg: #F1F5F9;   /* Sidebar background - slate-100 */
+  --color-tertiary-bg: #E2E8F0;    /* Input fields and buttons - slate-200 */
+  
+  /* Text colors */
+  --color-primary-text: #1E293B;   /* Primary text - slate-800 */
+  --color-secondary-text: #64748B; /* Secondary text - slate-500 */
+  --color-tertiary-text: #94A3B8;  /* Tertiary text - slate-400 */
+  
+  /* Border colors */
+  --color-primary-border: #CBD5E1; /* Main borders - slate-300 */
+  --color-secondary-border: #E2E8F0; /* Subtle borders - slate-200 */
+  
+  /* Interactive colors */
+  --color-blue-primary: #0EA5E9;   /* Primary blue - sky-500 */
+  --color-blue-hover: #0284C7;     /* Blue hover state - sky-600 */
+  --color-blue-dark: #0369A1;      /* Dark blue accent - sky-700 */
   
   /* Status colors */
   --color-success: #10B981;
@@ -57,6 +84,12 @@ input, button {
 input {
   background-color: var(--color-tertiary-bg);
   color: var(--color-primary-text);
+}
+
+/* Light theme input adjustments */
+:root.light input {
+  background-color: #FFFFFF;
+  border-color: var(--color-primary-border);
 }
 
 input:focus {
@@ -149,6 +182,16 @@ select:focus {
 
 select:hover {
   background-color: var(--color-primary-border);
+}
+
+/* Light theme select adjustments */
+:root.light select {
+  background-color: #FFFFFF;
+  border-color: var(--color-primary-border);
+}
+
+:root.light select:hover {
+  background-color: var(--color-secondary-bg);
 }
 
 /* Custom option styling */
