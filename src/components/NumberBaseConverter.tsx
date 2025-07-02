@@ -195,50 +195,20 @@ export function NumberBaseConverter() {
 
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
-      <Card padding="lg">
-        <p className="text-secondary text-sm leading-relaxed mb-6">
-          Enter your number in any text field. The other fields will automatically be calculated.
-        </p>
+    <div className="w-full max-w-4xl space-y-6 mt-4">
+      <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--color-secondary-text)' }}>
+        Enter your number in any text field. The other fields will automatically be calculated.
+      </p>
 
-        <div className="grid gap-6">
-          {/* Binary Input */}
-          <Panel 
-            title="Base 2 (Binary)" 
-            padding="default"
-            headerActions={
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigator.clipboard.readText()
-                    .then(text => handleFieldChange('binary', text))
-                    .catch(() => {})}
-                >
-                  <Clipboard className="w-3 h-3 mr-1" />
-                  Paste
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={clearAll}
-                >
-                  <Trash2 className="w-3 h-3 mr-1" />
-                  Clear
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyToClipboard(binaryValue)}
-                  title="Copy"
-                >
-                  <Copy className="w-3 h-3" />
-                </Button>
-              </div>
-            }
-          >
-            <Input
+      <div className="space-y-6">
+        {/* Binary Input */}
+        <div>
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--color-secondary-text)' }} htmlFor="binary">Base 2 (Binary)</label>
+          <div className="flex items-center space-x-2">
+            <input
               ref={(el) => inputRefs.current['binary'] = el}
+              id="binary"
+              name="binary"
               type="text"
               value={binaryValue}
               onChange={(e) => handleFieldChange('binary', e.target.value)}
@@ -251,47 +221,72 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="10010001000101000000010110010010"
-              className="font-mono"
+              className="flex-grow p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
             />
-          </Panel>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={() => navigator.clipboard.readText()
+                .then(text => handleFieldChange('binary', text))
+                .catch(() => {})}
+            >
+              <Clipboard className="w-4 h-4" />
+              <span>Paste</span>
+            </button>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={clearAll}
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Clear</span>
+            </button>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={() => copyToClipboard(binaryValue)}
+              title="Copy"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
 
-          {/* Octal Input */}
-          <Panel 
-            title="Base 8 (Octal)" 
-            padding="default"
-            headerActions={
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigator.clipboard.readText()
-                    .then(text => handleFieldChange('octal', text))
-                    .catch(() => {})}
-                >
-                  <Clipboard className="w-3 h-3 mr-1" />
-                  Paste
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={clearAll}
-                >
-                  <Trash2 className="w-3 h-3 mr-1" />
-                  Clear
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyToClipboard(octalValue)}
-                  title="Copy"
-                >
-                  <Copy className="w-3 h-3" />
-                </Button>
-              </div>
-            }
-          >
-            <Input
+        {/* Octal Input */}
+        <div>
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--color-secondary-text)' }} htmlFor="octal">Base 8 (Octal)</label>
+          <div className="flex items-center space-x-2">
+            <input
               ref={(el) => inputRefs.current['octal'] = el}
+              id="octal"
+              name="octal"
               type="text"
               value={octalValue}
               onChange={(e) => handleFieldChange('octal', e.target.value)}
@@ -304,47 +299,72 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="1114540322"
-              className="font-mono"
+              className="flex-grow p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
             />
-          </Panel>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={() => navigator.clipboard.readText()
+                .then(text => handleFieldChange('octal', text))
+                .catch(() => {})}
+            >
+              <Clipboard className="w-4 h-4" />
+              <span>Paste</span>
+            </button>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={clearAll}
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Clear</span>
+            </button>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={() => copyToClipboard(octalValue)}
+              title="Copy"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
 
-          {/* Decimal Input */}
-          <Panel 
-            title="Base 10 (Decimal)" 
-            padding="default"
-            headerActions={
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigator.clipboard.readText()
-                    .then(text => handleFieldChange('decimal', text))
-                    .catch(() => {})}
-                >
-                  <Clipboard className="w-3 h-3 mr-1" />
-                  Paste
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={clearAll}
-                >
-                  <Trash2 className="w-3 h-3 mr-1" />
-                  Clear
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyToClipboard(decimalValue)}
-                  title="Copy"
-                >
-                  <Copy className="w-3 h-3" />
-                </Button>
-              </div>
-            }
-          >
-            <Input
+        {/* Decimal Input */}
+        <div>
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--color-secondary-text)' }} htmlFor="decimal">Base 10 (Decimal)</label>
+          <div className="flex items-center space-x-2">
+            <input
               ref={(el) => inputRefs.current['decimal'] = el}
+              id="decimal"
+              name="decimal"
               type="text"
               value={decimalValue}
               onChange={(e) => handleFieldChange('decimal', e.target.value)}
@@ -357,47 +377,72 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="1234567890"
-              className="font-mono"
+              className="flex-grow p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
             />
-          </Panel>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={() => navigator.clipboard.readText()
+                .then(text => handleFieldChange('decimal', text))
+                .catch(() => {})}
+            >
+              <Clipboard className="w-4 h-4" />
+              <span>Paste</span>
+            </button>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={clearAll}
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Clear</span>
+            </button>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={() => copyToClipboard(decimalValue)}
+              title="Copy"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
 
-          {/* Hex Input */}
-          <Panel 
-            title="Base 16 (Hexadecimal)" 
-            padding="default"
-            headerActions={
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigator.clipboard.readText()
-                    .then(text => handleFieldChange('hex', text))
-                    .catch(() => {})}
-                >
-                  <Clipboard className="w-3 h-3 mr-1" />
-                  Paste
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={clearAll}
-                >
-                  <Trash2 className="w-3 h-3 mr-1" />
-                  Clear
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyToClipboard(hexValue)}
-                  title="Copy"
-                >
-                  <Copy className="w-3 h-3" />
-                </Button>
-              </div>
-            }
-          >
-            <Input
+        {/* Hex Input */}
+        <div>
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--color-secondary-text)' }} htmlFor="hexadecimal">Base 16 (Hexadecimal)</label>
+          <div className="flex items-center space-x-2">
+            <input
               ref={(el) => inputRefs.current['hex'] = el}
+              id="hexadecimal"
+              name="hexadecimal"
               type="text"
               value={hexValue}
               onChange={(e) => handleFieldChange('hex', e.target.value)}
@@ -410,67 +455,72 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="499602d2"
-              className="font-mono"
+              className="flex-grow p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
             />
-          </Panel>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={() => navigator.clipboard.readText()
+                .then(text => handleFieldChange('hex', text))
+                .catch(() => {})}
+            >
+              <Clipboard className="w-4 h-4" />
+              <span>Paste</span>
+            </button>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={clearAll}
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Clear</span>
+            </button>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={() => copyToClipboard(hexValue)}
+              title="Copy"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
 
-          {/* Custom Base Selector */}
-          <Panel 
-            title={`Custom Base (Base ${customBase})`}
-            padding="default"
-            headerActions={
-              <div className="flex items-center gap-2">
-                <Select
-                  value={customBase.toString()}
-                  onChange={(e) => setCustomBase(parseInt(e.target.value))}
-                  options={Array.from({ length: 35 }, (_, i) => ({
-                    value: (i + 2).toString(),
-                    label: `Base ${i + 2}`
-                  }))}
-                  size="sm"
-                />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigator.clipboard.readText()
-                    .then(text => handleFieldChange('custom', text))
-                    .catch(() => {})}
-                >
-                  <Clipboard className="w-3 h-3 mr-1" />
-                  Paste
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    const decimal = Math.floor(Math.random() * 1000000);
-                    handleFieldChange('custom', decimal.toString(customBase).toLowerCase());
-                  }}
-                >
-                  <Shuffle className="w-3 h-3 mr-1" />
-                  Sample
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={clearAll}
-                >
-                  <Trash2 className="w-3 h-3 mr-1" />
-                  Clear
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyToClipboard(customValue)}
-                  title="Copy"
-                >
-                  <Copy className="w-3 h-3" />
-                </Button>
-              </div>
-            }
-          >
-            <Input
+        {/* Custom Base Selector */}
+        <div>
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--color-secondary-text)' }} htmlFor="customBaseValue">Custom Base</label>
+          <div className="flex items-center space-x-2">
+            <input
               ref={(el) => inputRefs.current['custom'] = el}
+              id="customBaseValue"
+              name="customBaseValue"
               type="text"
               value={customValue}
               onChange={(e) => handleFieldChange('custom', e.target.value)}
@@ -483,11 +533,97 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="Custom base value"
-              className="font-mono"
+              className="flex-grow p-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
             />
-          </Panel>
+            <span className="text-sm" style={{ color: 'var(--color-secondary-text)' }}>Base</span>
+            <select
+              value={customBase}
+              onChange={(e) => setCustomBase(parseInt(e.target.value))}
+              style={{ width: '80px' }}
+            >
+              {Array.from({ length: 35 }, (_, i) => {
+                const base = i + 2;
+                return (
+                  <option key={base} value={base}>
+                    {base}
+                  </option>
+                );
+              })}
+            </select>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={() => navigator.clipboard.readText()
+                .then(text => handleFieldChange('custom', text))
+                .catch(() => {})}
+            >
+              <Clipboard className="w-4 h-4" />
+              <span>Paste</span>
+            </button>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={() => {
+                const decimal = Math.floor(Math.random() * 1000000);
+                handleFieldChange('custom', decimal.toString(customBase).toLowerCase());
+              }}
+            >
+              <Shuffle className="w-4 h-4" />
+              <span>Sample</span>
+            </button>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={clearAll}
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Clear</span>
+            </button>
+            <button
+              className="p-3 rounded-lg flex items-center space-x-1.5 text-sm transition-colors"
+              style={{
+                backgroundColor: 'var(--color-tertiary-bg)',
+                borderColor: 'var(--color-primary-border)',
+                color: 'var(--color-primary-text)',
+                border: '1px solid var(--color-primary-border)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-border)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)'}
+              onClick={() => copyToClipboard(customValue)}
+              title="Copy"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import UuidGenerator from "./components/UuidGenerator";
 import JwtTool from "./components/JwtTool";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { Button } from "./components/ui";
+import "./App.css";
 
 type Tool = {
   id: string;
@@ -174,7 +175,7 @@ function AppContent() {
   }, [isResizing, handleMouseMove, handleMouseUp]);
 
   return (
-    <div className="flex h-screen bg-primary text-primary">
+    <div className="flex h-screen overflow-hidden">
       {/* Sidebar Container */}
       <div 
         className="flex"
@@ -183,29 +184,36 @@ function AppContent() {
         {/* Sidebar */}
         <div 
           ref={sidebarRef}
-          className="bg-secondary border-r border-primary flex flex-col flex-1 overflow-hidden"
+          className="flex flex-col flex-1 overflow-hidden"
+          style={{ backgroundColor: 'var(--color-secondary-bg)', borderRight: '1px solid var(--color-primary-border)' }}
         >
         {/* Header with Logo and Theme Toggle */}
-        <div className="p-3 border-b border-primary">
-          <div className="flex items-center justify-between mb-3">
-            <h1 className="text-lg font-bold text-primary">DevWorkbench</h1>
-            <ThemeToggle />
+        <div className="p-4 space-y-4">
+          <div className="flex items-center space-x-2 mb-6">
+            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+              <Binary className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-xl font-semibold" style={{ color: 'var(--color-primary-text)' }}>DevWorkbench</h1>
           </div>
           <div className="relative">
-            <Search className="absolute top-1/2 transform -translate-y-1/2 text-tertiary w-4 h-4 z-10" style={{ left: '12px' }} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style={{ color: 'var(--color-secondary-text)' }} />
             <input
               type="text"
               placeholder="Search tools..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pr-3 py-2 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
-              style={{ paddingLeft: '44px' }}
+              className="w-full pl-10 pr-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+              style={{ 
+                backgroundColor: 'var(--color-tertiary-bg)', 
+                borderColor: 'var(--color-primary-border)', 
+                color: 'var(--color-primary-text)' 
+              }}
             />
           </div>
         </div>
 
         {/* Tool List */}
-        <div className="flex-1 overflow-y-auto px-3 py-2">
+        <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
           {filteredTools.map((tool) => {
             const IconComponent = tool.icon;
             const isSelected = selectedTool.id === tool.id;
@@ -213,33 +221,36 @@ function AppContent() {
               <button
                 key={tool.id}
                 onClick={() => setSelectedTool(tool)}
-                className={`w-full p-3 text-left transition-all duration-200 rounded-lg mb-2 group ${
+                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
                   isSelected 
-                    ? "bg-blue-600 text-white shadow-md" 
-                    : "hover:bg-tertiary hover:shadow-sm"
+                    ? "text-white shadow-md" 
+                    : "text-gray-300 hover:text-gray-100"
                 }`}
+                style={{
+                  backgroundColor: isSelected ? 'var(--color-blue-primary)' : 'transparent',
+                  borderLeft: isSelected ? '4px solid var(--color-blue-primary)' : '4px solid transparent'
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSelected) {
+                    e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)';
+                    e.currentTarget.style.borderLeftColor = 'var(--color-blue-primary)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSelected) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.borderLeftColor = 'transparent';
+                  }
+                }}
               >
-                <div className="flex items-center space-x-3">
-                  <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
-                    isSelected 
-                      ? "bg-blue-700" 
-                      : "bg-blue-500 group-hover:bg-blue-600"
-                  }`}>
-                    <IconComponent className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className={`font-medium truncate transition-colors ${
-                      isSelected ? "text-white" : "text-primary"
-                    }`}>{tool.name}</div>
-                    <div className={`text-xs truncate mt-1 transition-colors ${
-                      isSelected ? "text-blue-100" : "text-secondary"
-                    }`}>{tool.description}</div>
-                  </div>
-                </div>
+                <IconComponent className={`w-5 h-5 ${
+                  isSelected ? "text-white" : "text-gray-400 group-hover:text-blue-400"
+                }`} />
+                <span>{tool.name}</span>
               </button>
             );
           })}
-        </div>
+        </nav>
 
         </div>
         
@@ -288,20 +299,15 @@ function AppContent() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0" style={{ minWidth: '400px' }}>
         {/* Header */}
-        <div className="bg-secondary border-b border-primary px-6 py-5">
-          <div className="flex items-center space-x-4">
-            <div className="flex-shrink-0 w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
-              <selectedTool.icon className="w-6 h-6 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-bold text-primary truncate">{selectedTool.name}</h1>
-              <p className="text-sm text-secondary mt-1">{selectedTool.description}</p>
-            </div>
+        <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: '2rem 2rem 0 2rem' }}>
+          <div>
+            <h2 className="text-3xl font-bold" style={{ color: 'var(--color-primary-text)' }}>{selectedTool.name}</h2>
+            <p className="mt-2" style={{ color: 'var(--color-secondary-text)' }}>{selectedTool.description}</p>
           </div>
         </div>
 
         {/* Tool Content */}
-        <div className="flex-1 p-6 overflow-auto bg-primary">
+        <div className="flex-1 overflow-auto" style={{ backgroundColor: 'var(--color-primary-bg)', padding: '2rem' }}>
           <SelectedComponent />
         </div>
       </div>

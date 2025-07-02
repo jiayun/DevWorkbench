@@ -1,104 +1,164 @@
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
+* {
+  box-sizing: border-box;
 }
 
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafb);
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #ffc107);
+/* Dark theme colors matching the reference design */
+:root {
+  /* Main backgrounds */
+  --color-primary-bg: #111827;     /* Main content background */
+  --color-secondary-bg: #1F2937;   /* Sidebar and card backgrounds */
+  --color-tertiary-bg: #374151;    /* Input fields and buttons */
+  
+  /* Text colors */
+  --color-primary-text: #F3F4F6;   /* Primary text (white) */
+  --color-secondary-text: #9CA3AF; /* Secondary text (light gray) */
+  --color-tertiary-text: #6B7280;  /* Tertiary text (darker gray) */
+  
+  /* Border colors */
+  --color-primary-border: #4B5563; /* Main borders */
+  --color-secondary-border: #374151; /* Subtle borders */
+  
+  /* Interactive colors */
+  --color-blue-primary: #3B82F6;   /* Primary blue */
+  --color-blue-hover: #2563EB;     /* Blue hover state */
+  --color-blue-dark: #1D4ED8;      /* Dark blue accent */
+  
+  /* Status colors */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
 }
 
-.container {
-  margin: 0;
-  padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
+/* Apply dark theme globally */
+body {
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary-text);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: 0.75s;
-}
-
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #24c8db);
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
-}
-
-h1 {
-  text-align: center;
-}
-
-input,
-button {
+/* Base input and button styles similar to reference */
+input, button {
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  border: 1px solid var(--color-primary-border);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
   font-weight: 500;
   font-family: inherit;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+input {
+  background-color: var(--color-tertiary-bg);
+  color: var(--color-primary-text);
+}
+
+input:focus {
+  border-color: var(--color-blue-primary);
+  ring: 2px solid var(--color-blue-primary);
+  ring-opacity: 0.3;
+}
+
+input::placeholder {
+  color: var(--color-secondary-text);
 }
 
 button {
+  background-color: var(--color-tertiary-bg);
+  color: var(--color-primary-text);
   cursor: pointer;
 }
 
 button:hover {
-  border-color: #396cd8;
+  background-color: var(--color-primary-border);
 }
 
-button:active {
-  border-color: #396cd8;
-  background-color: #e8e8e8;
+.btn-primary {
+  background-color: var(--color-blue-primary);
+  color: white;
+  border-color: var(--color-blue-primary);
 }
 
-input,
-button {
+.btn-primary:hover {
+  background-color: var(--color-blue-hover);
+  border-color: var(--color-blue-hover);
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-secondary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary-text);
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--color-blue-primary);
+  color: white;
+}
+
+/* Focus visible styling */
+:focus-visible {
+  outline: 2px solid var(--color-blue-primary);
+  outline-offset: 2px;
+}
+
+/* Custom select styling */
+select {
+  background-color: var(--color-tertiary-bg);
+  color: var(--color-primary-text);
+  border: 1px solid var(--color-primary-border);
+  border-radius: 8px;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: inherit;
+  transition: all 0.2s ease;
   outline: none;
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
 }
 
-#greet-input {
-  margin-right: 5px;
+select:focus {
+  border-color: var(--color-blue-primary);
+  ring: 2px solid var(--color-blue-primary);
+  ring-opacity: 0.3;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f6f6f6;
-    background-color: #2f2f2f;
-  }
+select:hover {
+  background-color: var(--color-primary-border);
+}
 
-  a:hover {
-    color: #24c8db;
-  }
+/* Custom option styling */
+select option {
+  background-color: var(--color-tertiary-bg);
+  color: var(--color-primary-text);
+  padding: 0.5rem;
+}
 
-  input,
-  button {
-    color: #ffffff;
-    background-color: #374151;
-  }
-  button:active {
-    background-color: #4b5563;
-  }
+select option:checked {
+  background-color: var(--color-blue-primary);
+  color: white;
 }
