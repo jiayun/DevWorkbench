@@ -2,7 +2,7 @@
 
 A developer utilities application built with Tauri and React, similar to DevToys/DevUtils.
 
-![DevWorkbench Screenshot](./screenshots/DevWorkbench_v0.2.7.png)
+![DevWorkbench Screenshot](./screenshots/DevWorkbench_v0.3.0.png)
 
 ## 🤖 100% AI-Generated Code - A Totally Vibed Application
 
