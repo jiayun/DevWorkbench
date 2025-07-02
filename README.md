@@ -20,6 +20,7 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
 - 🔐 **Hash Generator** - Generate MD5/SHA1/SHA2/SHA3/Keccak hashes using Rust for high performance
 - 📝 **JSON Formatter & Validator** - Format, validate, and beautify JSON with collapsible viewer
 - 🆔 **UUID Generator** - Generate and validate UUIDs v1/v3/v4/v5/v7 with bulk generation support
+- 🔑 **JWT Token Tool** - Decode, encode, and verify JSON Web Tokens with multiple algorithms (HS256/384/512, RS256/384/512)
 
 ### 🚧 Coming Soon
 - 🌐 **URL Tools** - Encoder/decoder, parser
