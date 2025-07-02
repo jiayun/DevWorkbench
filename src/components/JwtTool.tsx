@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-import { Copy, Key, Lock, Unlock, RefreshCw, Check, AlertCircle } from 'lucide-react';
+import { Copy, Key, Lock, Unlock, RefreshCw, Check, AlertCircle, FileText, Trash2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface JwtParts {
   header: Record<string, any>;
@@ -69,13 +69,13 @@ const JwtTokenHighlighter = ({ token, className = '' }: { token: string; classNa
 };
 
 // JSON Syntax Highlighter Component
-const JsonHighlighter = ({ json, className = '' }: { json: any; className?: string }) => {
+const JsonHighlighter = ({ json, className = '', isDark = false }: { json: any; className?: string; isDark?: boolean }) => {
   const jsonString = JSON.stringify(json, null, 2);
   
   return (
     <SyntaxHighlighter
       language="json"
-      style={oneDark}
+      style={isDark ? oneDark : oneLight}
       className={className}
       customStyle={{
         background: 'transparent',
@@ -166,7 +166,7 @@ const Tabs = ({ value, onValueChange, children, className = '' }: any) => {
 };
 
 const TabsList = ({ children, value, onValueChange }: any) => (
-  <div className="inline-flex h-10 items-center justify-center rounded-md bg-gray-100 p-1 text-gray-500 dark:bg-gray-800 dark:text-gray-400 w-full">
+  <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
     {React.Children.map(children, (child: any) => 
       React.cloneElement(child, { 
         active: value === child.props.value, 
@@ -178,10 +178,10 @@ const TabsList = ({ children, value, onValueChange }: any) => (
 
 const TabsTrigger = ({ value, children, active, onValueChange, className = '' }: any) => (
   <button
-    className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-gray-950 dark:focus-visible:ring-gray-800 flex-1 ${
+    className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors flex items-center justify-center gap-1.5 ${
       active 
-        ? 'bg-white text-gray-950 shadow-sm dark:bg-gray-950 dark:text-gray-50' 
-        : 'hover:bg-gray-200 dark:hover:bg-gray-700'
+        ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' 
+        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700'
     } ${className}`}
     onClick={() => onValueChange(value)}
   >
@@ -211,7 +211,8 @@ const CardContent = ({ className = '', children }: any) => (
 );
 
 export default function JwtTool() {
-  const {} = useTheme();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [mode, setMode] = useState<'decode' | 'encode' | 'verify'>('decode');
   const [inputToken, setInputToken] = useState('');
   const [decodedData, setDecodedData] = useState<JwtParts | null>(null);
@@ -487,34 +488,31 @@ export default function JwtTool() {
 
           <TabsContent value="decode" className="flex-1 flex flex-col">
             <div className="space-y-4 flex-1 flex flex-col">
-              <div className="flex gap-1">
-                <Button
-                  variant="outline"
-                  size="sm"
+              <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <button
+                  className="flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center justify-center gap-1.5"
                   onClick={async () => {
                     const text = await navigator.clipboard.readText();
                     setInputToken(text);
                   }}
-                  className="px-3 py-1.5 text-xs"
                 >
+                  <Copy className="w-4 h-4" />
                   Clipboard
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
+                </button>
+                <button
+                  className="flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center gap-1.5"
                   onClick={() => setInputToken(SAMPLE_JWT)}
-                  className="px-3 py-1.5 text-xs"
                 >
+                  <FileText className="w-4 h-4" />
                   Sample
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
+                </button>
+                <button
+                  className="flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center gap-1.5"
                   onClick={() => setInputToken('')}
-                  className="px-3 py-1.5 text-xs"
                 >
+                  <Trash2 className="w-4 h-4" />
                   Clear
-                </Button>
+                </button>
               </div>
               <div className="flex-1 relative">
                 <Textarea
@@ -699,7 +697,7 @@ export default function JwtTool() {
                     </Button>
                   </div>
                   <div className="flex-1 overflow-auto">
-                    <JsonHighlighter json={decodedData.header} />
+                    <JsonHighlighter json={decodedData.header} isDark={isDark} />
                   </div>
                 </CardContent>
               </Card>
@@ -733,7 +731,7 @@ export default function JwtTool() {
                     </div>
                   </div>
                   <div className="flex-1 overflow-auto">
-                    <JsonHighlighter json={decodedData.payload} />
+                    <JsonHighlighter json={decodedData.payload} isDark={isDark} />
                   </div>
                   {(decodedData.issuedAt || decodedData.expiresAt) && (
                     <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-2">
@@ -874,7 +872,7 @@ export default function JwtTool() {
                     <div>
                       <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Header</h4>
                       <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
-                        <JsonHighlighter json={verifyResult.decodedHeader} />
+                        <JsonHighlighter json={verifyResult.decodedHeader} isDark={isDark} />
                       </div>
                     </div>
                   )}
@@ -883,7 +881,7 @@ export default function JwtTool() {
                     <div>
                       <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Payload</h4>
                       <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
-                        <JsonHighlighter json={verifyResult.decodedPayload} />
+                        <JsonHighlighter json={verifyResult.decodedPayload} isDark={isDark} />
                       </div>
                     </div>
                   )}
