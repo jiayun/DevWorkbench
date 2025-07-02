@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare } from "lucide-react";
+import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare, Sun, Moon, Monitor } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
 import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
 import { Base58EncoderDecoder } from "./components/Base58EncoderDecoder";
@@ -8,7 +8,8 @@ import { HashGenerator } from "./components/HashGenerator";
 import { JsonFormatter } from "./components/JsonFormatter";
 import UuidGenerator from "./components/UuidGenerator";
 import JwtTool from "./components/JwtTool";
-import { ThemeProvider } from "./contexts/ThemeContext";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import { Button } from "./components/ui";
 
 type Tool = {
   id: string;
@@ -76,6 +77,40 @@ const tools: Tool[] = [
     component: JwtTool,
   },
 ];
+
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+  
+  const getThemeIcon = () => {
+    switch (theme) {
+      case 'light': return Sun;
+      case 'dark': return Moon;
+      case 'system': return Monitor;
+      default: return Monitor;
+    }
+  };
+  
+  const cycleTheme = () => {
+    const themes: Array<'light' | 'dark' | 'system'> = ['light', 'dark', 'system'];
+    const currentIndex = themes.indexOf(theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setTheme(themes[nextIndex]);
+  };
+  
+  const Icon = getThemeIcon();
+  
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={cycleTheme}
+      className="h-8 w-8"
+      title={`Current theme: ${theme}`}
+    >
+      <Icon className="h-4 w-4" />
+    </Button>
+  );
+}
 
 function AppContent() {
   const [selectedTool, setSelectedTool] = useState<Tool>(tools[0]);
@@ -150,8 +185,12 @@ function AppContent() {
           ref={sidebarRef}
           className="bg-secondary border-r border-primary flex flex-col flex-1 overflow-hidden"
         >
-        {/* Search */}
-        <div className="p-3">
+        {/* Header with Logo and Theme Toggle */}
+        <div className="p-3 border-b border-primary">
+          <div className="flex items-center justify-between mb-3">
+            <h1 className="text-lg font-bold text-primary">DevWorkbench</h1>
+            <ThemeToggle />
+          </div>
           <div className="relative">
             <Search className="absolute top-1/2 transform -translate-y-1/2 text-tertiary w-4 h-4 z-10" style={{ left: '12px' }} />
             <input
@@ -166,27 +205,34 @@ function AppContent() {
         </div>
 
         {/* Tool List */}
-        <div className="flex-1 overflow-y-auto px-3">
+        <div className="flex-1 overflow-y-auto px-3 py-2">
           {filteredTools.map((tool) => {
             const IconComponent = tool.icon;
+            const isSelected = selectedTool.id === tool.id;
             return (
               <button
                 key={tool.id}
                 onClick={() => setSelectedTool(tool)}
-                className={`w-full p-3 text-left hover:bg-tertiary border-b border-primary transition-colors rounded-lg mb-1 overflow-hidden ${
-                  selectedTool.id === tool.id ? "bg-blue-600 text-white" : ""
+                className={`w-full p-3 text-left transition-all duration-200 rounded-lg mb-2 group ${
+                  isSelected 
+                    ? "bg-blue-600 text-white shadow-md" 
+                    : "hover:bg-tertiary hover:shadow-sm"
                 }`}
               >
                 <div className="flex items-center space-x-3">
-                  <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                    <IconComponent className="w-4 h-4 text-white" />
+                  <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                    isSelected 
+                      ? "bg-blue-700" 
+                      : "bg-blue-500 group-hover:bg-blue-600"
+                  }`}>
+                    <IconComponent className="w-5 h-5 text-white" />
                   </div>
-                  <div className="flex-1 min-w-0 overflow-hidden">
-                    <div className={`font-medium truncate ${
-                      selectedTool.id === tool.id ? "text-white" : "text-primary"
+                  <div className="flex-1 min-w-0">
+                    <div className={`font-medium truncate transition-colors ${
+                      isSelected ? "text-white" : "text-primary"
                     }`}>{tool.name}</div>
-                    <div className={`text-sm truncate ${
-                      selectedTool.id === tool.id ? "text-blue-100" : "text-secondary"
+                    <div className={`text-xs truncate mt-1 transition-colors ${
+                      isSelected ? "text-blue-100" : "text-secondary"
                     }`}>{tool.description}</div>
                   </div>
                 </div>
@@ -242,13 +288,20 @@ function AppContent() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0" style={{ minWidth: '400px' }}>
         {/* Header */}
-        <div className="bg-secondary border-b border-primary px-8 py-6">
-          <h1 className="text-xl font-semibold text-primary">{selectedTool.name}</h1>
-          <p className="text-sm text-secondary mt-1">{selectedTool.description}</p>
+        <div className="bg-secondary border-b border-primary px-6 py-5">
+          <div className="flex items-center space-x-4">
+            <div className="flex-shrink-0 w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+              <selectedTool.icon className="w-6 h-6 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl font-bold text-primary truncate">{selectedTool.name}</h1>
+              <p className="text-sm text-secondary mt-1">{selectedTool.description}</p>
+            </div>
+          </div>
         </div>
 
         {/* Tool Content */}
-        <div className="flex-1 p-4 overflow-auto">
+        <div className="flex-1 p-6 overflow-auto bg-primary">
           <SelectedComponent />
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Copy } from "lucide-react";
+import { Copy, Clipboard, Shuffle, Trash2 } from "lucide-react";
+import { Button, Input, Select, Card, Panel } from "./ui";
 
 export function NumberBaseConverter() {
   const [binaryValue, setBinaryValue] = useState("");
@@ -194,42 +195,49 @@ export function NumberBaseConverter() {
 
 
   return (
-    <div className="w-full h-full">
-      <div className="w-full px-4 py-6">
+    <div className="w-full max-w-4xl mx-auto space-y-6">
+      <Card padding="lg">
         <p className="text-secondary text-sm leading-relaxed mb-6">
-          Enter your number in any of the text field. The other text fields will automatically be calculated.
+          Enter your number in any text field. The other fields will automatically be calculated.
         </p>
 
-        <div className="space-y-8">
+        <div className="grid gap-6">
           {/* Binary Input */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-secondary">Base 2 (Binary)</label>
+          <Panel 
+            title="Base 2 (Binary)" 
+            padding="default"
+            headerActions={
               <div className="flex items-center gap-2">
-                <button
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => navigator.clipboard.readText()
                     .then(text => handleFieldChange('binary', text))
                     .catch(() => {})}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
-                  Clipboard
-                </button>
-                <button
+                  <Clipboard className="w-3 h-3 mr-1" />
+                  Paste
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={clearAll}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
+                  <Trash2 className="w-3 h-3 mr-1" />
                   Clear
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => copyToClipboard(binaryValue)}
-                  className="p-1.5 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
                   title="Copy"
                 >
-                  <Copy className="w-4 h-4" />
-                </button>
+                  <Copy className="w-3 h-3" />
+                </Button>
               </div>
-            </div>
-            <input
+            }
+          >
+            <Input
               ref={(el) => inputRefs.current['binary'] = el}
               type="text"
               value={binaryValue}
@@ -243,39 +251,46 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="10010001000101000000010110010010"
-              className="w-full px-4 py-3.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+              className="font-mono"
             />
-          </div>
+          </Panel>
 
           {/* Octal Input */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-secondary">Base 8 (Octal)</label>
+          <Panel 
+            title="Base 8 (Octal)" 
+            padding="default"
+            headerActions={
               <div className="flex items-center gap-2">
-                <button
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => navigator.clipboard.readText()
                     .then(text => handleFieldChange('octal', text))
                     .catch(() => {})}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
-                  Clipboard
-                </button>
-                <button
+                  <Clipboard className="w-3 h-3 mr-1" />
+                  Paste
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={clearAll}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
+                  <Trash2 className="w-3 h-3 mr-1" />
                   Clear
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => copyToClipboard(octalValue)}
-                  className="p-1.5 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
                   title="Copy"
                 >
-                  <Copy className="w-4 h-4" />
-                </button>
+                  <Copy className="w-3 h-3" />
+                </Button>
               </div>
-            </div>
-            <input
+            }
+          >
+            <Input
               ref={(el) => inputRefs.current['octal'] = el}
               type="text"
               value={octalValue}
@@ -289,39 +304,46 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="1114540322"
-              className="w-full px-4 py-3.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+              className="font-mono"
             />
-          </div>
+          </Panel>
 
           {/* Decimal Input */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-secondary">Base 10 (Decimal)</label>
+          <Panel 
+            title="Base 10 (Decimal)" 
+            padding="default"
+            headerActions={
               <div className="flex items-center gap-2">
-                <button
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => navigator.clipboard.readText()
                     .then(text => handleFieldChange('decimal', text))
                     .catch(() => {})}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
-                  Clipboard
-                </button>
-                <button
+                  <Clipboard className="w-3 h-3 mr-1" />
+                  Paste
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={clearAll}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
+                  <Trash2 className="w-3 h-3 mr-1" />
                   Clear
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => copyToClipboard(decimalValue)}
-                  className="p-1.5 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
                   title="Copy"
                 >
-                  <Copy className="w-4 h-4" />
-                </button>
+                  <Copy className="w-3 h-3" />
+                </Button>
               </div>
-            </div>
-            <input
+            }
+          >
+            <Input
               ref={(el) => inputRefs.current['decimal'] = el}
               type="text"
               value={decimalValue}
@@ -335,39 +357,46 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="1234567890"
-              className="w-full px-4 py-3.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+              className="font-mono"
             />
-          </div>
+          </Panel>
 
           {/* Hex Input */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-secondary">Base 16 (Hex)</label>
+          <Panel 
+            title="Base 16 (Hexadecimal)" 
+            padding="default"
+            headerActions={
               <div className="flex items-center gap-2">
-                <button
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => navigator.clipboard.readText()
                     .then(text => handleFieldChange('hex', text))
                     .catch(() => {})}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
-                  Clipboard
-                </button>
-                <button
+                  <Clipboard className="w-3 h-3 mr-1" />
+                  Paste
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={clearAll}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
+                  <Trash2 className="w-3 h-3 mr-1" />
                   Clear
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => copyToClipboard(hexValue)}
-                  className="p-1.5 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
                   title="Copy"
                 >
-                  <Copy className="w-4 h-4" />
-                </button>
+                  <Copy className="w-3 h-3" />
+                </Button>
               </div>
-            </div>
-            <input
+            }
+          >
+            <Input
               ref={(el) => inputRefs.current['hex'] = el}
               type="text"
               value={hexValue}
@@ -381,62 +410,66 @@ export function NumberBaseConverter() {
                 }
               }}
               placeholder="499602d2"
-              className="w-full px-4 py-3.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+              className="font-mono"
             />
-          </div>
+          </Panel>
 
           {/* Custom Base Selector */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <label className="text-sm font-medium text-secondary">Select base:</label>
-                <select
-                  value={customBase}
-                  onChange={(e) => setCustomBase(parseInt(e.target.value))}
-                  className="px-3 py-2 bg-tertiary border border-primary rounded-lg text-primary text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors cursor-pointer hover:bg-secondary"
-                  style={{ minWidth: '80px' }}
-                >
-                  {Array.from({ length: 35 }, (_, i) => i + 2).map(base => (
-                    <option key={base} value={base}>
-                      Base {base}
-                    </option>
-                  ))}
-                </select>
-              </div>
+          <Panel 
+            title={`Custom Base (Base ${customBase})`}
+            padding="default"
+            headerActions={
               <div className="flex items-center gap-2">
-                <button
+                <Select
+                  value={customBase.toString()}
+                  onChange={(e) => setCustomBase(parseInt(e.target.value))}
+                  options={Array.from({ length: 35 }, (_, i) => ({
+                    value: (i + 2).toString(),
+                    label: `Base ${i + 2}`
+                  }))}
+                  size="sm"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => navigator.clipboard.readText()
                     .then(text => handleFieldChange('custom', text))
                     .catch(() => {})}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
-                  Clipboard
-                </button>
-                <button
+                  <Clipboard className="w-3 h-3 mr-1" />
+                  Paste
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => {
                     const decimal = Math.floor(Math.random() * 1000000);
                     handleFieldChange('custom', decimal.toString(customBase).toLowerCase());
                   }}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
+                  <Shuffle className="w-3 h-3 mr-1" />
                   Sample
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={clearAll}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
                 >
+                  <Trash2 className="w-3 h-3 mr-1" />
                   Clear
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => copyToClipboard(customValue)}
-                  className="p-1.5 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
                   title="Copy"
                 >
-                  <Copy className="w-4 h-4" />
-                </button>
+                  <Copy className="w-3 h-3" />
+                </Button>
               </div>
-            </div>
-            <input
+            }
+          >
+            <Input
               ref={(el) => inputRefs.current['custom'] = el}
               type="text"
               value={customValue}
@@ -445,17 +478,16 @@ export function NumberBaseConverter() {
                 activeFieldRef.current = 'custom';
               }}
               onBlur={() => {
-                // Simple blur handler
                 if (activeFieldRef.current === 'custom') {
                   activeFieldRef.current = null;
                 }
               }}
               placeholder="Custom base value"
-              className="w-full px-4 py-3.5 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors"
+              className="font-mono"
             />
-          </div>
+          </Panel>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

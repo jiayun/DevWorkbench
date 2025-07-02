@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Copy, Settings } from "lucide-react";
+import { Copy, Settings, Clipboard, Shuffle, Trash2, ArrowUp, RotateCcw } from "lucide-react";
+import { Button, Textarea, Card, Panel } from "./ui";
 
 export function Base64EncoderDecoder() {
   const [input, setInput] = useState("");
@@ -94,49 +95,50 @@ export function Base64EncoderDecoder() {
   };
 
   return (
-    <div className="w-full h-full">
-      <div className="w-full px-4 py-6">
-        {/* Header Controls */}
-        <div className="flex items-center justify-between mb-6">
+    <div className="w-full max-w-6xl mx-auto space-y-6">
+      {/* Header Controls */}
+      <Card padding="lg">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Mode Toggle */}
             <div className="flex bg-tertiary rounded-lg p-1 border border-primary">
-              <button
+              <Button
+                variant={isEncodeMode ? "default" : "ghost"}
+                size="sm"
                 onClick={() => setIsEncodeMode(true)}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                  isEncodeMode
-                    ? "bg-blue-600 text-white"
-                    : "text-secondary hover:text-primary"
-                }`}
+                className="rounded-md"
               >
                 Encode
-              </button>
-              <button
+              </Button>
+              <Button
+                variant={!isEncodeMode ? "default" : "ghost"}
+                size="sm"
                 onClick={() => setIsEncodeMode(false)}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                  !isEncodeMode
-                    ? "bg-blue-600 text-white"
-                    : "text-secondary hover:text-primary"
-                }`}
+                className="rounded-md"
               >
                 Decode
-              </button>
+              </Button>
             </div>
           </div>
 
           {/* Settings Button */}
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setShowSettings(!showSettings)}
-            className="p-2 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
             title="Settings"
           >
-            <Settings className="w-5 h-5" />
-          </button>
+            <Settings className="w-4 h-4" />
+          </Button>
         </div>
 
-        {/* Settings Panel */}
-        {showSettings && (
-          <div className="mb-6 p-4 bg-tertiary rounded-lg border border-primary">
+      </Card>
+
+      {/* Settings Panel */}
+      {showSettings && (
+        <Card padding="lg">
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-primary">Decoding Settings</h3>
             <div className="space-y-3">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
@@ -159,82 +161,99 @@ export function Base64EncoderDecoder() {
               </label>
             </div>
             
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={restoreDefaults}
-              className="mt-4 px-3 py-2 text-xs bg-secondary hover:bg-hover border border-primary text-primary rounded-lg transition-colors"
+              className="mt-4"
             >
+              <RotateCcw className="w-3 h-3 mr-2" />
               Restore to Defaults
-            </button>
+            </Button>
           </div>
-        )}
+        </Card>
+      )}
 
-        <div className="space-y-6">
-          {/* Input Section */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-secondary">
-                Input: {isEncodeMode ? "Text to encode" : "Base64 to decode"}
-              </label>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={pasteFromClipboard}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
-                >
-                  Clipboard
-                </button>
-                <button
-                  onClick={generateSample}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
-                >
-                  Sample
-                </button>
-                <button
-                  onClick={clearAll}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
-                >
-                  Clear
-                </button>
-              </div>
+      {/* Input/Output Grid */}
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Input Section */}
+        <Panel 
+          title={`Input: ${isEncodeMode ? "Text to encode" : "Base64 to decode"}`}
+          padding="default"
+          headerActions={
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={pasteFromClipboard}
+              >
+                <Clipboard className="w-3 h-3 mr-1" />
+                Paste
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={generateSample}
+              >
+                <Shuffle className="w-3 h-3 mr-1" />
+                Sample
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearAll}
+              >
+                <Trash2 className="w-3 h-3 mr-1" />
+                Clear
+              </Button>
             </div>
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={isEncodeMode ? "Enter text to encode..." : "Enter Base64 string to decode..."}
-              className="w-full h-32 px-4 py-3 bg-tertiary border border-primary rounded-lg text-primary placeholder-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm transition-colors resize-none"
-            />
-          </div>
+          }
+        >
+          <Textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={isEncodeMode ? "Enter text to encode..." : "Enter Base64 string to decode..."}
+            className="font-mono min-h-[200px] resize-none"
+            resizable={false}
+          />
+        </Panel>
 
-          {/* Output Section */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-secondary">
-                Output: {isEncodeMode ? "Base64 encoded" : "Decoded text"}
-              </label>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => copyToClipboard(output)}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors flex items-center gap-1"
-                >
-                  <Copy className="w-3 h-3" />
-                  Copy
-                </button>
-                <button
-                  onClick={useAsInput}
-                  className="px-3 py-2 text-xs bg-tertiary hover:bg-secondary border border-primary text-primary rounded-lg transition-colors"
-                  disabled={!output}
-                >
-                  Use as Input ↑
-                </button>
-              </div>
+        {/* Output Section */}
+        <Panel 
+          title={`Output: ${isEncodeMode ? "Base64 encoded" : "Decoded text"}`}
+          padding="default"
+          headerActions={
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => copyToClipboard(output)}
+                disabled={!output}
+              >
+                <Copy className="w-3 h-3 mr-1" />
+                Copy
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={useAsInput}
+                disabled={!output}
+                title="Use output as input"
+              >
+                <ArrowUp className="w-3 h-3 mr-1" />
+                Use as Input
+              </Button>
             </div>
-            <textarea
-              value={output}
-              readOnly
-              placeholder="Output will appear here..."
-              className="w-full h-32 px-4 py-3 bg-secondary border border-primary rounded-lg text-primary placeholder-tertiary font-mono text-sm resize-none cursor-default"
-            />
-          </div>
-        </div>
+          }
+        >
+          <Textarea
+            value={output}
+            readOnly
+            placeholder="Output will appear here..."
+            className="font-mono min-h-[200px] resize-none bg-secondary cursor-default"
+            resizable={false}
+          />
+        </Panel>
       </div>
     </div>
   );
