@@ -28,12 +28,37 @@ export function HashGenerator() {
   const [inputInfo, setInputInfo] = useState("0 bytes (string)");
   const [isProcessingFile, setIsProcessingFile] = useState(false);
   const [isFileMode, setIsFileMode] = useState(false);
+  const [currentFilePath, setCurrentFilePath] = useState<string | null>(null);
 
   // Generate hashes whenever input or case preference changes (only in text mode)
   useEffect(() => {
     const generateHashes = async () => {
-      // If we're in file mode, don't process text input
-      if (isFileMode) {
+      // If we're in file mode, regenerate hashes with new case preference
+      if (isFileMode && currentFilePath) {
+        try {
+          const fileName = currentFilePath.split('/').pop() || currentFilePath.split('\\').pop() || 'Unknown';
+          setInputInfo(`Recalculating hashes for: ${fileName}`);
+          
+          const hashResults = await invoke<Record<string, string>>("hash_file", {
+            path: currentFilePath,
+            lowercase: isLowercase,
+          });
+          
+          setResults({
+            md5: hashResults.md5 || "",
+            sha1: hashResults.sha1 || "",
+            sha224: hashResults.sha224 || "",
+            sha256: hashResults.sha256 || "",
+            sha384: hashResults.sha384 || "",
+            sha512: hashResults.sha512 || "",
+            keccak256: hashResults.keccak256 || "",
+          });
+          
+          setInputInfo(`Hashes calculated for: ${fileName}`);
+        } catch (error) {
+          console.error("Error recalculating file hashes:", error);
+          setInputInfo(`Error: ${error instanceof Error ? error.message : String(error)}`);
+        }
         return;
       }
 
@@ -75,7 +100,7 @@ export function HashGenerator() {
     };
 
     generateHashes();
-  }, [input, isLowercase, isFileMode]);
+  }, [input, isLowercase, isFileMode, currentFilePath]);
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -89,6 +114,8 @@ export function HashGenerator() {
     try {
       const text = await navigator.clipboard.readText();
       setInput(text);
+      setIsFileMode(false);
+      setCurrentFilePath(null);
     } catch (err) {
       console.error('Failed to paste text: ', err);
     }
@@ -96,12 +123,15 @@ export function HashGenerator() {
 
   const generateSample = () => {
     setInput("testeee1");
+    setIsFileMode(false);
+    setCurrentFilePath(null);
   };
 
 
   const clearAll = () => {
     setInput("");
     setIsFileMode(false);
+    setCurrentFilePath(null);
     setResults({
       md5: "",
       sha1: "",
@@ -156,8 +186,9 @@ export function HashGenerator() {
         // Update info with hash completion
         setInputInfo(`Hashes calculated for: ${fileName}`);
         
-        // Switch to file mode and clear text input
+        // Switch to file mode, clear text input, and store file path
         setIsFileMode(true);
+        setCurrentFilePath(filePath);
         setInput("");
       }
     } catch (error) {
@@ -252,27 +283,25 @@ export function HashGenerator() {
         {/* Hash Results */}
         <div className="space-y-3">
           {hashAlgorithms.map((algo) => (
-            <div key={algo.key} className="flex items-center gap-3">
-              <div className="w-24 text-sm font-medium text-secondary text-right">
+            <div key={algo.key} className="grid grid-cols-[112px_1fr_auto] items-center gap-4">
+              <div className="text-sm font-medium text-secondary text-right">
                 {algo.name}:
               </div>
-              <div className="flex-1 flex items-center gap-2">
-                <input
-                  type="text"
-                  value={results[algo.key]}
-                  readOnly
-                  className="flex-1 px-3 py-2 bg-secondary border border-primary rounded-lg text-primary font-mono text-sm cursor-default"
-                  placeholder="Hash will appear here..."
-                />
-                <button
-                  onClick={() => copyToClipboard(results[algo.key])}
-                  className="p-2 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
-                  disabled={!results[algo.key]}
-                  title="Copy to clipboard"
-                >
-                  <Copy className="w-4 h-4" />
-                </button>
-              </div>
+              <input
+                type="text"
+                value={results[algo.key]}
+                readOnly
+                className="px-3 py-2.5 bg-secondary border border-primary rounded-lg text-primary font-mono text-sm cursor-default"
+                placeholder="Hash will appear here..."
+              />
+              <button
+                onClick={() => copyToClipboard(results[algo.key])}
+                className="p-2.5 text-tertiary hover:text-primary hover:bg-tertiary rounded-md transition-colors"
+                disabled={!results[algo.key]}
+                title="Copy to clipboard"
+              >
+                <Copy className="w-4 h-4" />
+              </button>
             </div>
           ))}
         </div>
