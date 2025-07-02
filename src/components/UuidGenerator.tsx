@@ -184,22 +184,22 @@ const UuidGenerator: React.FC = () => {
         style={{ width: `${leftPanelWidth}%`, paddingRight: '12px' }}
       >
         <div>
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-1 mb-4 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
             <button
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+              className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                 activeTab === 'input'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
               onClick={() => setActiveTab('input')}
             >
               Input
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
+              className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors flex items-center justify-center gap-1.5 ${
                 activeTab === 'clipboard'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
               onClick={() => setActiveTab('clipboard')}
             >
@@ -207,10 +207,10 @@ const UuidGenerator: React.FC = () => {
               Clipboard
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
+              className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors flex items-center justify-center gap-1.5 ${
                 activeTab === 'sample'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
               onClick={() => setActiveTab('sample')}
             >
@@ -218,10 +218,10 @@ const UuidGenerator: React.FC = () => {
               Sample
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
+              className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors flex items-center justify-center gap-1.5 ${
                 activeTab === 'clear'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
               onClick={() => setActiveTab('clear')}
             >
@@ -351,48 +351,54 @@ const UuidGenerator: React.FC = () => {
         className="space-y-4 overflow-hidden" 
         style={{ width: `${100 - leftPanelWidth}%`, paddingLeft: '12px' }}
       >
-        <div className="space-y-4">
+        <div className="space-y-3">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Generate new IDs</h3>
           
-          <div className="flex items-center gap-3 flex-wrap">
-            <select 
-              value={uuidVersion} 
-              onChange={(e) => setUuidVersion(e.target.value)}
-              className="px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="v1">UUID v1</option>
-              <option value="v3">UUID v3</option>
-              <option value="v4">UUID v4</option>
-              <option value="v5">UUID v5</option>
-              <option value="v7">UUID v7</option>
-            </select>
-
-            <span className="text-sm text-gray-500 dark:text-gray-400">×</span>
+          <div className="grid grid-cols-3 gap-3 items-end">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Version</label>
+              <select 
+                value={uuidVersion} 
+                onChange={(e) => setUuidVersion(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="v1">UUID v1</option>
+                <option value="v3">UUID v3</option>
+                <option value="v4">UUID v4</option>
+                <option value="v5">UUID v5</option>
+                <option value="v7">UUID v7</option>
+              </select>
+            </div>
             
-            <input
-              type="number"
-              value={generateCount}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGenerateCount(Math.max(1, Math.min(1000, parseInt(e.target.value) || 1)))}
-              className="w-20 px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              min="1"
-              max="1000"
-            />
-
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Count</label>
               <input
-                type="checkbox"
-                checked={isLowercase}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setIsLowercase(e.target.checked)}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                type="number"
+                value={generateCount}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGenerateCount(Math.max(1, Math.min(1000, parseInt(e.target.value) || 1)))}
+                className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                min="1"
+                max="1000"
               />
-              lowercase
-            </label>
+            </div>
+
+            <div className="pb-2">
+              <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isLowercase}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setIsLowercase(e.target.checked)}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                lowercase
+              </label>
+            </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="grid grid-cols-3 gap-2">
             <button 
               onClick={handleGenerate} 
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+              className="col-span-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 font-medium"
             >
               <Wand2 className="w-4 h-4" />
               Generate
@@ -400,7 +406,7 @@ const UuidGenerator: React.FC = () => {
             <button 
               onClick={copyAllGenerated} 
               disabled={generatedUuids.length === 0}
-              className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2.5 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {copied === 'all' ? (
                 <span className="text-green-600 dark:text-green-400">✓</span>
@@ -412,7 +418,7 @@ const UuidGenerator: React.FC = () => {
             <button 
               onClick={clearGenerated} 
               disabled={generatedUuids.length === 0}
-              className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2.5 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               <Trash2 className="w-4 h-4" />
               Clear
