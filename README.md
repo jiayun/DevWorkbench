@@ -23,9 +23,9 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
 - 📝 **JSON Formatter & Validator** - Format, validate, and beautify JSON with collapsible viewer
 - 🆔 **UUID Generator** - Generate and validate UUIDs v1/v3/v4/v5/v7 with bulk generation support
 - 🔑 **JWT Token Tool** - Decode, encode, and verify JSON Web Tokens with multiple algorithms (HS256/384/512, RS256/384/512)
+- 🌐 **URL Tools** - Encode/decode URLs, parse URL structure, query string to JSON, and build URLs from components
 
 ### 🚧 Coming Soon
-- 🌐 **URL Tools** - Encoder/decoder, parser
 - 🎨 **Color Picker** - Color converter and palette generator
 - 🖼️ **Image Tools** - Resize, format conversion, optimization
 - 🛠️ **Developer Tools** - More utilities coming soon

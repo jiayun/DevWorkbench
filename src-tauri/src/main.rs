@@ -19,6 +19,9 @@ use uuid_generator::{parse_uuid, generate_uuids};
 mod jwt_tool;
 use jwt_tool::{decode_jwt, encode_jwt, verify_jwt, generate_rsa_keypair, generate_jwt_secret};
 
+mod url_tools;
+use url_tools::{process_url_encode_decode, parse_url, build_url};
+
 #[derive(Serialize, Deserialize)]
 struct HashResult {
     algorithm: String,
@@ -209,7 +212,10 @@ fn main() {
             encode_jwt,
             verify_jwt,
             generate_rsa_keypair,
-            generate_jwt_secret
+            generate_jwt_secret,
+            process_url_encode_decode,
+            parse_url,
+            build_url
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

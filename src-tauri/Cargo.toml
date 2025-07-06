@@ -32,6 +32,8 @@ rsa = { version = "0.9", features = ["pem"] }
 base64 = "0.22"
 chrono = { version = "0.4", features = ["serde"] }
 rand = "0.8"
+url = "2.5"
+percent-encoding = "2.3"
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]

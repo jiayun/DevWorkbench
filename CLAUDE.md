@@ -52,9 +52,9 @@ npx tsc --noEmit
 - [x] **JSON Formatter & Validator** - Format, validate, and beautify JSON with collapsible viewer
 - [x] **UUID Generator** - Generate and validate UUIDs v1/v3/v4/v5/v7 with bulk generation support
 - [x] **JWT Token Tool** - Decode, encode, and verify JSON Web Tokens with multiple algorithms (HS256/384/512, RS256/384/512)
+- [x] **URL Tools** - Encode/decode URLs, parse URL structure, query string to JSON, and build URLs from components
 
 ## Features to Implement
-- [ ] URL encoder/decoder
 - [ ] Text utilities (HTML entities, Unicode)
 - [ ] Color picker and converter
 - [ ] Image tools

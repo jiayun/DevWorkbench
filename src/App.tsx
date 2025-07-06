@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare, Sun, Moon, Monitor } from "lucide-react";
+import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare, Sun, Moon, Monitor, Link } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
 import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
 import { Base58EncoderDecoder } from "./components/Base58EncoderDecoder";
@@ -8,6 +8,7 @@ import { HashGenerator } from "./components/HashGenerator";
 import { JsonFormatter } from "./components/JsonFormatter";
 import UuidGenerator from "./components/UuidGenerator";
 import JwtTool from "./components/JwtTool";
+import { UrlTools } from "./components/UrlTools";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { Button } from "./components/ui";
 import "./App.css";
@@ -76,6 +77,13 @@ const tools: Tool[] = [
     description: "Decode, encode, and verify JSON Web Tokens with multiple algorithms",
     icon: KeySquare,
     component: JwtTool,
+  },
+  {
+    id: "url-tools",
+    name: "URL Tools",
+    description: "Encode/decode URLs, parse URL structure, and build URLs from components",
+    icon: Link,
+    component: UrlTools,
   },
 ];
 
