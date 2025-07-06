@@ -128,8 +128,13 @@ jobs:
             ## Installation
             
             ### macOS
-            1. Download `DevWorkbench_x.x.x_x64.dmg`
+            1. Download `DevWorkbench_x.x.x_x64.dmg` (Intel) or `DevWorkbench_x.x.x_aarch64.dmg` (Apple Silicon)
             2. Open the DMG file and drag DevWorkbench to Applications
+            3. **Important**: If you see a security warning, remove the quarantine attribute:
+               ```bash
+               xattr -cr /Applications/DevWorkbench.app
+               ```
+               This is needed because the app is not notarized by Apple yet.
             
             ### Windows
             1. Download `DevWorkbench_x.x.x_x64.msi`
