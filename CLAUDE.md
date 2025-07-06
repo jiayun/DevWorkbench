@@ -72,6 +72,10 @@ npx tsc --noEmit
 ### Version Management
 - **CRITICAL**: Always sync version numbers before creating releases
 - Update both `package.json` and `src-tauri/tauri.conf.json` to match git tag
+- **MANDATORY**: Update `CHANGELOG.md` with new version and release notes before creating releases
+  - Move changes from `[Unreleased]` section to new version section
+  - Add release date in format `## [X.X.X] - YYYY-MM-DD`
+  - Update version comparison links at bottom of file
 - Tauri uses these version numbers for build artifact filenames
 - Example: v0.2.2 tag requires "version": "0.2.2" in both files
 
@@ -88,10 +92,23 @@ npx tsc --noEmit
 
 ### Release Process
 1. Update features in CLAUDE.md
-2. Sync version numbers in package.json and tauri.conf.json
-3. Create git tag matching the version numbers
-4. GitHub Actions automatically builds and creates release
-5. Verify artifact filenames include correct version numbers
+2. **MANDATORY**: Update CHANGELOG.md with new version entry
+   - Move unreleased changes to new version section
+   - Add proper version header with date: `## [X.X.X] - YYYY-MM-DD`
+   - Update version comparison links at bottom
+3. Sync version numbers in package.json and tauri.conf.json
+4. **Run pre-release check**: `npm run pre-release-check`
+5. Create git tag matching the version numbers
+6. GitHub Actions automatically builds and creates release
+7. Verify artifact filenames include correct version numbers
+
+### Pre-Release Checklist
+- [ ] CHANGELOG.md updated with new version and release notes
+- [ ] package.json version matches intended release version
+- [ ] src-tauri/tauri.conf.json version matches intended release version
+- [ ] All version numbers match git tag to be created
+- [ ] TypeScript compilation passes (`npx tsc --noEmit`)
+- [ ] All features documented in CLAUDE.md
 
 ### Component Development Patterns
 - Each tool is a separate component in `src/components/`
