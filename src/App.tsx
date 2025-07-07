@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare, Sun, Moon, Monitor, Link, Type, Clock } from "lucide-react";
+import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare, Sun, Moon, Monitor, Link, Type, Clock, CalendarClock } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
 import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
 import { Base58EncoderDecoder } from "./components/Base58EncoderDecoder";
@@ -11,6 +11,7 @@ import JwtTool from "./components/JwtTool";
 import { UrlTools } from "./components/UrlTools";
 import TextUtilities from "./components/TextUtilities";
 import { UnixTimeConverter } from "./components/UnixTimeConverter";
+import { CronJobParser } from "./components/CronJobParser";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { Button } from "./components/ui";
 import "./App.css";
@@ -100,6 +101,13 @@ const tools: Tool[] = [
     description: "Convert Unix timestamps and display detailed time information",
     icon: Clock,
     component: UnixTimeConverter,
+  },
+  {
+    id: "cron-job-parser",
+    name: "Cron Job Parser",
+    description: "Parse cron expressions, view execution times, and browse example collections",
+    icon: CalendarClock,
+    component: CronJobParser,
   },
 ];
 
