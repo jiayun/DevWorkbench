@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare, Sun, Moon, Monitor, Link, Type } from "lucide-react";
+import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare, Sun, Moon, Monitor, Link, Type, Clock } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
 import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
 import { Base58EncoderDecoder } from "./components/Base58EncoderDecoder";
@@ -10,6 +10,7 @@ import UuidGenerator from "./components/UuidGenerator";
 import JwtTool from "./components/JwtTool";
 import { UrlTools } from "./components/UrlTools";
 import TextUtilities from "./components/TextUtilities";
+import { UnixTimeConverter } from "./components/UnixTimeConverter";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { Button } from "./components/ui";
 import "./App.css";
@@ -92,6 +93,13 @@ const tools: Tool[] = [
     description: "HTML entities, Unicode conversion, case conversion, and text statistics",
     icon: Type,
     component: TextUtilities,
+  },
+  {
+    id: "unix-time-converter",
+    name: "Unix Time Converter",
+    description: "Convert Unix timestamps and display detailed time information",
+    icon: Clock,
+    component: UnixTimeConverter,
   },
 ];
 

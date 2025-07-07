@@ -54,6 +54,7 @@ npx tsc --noEmit
 - [x] **JWT Token Tool** - Decode, encode, and verify JSON Web Tokens with multiple algorithms (HS256/384/512, RS256/384/512)
 - [x] **URL Tools** - Encode/decode URLs, parse URL structure, query string to JSON, and build URLs from components
 - [x] **Text Utilities** - HTML entities encode/decode, Unicode conversion, case conversion (camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE), and text statistics
+- [x] **Unix Time Converter** - Convert Unix timestamps to human-readable dates with detailed time information including relative time, day/week of year, leap year status, and multiple format options
 
 ## Features to Implement
 - [ ] Color picker and converter
