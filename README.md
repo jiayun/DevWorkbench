@@ -24,6 +24,9 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
 - 🆔 **UUID Generator** - Generate and validate UUIDs v1/v3/v4/v5/v7 with bulk generation support
 - 🔑 **JWT Token Tool** - Decode, encode, and verify JSON Web Tokens with multiple algorithms (HS256/384/512, RS256/384/512)
 - 🌐 **URL Tools** - Encode/decode URLs, parse URL structure, query string to JSON, and build URLs from components
+- 📝 **Text Utilities** - HTML entities encode/decode, Unicode conversion, case conversion (camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE), and text statistics
+- ⏰ **Unix Time Converter** - Convert Unix timestamps to human-readable dates with detailed time information including relative time, day/week of year, leap year status, and multiple format options
+- ⏰ **Cron Job Parser** - Parse cron expressions, generate human-readable descriptions, predict execution times, and browse comprehensive example collections with category filtering
 
 ### 🚧 Coming Soon
 - 🎨 **Color Picker** - Color converter and palette generator
