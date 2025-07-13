@@ -90,7 +90,7 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
   <a href="https://github.com/jiayun/DevWorkbench/releases/latest" class="btn btn-primary">
     Download Latest Release
   </a>
-  <a href="/DevWorkbench/installation" class="btn btn-secondary">
+  <a href="/installation" class="btn btn-secondary">
     Installation Guide
   </a>
 </div>
@@ -104,7 +104,7 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. Check out our [development guide](/DevWorkbench/development) to get started.
+Contributions are welcome! Please feel free to submit a Pull Request. Check out our [development guide](/development) to get started.
 
 ## 📄 License
 
