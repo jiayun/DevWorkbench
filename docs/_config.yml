@@ -3,8 +3,8 @@ title: DevWorkbench
 description: A developer utilities application built with Tauri and React - 100% AI-Generated
 author: jiayun
 theme: jekyll-theme-cayman
-url: https://jiayun.github.io
-baseurl: /DevWorkbench
+url: https://devworkbench.org
+baseurl: ""
 
 # Build settings
 markdown: kramdown
