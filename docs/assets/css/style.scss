@@ -1,0 +1,255 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+// Custom styles for DevWorkbench GitHub Pages
+
+// Variables
+$primary-color: #3b82f6;
+$secondary-color: #10b981;
+$dark-bg: #1f2937;
+$light-bg: #f9fafb;
+
+// Hero Section
+.hero-section {
+  text-align: center;
+  padding: 2rem 0;
+  margin-bottom: 3rem;
+  
+  .hero-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin: 2rem auto;
+  }
+}
+
+// Features Grid
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+  
+  .feature-card {
+    background: $light-bg;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    h3 {
+      margin-top: 0;
+      color: $primary-color;
+      font-size: 1.2rem;
+    }
+    
+    p {
+      margin-bottom: 0;
+      color: #6b7280;
+      font-size: 0.95rem;
+    }
+  }
+}
+
+// Buttons
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+  margin: 0.5rem;
+  
+  &.btn-primary {
+    background: $primary-color;
+    color: white;
+    
+    &:hover {
+      background: darken($primary-color, 10%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    }
+  }
+  
+  &.btn-secondary {
+    background: $secondary-color;
+    color: white;
+    
+    &:hover {
+      background: darken($secondary-color, 10%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+    }
+  }
+  
+  &.btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+}
+
+// CTA Buttons Section
+.cta-buttons {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+// Download Section
+.download-section {
+  text-align: center;
+  margin: 2rem 0;
+  padding: 2rem;
+  background: $light-bg;
+  border-radius: 8px;
+}
+
+// Feature Screenshots
+.feature-screenshot {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 2rem auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+// Code blocks
+pre {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  line-height: 1.5;
+  
+  code {
+    background: none;
+    color: inherit;
+    padding: 0;
+  }
+}
+
+// Inline code
+code {
+  background-color: #e5e7eb;
+  color: #374151;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+// Navigation improvements
+.main-content {
+  h1, h2, h3, h4, h5, h6 {
+    position: relative;
+    
+    &:hover::before {
+      content: "#";
+      position: absolute;
+      left: -1.5rem;
+      color: #9ca3af;
+      font-weight: normal;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+// Page header styling
+.page-header {
+  background: linear-gradient(135deg, $primary-color, darken($primary-color, 20%));
+  color: white;
+  
+  .project-name {
+    font-weight: 700;
+  }
+  
+  .project-tagline {
+    opacity: 0.9;
+  }
+  
+  .btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+}
+
+// Table styling
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  
+  th, td {
+    border: 1px solid #e5e7eb;
+    padding: 0.75rem;
+    text-align: left;
+  }
+  
+  th {
+    background: $light-bg;
+    font-weight: 600;
+  }
+  
+  tr:nth-child(even) {
+    background: #f9fafb;
+  }
+}
+
+// Lists
+ul, ol {
+  li {
+    margin: 0.5rem 0;
+  }
+}
+
+// Blockquotes
+blockquote {
+  border-left: 4px solid $primary-color;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+// HR styling
+hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 2rem 0;
+}
+
+// Footer
+.site-footer {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+  color: #6b7280;
+}

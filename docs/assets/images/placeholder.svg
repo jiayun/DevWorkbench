@@ -1,0 +1,9 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#f3f4f6"/>
+  <text x="400" y="225" font-family="Arial, sans-serif" font-size="24" fill="#9ca3af" text-anchor="middle" dominant-baseline="middle">
+    Screenshot Placeholder
+  </text>
+  <text x="400" y="255" font-family="Arial, sans-serif" font-size="16" fill="#9ca3af" text-anchor="middle" dominant-baseline="middle">
+    Replace with actual screenshot
+  </text>
+</svg>

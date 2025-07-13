@@ -1,0 +1,46 @@
+# Jekyll configuration for DevWorkbench GitHub Pages
+title: DevWorkbench
+description: A developer utilities application built with Tauri and React - 100% AI-Generated
+author: jiayun
+theme: jekyll-theme-cayman
+url: https://jiayun.github.io
+baseurl: /DevWorkbench
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Navigation
+navigation:
+  - title: Home
+    url: /
+  - title: Features
+    url: /features
+  - title: Installation
+    url: /installation
+  - title: Development
+    url: /development
+
+# Collections
+collections:
+  features:
+    output: true
+    permalink: /features/:name
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+# Exclude files from build
+exclude:
+  - README.md
+  - LICENSE
+  - .gitignore
+
+# Plugins
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
