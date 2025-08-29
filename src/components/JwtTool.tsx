@@ -232,6 +232,7 @@ export default function JwtTool() {
   const [secret, setSecret] = useState('your-256-bit-secret');
   const [encodedToken, setEncodedToken] = useState('');
   const [encodeError, setEncodeError] = useState<string | null>(null);
+  const [jsonValidationError, setJsonValidationError] = useState<string | null>(null);
   
   // Verify state
   const [verifyToken, setVerifyToken] = useState('');
@@ -273,7 +274,44 @@ export default function JwtTool() {
     }
   }, [inputToken]);
 
+  const validateJson = useCallback((jsonString: string): { valid: boolean; error: string | null } => {
+    if (!jsonString.trim()) {
+      return { valid: false, error: 'Payload cannot be empty' };
+    }
+    try {
+      JSON.parse(jsonString);
+      return { valid: true, error: null };
+    } catch (e) {
+      if (e instanceof SyntaxError) {
+        const match = e.message.match(/position (\d+)/);
+        if (match) {
+          const position = parseInt(match[1]);
+          const lines = jsonString.substring(0, position).split('\n');
+          const line = lines.length;
+          return { valid: false, error: `Invalid JSON at line ${line}: ${e.message}` };
+        }
+        return { valid: false, error: `Invalid JSON: ${e.message}` };
+      }
+      return { valid: false, error: 'Invalid JSON format' };
+    }
+  }, []);
+
   const handleEncode = useCallback(async () => {
+    // First validate JSON
+    const validation = validateJson(payloadJson);
+    if (!validation.valid) {
+      setEncodeError(validation.error);
+      setEncodedToken('');
+      return;
+    }
+
+    // Check if secret is provided
+    if (!secret.trim()) {
+      setEncodeError(algorithm.startsWith('RS') ? 'Private key is required' : 'Secret is required');
+      setEncodedToken('');
+      return;
+    }
+
     try {
       const payload = JSON.parse(payloadJson);
       const token = await invoke<string>('encode_jwt', {
@@ -285,9 +323,16 @@ export default function JwtTool() {
       setEncodeError(null);
     } catch (error) {
       setEncodedToken('');
-      setEncodeError(error as string);
+      // Handle different error types
+      if (error instanceof Error) {
+        setEncodeError(error.message);
+      } else if (typeof error === 'string') {
+        setEncodeError(error);
+      } else {
+        setEncodeError('An unexpected error occurred while encoding the JWT');
+      }
     }
-  }, [payloadJson, secret, algorithm]);
+  }, [payloadJson, secret, algorithm, validateJson]);
 
   const handleVerify = useCallback(async () => {
     if (!verifyToken.trim() || !verifySecret.trim()) {
@@ -335,6 +380,25 @@ export default function JwtTool() {
       console.error('Failed to generate secret:', error);
     }
   }, []);
+
+  const handlePayloadChange = useCallback((value: string) => {
+    setPayloadJson(value);
+    // Validate JSON as user types
+    const validation = validateJson(value);
+    setJsonValidationError(validation.error);
+  }, [validateJson]);
+
+  const formatPayload = useCallback(() => {
+    try {
+      const parsed = JSON.parse(payloadJson);
+      setPayloadJson(JSON.stringify(parsed, null, 2));
+      setJsonValidationError(null);
+    } catch (e) {
+      // Don't format if JSON is invalid
+      const validation = validateJson(payloadJson);
+      setJsonValidationError(validation.error);
+    }
+  }, [payloadJson, validateJson]);
 
   const formatDate = (timestamp: number | null) => {
     if (!timestamp) return 'N/A';
@@ -592,16 +656,39 @@ export default function JwtTool() {
               </div>
 
               <div className="flex-1">
-                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Payload (JSON)</Label>
+                <div className="flex items-center justify-between mb-2">
+                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Payload (JSON)</Label>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={formatPayload}
+                    disabled={!!jsonValidationError}
+                  >
+                    <FileText className="w-4 h-4 mr-1" />
+                    Format
+                  </Button>
+                </div>
                 <Textarea
                   placeholder="JWT payload..."
                   value={payloadJson}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPayloadJson(e.target.value)}
-                  className="mt-2 font-mono text-sm h-full min-h-[200px]"
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handlePayloadChange(e.target.value)}
+                  className={`mt-2 font-mono text-sm h-full min-h-[200px] ${
+                    jsonValidationError ? 'border-red-500 focus:ring-red-500' : ''
+                  }`}
                 />
+                {jsonValidationError && (
+                  <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {jsonValidationError}
+                  </div>
+                )}
               </div>
 
-              <Button onClick={handleEncode} className="w-full">
+              <Button 
+                onClick={handleEncode} 
+                className="w-full"
+                disabled={!!jsonValidationError || !secret.trim()}
+              >
                 <Lock className="w-4 h-4 mr-2" />
                 Encode JWT
               </Button>
