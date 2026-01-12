@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2025-01-12
+
+### Added
+- OpenAPI Spec Filter feature
+  - Load OpenAPI/Swagger JSON spec files
+  - Multi-select endpoints with search and tag filtering
+  - Automatic $ref dependency tracking (schemas, parameters, responses, etc.)
+  - Export filtered spec with Copy and Download options
+  - HTTP method color-coded badges (GET=blue, POST=green, PUT=orange, DELETE=red)
+
 ## [0.3.4] - 2025-08-29
 
 ### Fixed

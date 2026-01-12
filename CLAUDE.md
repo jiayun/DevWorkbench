@@ -56,6 +56,7 @@ npx tsc --noEmit
 - [x] **Text Utilities** - HTML entities encode/decode, Unicode conversion, case conversion (camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE), and text statistics
 - [x] **Unix Time Converter** - Convert Unix timestamps to human-readable dates with detailed time information including relative time, day/week of year, leap year status, and multiple format options
 - [x] **Cron Job Parser** - Parse cron expressions, generate human-readable descriptions, predict execution times, and browse comprehensive example collections with category filtering
+- [x] **OpenAPI Spec Filter** - Load OpenAPI spec JSON files, select endpoints with filtering and search, and export filtered spec with only selected endpoints and their referenced components
 
 ## Features to Implement
 - [ ] Color picker and converter

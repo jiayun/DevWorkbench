@@ -257,3 +257,26 @@ Parse and validate cron expressions with human-readable descriptions.
 - Cron debugging
 - Task automation
 - Time-based triggers
+
+---
+
+## 📄 OpenAPI Spec Filter
+
+Filter and extract selected API endpoints from OpenAPI specifications.
+
+<!-- 截圖預留空間 -->
+<img src="assets/images/features/openapi-filter.png" alt="OpenAPI Spec Filter" class="feature-screenshot" />
+
+**Features:**
+- Load OpenAPI 3.x and Swagger 2.0 JSON specs
+- Multi-select endpoints with checkbox
+- Search by path, operationId, or summary
+- Filter by tag
+- Automatic $ref dependency resolution
+- Export filtered spec (Copy/Download)
+
+**Use Cases:**
+- Extract subset of APIs for AI context
+- Partial API documentation
+- API gateway configuration
+- Microservice splitting

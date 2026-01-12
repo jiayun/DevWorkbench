@@ -82,6 +82,11 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
     <h3>⏱️ Cron Job Parser</h3>
     <p>Parse cron expressions with human-readable descriptions</p>
   </div>
+
+  <div class="feature-card">
+    <h3>📄 OpenAPI Spec Filter</h3>
+    <p>Filter and extract selected endpoints from OpenAPI specifications</p>
+  </div>
 </div>
 
 ## 🚀 Quick Start

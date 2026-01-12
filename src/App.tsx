@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare, Sun, Moon, Monitor, Link, Type, Clock, CalendarClock } from "lucide-react";
+import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare, Sun, Moon, Monitor, Link, Type, Clock, CalendarClock, FileJson } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
 import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
 import { Base58EncoderDecoder } from "./components/Base58EncoderDecoder";
@@ -12,6 +12,7 @@ import { UrlTools } from "./components/UrlTools";
 import TextUtilities from "./components/TextUtilities";
 import { UnixTimeConverter } from "./components/UnixTimeConverter";
 import { CronJobParser } from "./components/CronJobParser";
+import { OpenApiSpecFilter } from "./components/OpenApiSpecFilter";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { Button } from "./components/ui";
 import "./App.css";
@@ -108,6 +109,13 @@ const tools: Tool[] = [
     description: "Parse cron expressions, view execution times, and browse example collections",
     icon: CalendarClock,
     component: CronJobParser,
+  },
+  {
+    id: "openapi-spec-filter",
+    name: "OpenAPI Spec Filter",
+    description: "Filter and extract selected endpoints from OpenAPI specifications",
+    icon: FileJson,
+    component: OpenApiSpecFilter,
   },
 ];
 
