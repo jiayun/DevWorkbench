@@ -53,21 +53,31 @@ function checkChangelogUpdated() {
 
 function checkVersionConsistency() {
   const packageJsonPath = path.join(projectRoot, 'package.json');
+  const packageLockPath = path.join(projectRoot, 'package-lock.json');
   const tauriConfigPath = path.join(projectRoot, 'src-tauri/tauri.conf.json');
-  
+
   const packageJson = JSON.parse(readFile(packageJsonPath));
+  const packageLock = JSON.parse(readFile(packageLockPath));
   const tauriConfig = JSON.parse(readFile(tauriConfigPath));
-  
+
   const packageVersion = packageJson.version;
+  const packageLockVersion = packageLock.version;
   const tauriVersion = tauriConfig.version;
-  
-  if (packageVersion !== tauriVersion) {
+
+  const versions = [
+    { name: 'package.json', version: packageVersion },
+    { name: 'package-lock.json', version: packageLockVersion },
+    { name: 'tauri.conf.json', version: tauriVersion }
+  ];
+
+  const allMatch = versions.every(v => v.version === packageVersion);
+
+  if (!allMatch) {
     console.error(`❌ Version mismatch:`);
-    console.error(`   package.json: ${packageVersion}`);
-    console.error(`   tauri.conf.json: ${tauriVersion}`);
+    versions.forEach(v => console.error(`   ${v.name}: ${v.version}`));
     return false;
   }
-  
+
   console.log(`✅ Version consistency: ${packageVersion}`);
   return true;
 }

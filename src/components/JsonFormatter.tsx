@@ -1,6 +1,14 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Copy, Settings, Check, X } from "lucide-react";
+import { useState, useEffect, useRef, useCallback, useDeferredValue } from "react";
+import { Copy, Settings, Check, X, Search, ChevronUp, ChevronDown } from "lucide-react";
 import { JsonViewer } from './JsonViewer';
+
+interface SearchResult {
+  path: string;
+  pathParts: string[];
+  matchType: "key" | "value" | "both";
+  matchedKey?: string;
+  matchedValue?: string;
+}
 
 export function JsonFormatter() {
   const [input, setInput] = useState("");
@@ -14,6 +22,16 @@ export function JsonFormatter() {
     sortKeys: false,
     quoteStyle: "double" as "double" | "single"
   });
+
+  // Search state
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [currentResultIndex, setCurrentResultIndex] = useState(0);
+  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const jsonViewerContainerRef = useRef<HTMLDivElement>(null);
 
   // Resizable panels state
   const [leftPanelWidth, setLeftPanelWidth] = useState(50); // percentage
@@ -71,6 +89,189 @@ export function JsonFormatter() {
     }
     return obj;
   };
+
+  // Search JSON recursively
+  const searchJson = useCallback((data: unknown, query: string, currentPath: string[] = []): SearchResult[] => {
+    const results: SearchResult[] = [];
+    const lowerQuery = query.toLowerCase();
+
+    if (data === null || data === undefined) {
+      if ("null".includes(lowerQuery)) {
+        results.push({
+          path: currentPath.join(".") || "(root)",
+          pathParts: [...currentPath],
+          matchType: "value",
+          matchedValue: "null"
+        });
+      }
+      return results;
+    }
+
+    if (Array.isArray(data)) {
+      data.forEach((item, index) => {
+        const newPath = [...currentPath, `[${index}]`];
+        results.push(...searchJson(item, query, newPath));
+      });
+    } else if (typeof data === "object") {
+      Object.entries(data as Record<string, unknown>).forEach(([key, value]) => {
+        const newPath = [...currentPath, key];
+        const pathStr = newPath.map((p, i) => p.startsWith("[") ? p : (i === 0 ? p : "." + p)).join("");
+
+        const keyMatches = key.toLowerCase().includes(lowerQuery);
+        let valueMatches = false;
+        let valueStr = "";
+
+        if (typeof value === "string") {
+          valueStr = value;
+          valueMatches = value.toLowerCase().includes(lowerQuery);
+        } else if (typeof value === "number" || typeof value === "boolean") {
+          valueStr = String(value);
+          valueMatches = valueStr.toLowerCase().includes(lowerQuery);
+        } else if (value === null) {
+          valueStr = "null";
+          valueMatches = "null".includes(lowerQuery);
+        }
+
+        if (keyMatches || valueMatches) {
+          results.push({
+            path: pathStr,
+            pathParts: newPath,
+            matchType: keyMatches && valueMatches ? "both" : keyMatches ? "key" : "value",
+            matchedKey: keyMatches ? key : undefined,
+            matchedValue: valueMatches ? valueStr : undefined
+          });
+        }
+
+        if (typeof value === "object" && value !== null) {
+          results.push(...searchJson(value, query, newPath));
+        }
+      });
+    } else {
+      const valueStr = String(data);
+      if (valueStr.toLowerCase().includes(lowerQuery)) {
+        results.push({
+          path: currentPath.map((p, i) => p.startsWith("[") ? p : (i === 0 ? p : "." + p)).join("") || "(root)",
+          pathParts: currentPath,
+          matchType: "value",
+          matchedValue: valueStr
+        });
+      }
+    }
+
+    return results;
+  }, []);
+
+  // Search effect
+  useEffect(() => {
+    if (!deferredSearchQuery.trim() || !parsedData) {
+      setSearchResults([]);
+      setCurrentResultIndex(0);
+      setExpandedPaths(new Set());
+      return;
+    }
+
+    const results = searchJson(parsedData, deferredSearchQuery.trim());
+    setSearchResults(results);
+    setCurrentResultIndex(0);
+
+    // Calculate paths to expand (all parent paths of results)
+    const paths = new Set<string>();
+    results.forEach(r => {
+      let acc = "";
+      r.pathParts.forEach((part, i) => {
+        if (i === 0) {
+          acc = part;
+        } else {
+          acc = part.startsWith("[") ? acc + part : acc + "." + part;
+        }
+        paths.add(acc);
+      });
+    });
+    setExpandedPaths(paths);
+  }, [deferredSearchQuery, parsedData, searchJson]);
+
+  // Navigate to search result
+  const navigateToResult = useCallback((index: number) => {
+    if (searchResults.length === 0) return;
+    const safeIndex = ((index % searchResults.length) + searchResults.length) % searchResults.length;
+    setCurrentResultIndex(safeIndex);
+
+    // Scroll to result within the JSON viewer container
+    setTimeout(() => {
+      const path = searchResults[safeIndex].path;
+      const element = document.querySelector(`[data-json-path="${CSS.escape(path)}"]`) as HTMLElement | null;
+      const container = jsonViewerContainerRef.current;
+
+      if (element && container) {
+        const elementRect = element.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+
+        // Scroll to show the element near the top of visible area (with 20px padding)
+        const scrollTop = container.scrollTop + elementRect.top - containerRect.top - 20;
+        container.scrollTo({ top: Math.max(0, scrollTop), behavior: "smooth" });
+      }
+    }, 50);
+  }, [searchResults]);
+
+  // Auto-scroll to first result when search results change
+  useEffect(() => {
+    if (searchResults.length > 0 && currentResultIndex === 0) {
+      // Delay to allow DOM to update with expanded paths
+      setTimeout(() => {
+        const path = searchResults[0].path;
+        const element = document.querySelector(`[data-json-path="${CSS.escape(path)}"]`) as HTMLElement | null;
+        const container = jsonViewerContainerRef.current;
+
+        if (element && container) {
+          const elementRect = element.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          const scrollTop = container.scrollTop + elementRect.top - containerRect.top - 20;
+          container.scrollTo({ top: Math.max(0, scrollTop), behavior: "smooth" });
+        }
+      }, 100);
+    }
+  }, [searchResults]);
+
+  // Keyboard shortcuts for search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+F or Cmd+F to open search
+      if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+        e.preventDefault();
+        setShowSearch(true);
+        setShowSettings(false);
+        // Focus will be handled by the separate useEffect
+        return;
+      }
+
+      if (!showSearch) return;
+
+      if (e.key === "Enter" && !e.metaKey && !e.ctrlKey && searchResults.length > 0) {
+        e.preventDefault();
+        navigateToResult(e.shiftKey ? currentResultIndex - 1 : currentResultIndex + 1);
+      }
+
+      if (e.key === "F3" && searchResults.length > 0) {
+        e.preventDefault();
+        navigateToResult(e.shiftKey ? currentResultIndex - 1 : currentResultIndex + 1);
+      }
+
+      if (e.key === "Escape") {
+        setShowSearch(false);
+        setSearchQuery("");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showSearch, searchResults, currentResultIndex, navigateToResult]);
+
+  // Focus search input when opening
+  useEffect(() => {
+    if (showSearch && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [showSearch]);
 
   const handleCopy = async (text: string) => {
     await navigator.clipboard.writeText(text);
@@ -153,7 +354,7 @@ export function JsonFormatter() {
   }, [isResizing, handleMouseMove, handleMouseUp]);
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col overflow-hidden">
       <div className="flex items-center justify-between mb-4 flex-shrink-0">
         <div className="flex items-center gap-4">
           {error && (
@@ -171,7 +372,24 @@ export function JsonFormatter() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => setShowSettings(!showSettings)}
+            onClick={() => {
+              setShowSearch(!showSearch);
+              if (!showSearch) setShowSettings(false);
+            }}
+            className={`px-3 py-1.5 text-sm rounded transition-colors flex items-center gap-2 ${
+              showSearch
+                ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
+                : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+            }`}
+          >
+            <Search className="w-4 h-4" />
+            Search
+          </button>
+          <button
+            onClick={() => {
+              setShowSettings(!showSettings);
+              if (!showSettings) setShowSearch(false);
+            }}
             className="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center gap-2"
           >
             <Settings className="w-4 h-4" />
@@ -179,6 +397,65 @@ export function JsonFormatter() {
           </button>
         </div>
       </div>
+
+      {showSearch && (
+        <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1 max-w-md">
+              <Search
+                className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 pointer-events-none"
+                style={{ color: "var(--color-secondary-text)", left: "12px" }}
+              />
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search keys and values..."
+                className="w-full rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: "var(--color-tertiary-bg)",
+                  border: "1px solid var(--color-primary-border)",
+                  color: "var(--color-primary-text)",
+                  paddingLeft: "40px",
+                  paddingRight: "16px",
+                  paddingTop: "10px",
+                  paddingBottom: "10px",
+                }}
+              />
+            </div>
+            {searchResults.length > 0 && (
+              <>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => navigateToResult(currentResultIndex - 1)}
+                    className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    title="Previous match (Shift+Enter)"
+                  >
+                    <ChevronUp className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => navigateToResult(currentResultIndex + 1)}
+                    className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    title="Next match (Enter)"
+                  >
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </div>
+                <span className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                  {currentResultIndex + 1} / {searchResults.length} matches
+                </span>
+              </>
+            )}
+            {searchQuery && searchResults.length === 0 && parsedData && (
+              <span className="text-sm text-gray-500 dark:text-gray-400">No matches found</span>
+            )}
+          </div>
+          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            Press Enter for next, Shift+Enter for previous, Esc to close
+          </div>
+        </div>
+      )}
 
       {showSettings && (
         <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg flex-shrink-0">
@@ -289,14 +566,22 @@ export function JsonFormatter() {
               Copy
             </button>
           </div>
-          <div className="flex-1 w-full border rounded relative overflow-hidden border-primary bg-secondary">
-            {parsedData !== null ? (
-              <JsonViewer data={parsedData} />
-            ) : (
-              <div className="flex items-center justify-center h-full text-sm text-tertiary">
-                Formatted JSON will appear here...
-              </div>
-            )}
+          <div className="flex-1 min-h-0 relative">
+            <div ref={jsonViewerContainerRef} className="border rounded overflow-auto border-primary bg-secondary" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+              {parsedData !== null ? (
+                <JsonViewer
+                  data={parsedData}
+                  searchQuery={deferredSearchQuery}
+                  highlightPaths={new Set(searchResults.map(r => r.path))}
+                  currentHighlightPath={searchResults[currentResultIndex]?.path}
+                  expandedPaths={expandedPaths}
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full text-sm text-tertiary">
+                  Formatted JSON will appear here...
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

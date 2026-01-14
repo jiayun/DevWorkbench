@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2025-01-14
+
+### Added
+- JSON Formatter search functionality
+  - Search JSON keys and values with real-time highlighting
+  - Navigate between matches with Previous/Next buttons
+  - Keyboard shortcuts: Cmd/Ctrl+F to open search, Enter for next, Shift+Enter for previous, Esc to close
+  - Match counter showing current position (e.g., "3 / 15 matches")
+  - Auto-scroll to search results while keeping search panel visible
+
 ## [0.4.0] - 2025-01-12
 
 ### Added
@@ -169,7 +179,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic Tauri + React application structure
 - Tailwind CSS + Radix UI component framework
 
-[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.3.4...HEAD
+[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/jiayun/DevWorkbench/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/jiayun/DevWorkbench/compare/v0.3.4...v0.4.0
 [0.3.4]: https://github.com/jiayun/DevWorkbench/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/jiayun/DevWorkbench/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/jiayun/DevWorkbench/compare/v0.3.1...v0.3.2
