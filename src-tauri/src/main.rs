@@ -22,6 +22,9 @@ use jwt_tool::{decode_jwt, encode_jwt, verify_jwt, generate_rsa_keypair, generat
 mod url_tools;
 use url_tools::{process_url_encode_decode, parse_url, build_url};
 
+mod regex_tester;
+use regex_tester::{test_regex, replace_regex};
+
 #[derive(Serialize, Deserialize)]
 struct HashResult {
     algorithm: String,
@@ -215,7 +218,9 @@ fn main() {
             generate_jwt_secret,
             process_url_encode_decode,
             parse_url,
-            build_url
+            build_url,
+            test_regex,
+            replace_regex
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
