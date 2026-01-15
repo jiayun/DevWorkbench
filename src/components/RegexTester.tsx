@@ -455,13 +455,22 @@ admin@localhost`);
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem' }}>
             {/* Left: Text Input with Highlighting - Overlay technique */}
             <div className="relative" style={{ minHeight: '250px' }}>
-              {/* Base layer - textarea for editing (determines size) */}
+              {/* Base layer - textarea for editing */}
               <textarea
                 value={testText}
                 onChange={(e) => setTestText(e.target.value)}
                 placeholder="Enter text to test against your regex pattern..."
-                className="absolute inset-0 w-full h-full p-3 font-mono text-sm rounded-lg border border-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="absolute inset-0 w-full h-full rounded-lg border border-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={{
+                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                  fontSize: '14px',
+                  lineHeight: '21px',
+                  padding: '12px',
+                  margin: 0,
+                  boxSizing: 'border-box',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
                   backgroundColor: '#1a1a2e',
                   color: 'transparent',
                   WebkitTextFillColor: 'transparent',
@@ -471,8 +480,19 @@ admin@localhost`);
               {/* Overlay layer - shows highlighted content (pointer-events: none) */}
               <div
                 ref={textDisplayRef}
-                className="absolute inset-0 p-3 rounded-lg font-mono text-sm overflow-auto whitespace-pre-wrap pointer-events-none"
-                style={{ color: '#e0e0e0' }}
+                className="absolute inset-0 rounded-lg overflow-hidden pointer-events-none"
+                style={{
+                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                  fontSize: '14px',
+                  lineHeight: '21px',
+                  padding: '12px',
+                  margin: 0,
+                  boxSizing: 'border-box',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
+                  color: '#e0e0e0',
+                }}
               >
                 {highlightedTextContent}
               </div>
