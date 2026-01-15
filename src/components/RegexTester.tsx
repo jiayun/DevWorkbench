@@ -453,26 +453,29 @@ admin@localhost`);
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem' }}>
-            {/* Left: Text Input with Highlighting */}
-            <div className="space-y-3">
-              {/* Highlighted Preview - main display area */}
-              <div
-                ref={textDisplayRef}
-                className="p-3 rounded-lg font-mono text-sm min-h-[200px] max-h-[400px] overflow-auto whitespace-pre-wrap border border-gray-600"
-                style={{ backgroundColor: '#1a1a2e', color: '#e0e0e0' }}
-              >
-                {testText ? highlightedTextContent : (
-                  <span style={{ color: '#666' }}>Enter text to test against your regex pattern</span>
-                )}
-              </div>
-
-              {/* Hidden textarea for editing - overlay style */}
+            {/* Left: Text Input with Highlighting - Overlay technique */}
+            <div className="relative" style={{ minHeight: '250px' }}>
+              {/* Base layer - textarea for editing (determines size) */}
               <textarea
                 value={testText}
                 onChange={(e) => setTestText(e.target.value)}
-                placeholder="Type or paste your text here..."
-                className="w-full h-24 p-3 font-mono text-sm bg-gray-800 border border-gray-600 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+                placeholder="Enter text to test against your regex pattern..."
+                className="absolute inset-0 w-full h-full p-3 font-mono text-sm rounded-lg border border-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: '#1a1a2e',
+                  color: 'transparent',
+                  WebkitTextFillColor: 'transparent',
+                  caretColor: '#fff',
+                }}
               />
+              {/* Overlay layer - shows highlighted content (pointer-events: none) */}
+              <div
+                ref={textDisplayRef}
+                className="absolute inset-0 p-3 rounded-lg font-mono text-sm overflow-auto whitespace-pre-wrap pointer-events-none"
+                style={{ color: '#e0e0e0' }}
+              >
+                {highlightedTextContent}
+              </div>
             </div>
 
             {/* Right: Matches List - takes 1 column on md+ */}
