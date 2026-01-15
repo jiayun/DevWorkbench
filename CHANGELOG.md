@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2025-01-15
+
+### Added
+- Regex Tester & Builder feature
+  - Real-time regex matching with 150ms debounce (no button needed)
+  - Inline green highlighting for matches in text display
+  - Match navigation with previous/next buttons
+  - Match list sidebar with search and position indicators
+  - Output formatting with $0, $1... placeholders for capture groups
+  - Cheat Sheet panel with common regex patterns and syntax reference
+  - Common patterns dropdown (Email, URL, IPv4, Phone, Date, etc.)
+  - Regex flags support (global, ignore case, multiline, dotAll)
+  - JavaScript fallback for browser environment compatibility
+  - Responsive layout using CSS Grid auto-fit
+  - Overlay editor combining input and highlight display in single area
+
 ## [0.4.1] - 2025-01-14
 
 ### Added
@@ -179,7 +195,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic Tauri + React application structure
 - Tailwind CSS + Radix UI component framework
 
-[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/jiayun/DevWorkbench/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/jiayun/DevWorkbench/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/jiayun/DevWorkbench/compare/v0.3.4...v0.4.0
 [0.3.4]: https://github.com/jiayun/DevWorkbench/compare/v0.3.3...v0.3.4

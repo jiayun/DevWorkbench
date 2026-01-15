@@ -28,6 +28,7 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
 - ⏰ **Unix Time Converter** - Convert Unix timestamps to human-readable dates with detailed time information including relative time, day/week of year, leap year status, and multiple format options
 - ⏰ **Cron Job Parser** - Parse cron expressions, generate human-readable descriptions, predict execution times, and browse comprehensive example collections with category filtering
 - 📄 **OpenAPI Spec Filter** - Load OpenAPI spec JSON files, select endpoints with filtering and search, and export filtered spec with only selected endpoints and their referenced components
+- 🔍 **Regex Tester & Builder** - Real-time regex matching with inline highlighting, match navigation, output formatting with capture groups, cheat sheet, and common patterns library
 
 ### 🚧 Coming Soon
 - 🎨 **Color Picker** - Color converter and palette generator

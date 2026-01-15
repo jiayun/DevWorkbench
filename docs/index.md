@@ -87,6 +87,11 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
     <h3>📄 OpenAPI Spec Filter</h3>
     <p>Filter and extract selected endpoints from OpenAPI specifications</p>
   </div>
+
+  <div class="feature-card">
+    <h3>🔍 Regex Tester & Builder</h3>
+    <p>Real-time regex matching with inline highlighting and match navigation</p>
+  </div>
 </div>
 
 ## 🚀 Quick Start

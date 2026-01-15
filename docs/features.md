@@ -280,3 +280,30 @@ Filter and extract selected API endpoints from OpenAPI specifications.
 - Partial API documentation
 - API gateway configuration
 - Microservice splitting
+
+---
+
+## 🔍 Regex Tester & Builder
+
+Test and build regular expressions with real-time matching and inline highlighting.
+
+<!-- 截圖預留空間 -->
+<img src="assets/images/features/regex-tester.png" alt="Regex Tester & Builder" class="feature-screenshot" />
+
+**Features:**
+- Real-time matching with instant feedback
+- Inline green highlighting for matches
+- Match navigation (previous/next)
+- Match list with position indicators
+- Output formatting with $0, $1... capture groups
+- Cheat Sheet with common syntax reference
+- Common patterns library (Email, URL, IPv4, etc.)
+- Regex flags (global, ignore case, multiline, dotAll)
+- Overlay editor for seamless editing and highlighting
+
+**Use Cases:**
+- Testing regex patterns before using in code
+- Extracting data from text
+- Validating input formats
+- Learning regex syntax
+- Building complex patterns incrementally
