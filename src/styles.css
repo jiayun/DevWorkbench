@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   html, body {
@@ -55,20 +53,22 @@
   }
 }
 
-.bg-primary { background-color: var(--color-bg-primary); }
-.bg-secondary { background-color: var(--color-bg-secondary); }
-.bg-tertiary { background-color: var(--color-bg-tertiary); }
-.bg-hover { background-color: var(--color-bg-hover); }
-.text-primary { color: var(--color-text-primary); }
-.text-secondary { color: var(--color-text-secondary); }
-.text-tertiary { color: var(--color-text-tertiary); }
-.border-primary { border-color: var(--color-border); }
-.border-hover { border-color: var(--color-border-hover); }
+@layer utilities {
+  .bg-primary { background-color: var(--color-bg-primary); }
+  .bg-secondary { background-color: var(--color-bg-secondary); }
+  .bg-tertiary { background-color: var(--color-bg-tertiary); }
+  .bg-hover { background-color: var(--color-bg-hover); }
+  .text-primary { color: var(--color-text-primary); }
+  .text-secondary { color: var(--color-text-secondary); }
+  .text-tertiary { color: var(--color-text-tertiary); }
+  .border-primary { border-color: var(--color-border); }
+  .border-hover { border-color: var(--color-border-hover); }
 
-/* Ensure hover states work with Tailwind */
-.hover\:bg-secondary:hover { background-color: var(--color-bg-secondary); }
-.hover\:bg-tertiary:hover { background-color: var(--color-bg-tertiary); }
-.hover\:text-primary:hover { color: var(--color-text-primary); }
+  /* Ensure hover states work with Tailwind */
+  .hover\:bg-secondary:hover { background-color: var(--color-bg-secondary); }
+  .hover\:bg-tertiary:hover { background-color: var(--color-bg-tertiary); }
+  .hover\:text-primary:hover { color: var(--color-text-primary); }
+}
 
 /* Fix select dropdown styling for dark mode */
 @layer components {

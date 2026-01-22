@@ -166,7 +166,7 @@ function ThemeToggle() {
       className="h-8 w-8"
       title={`Current theme: ${theme}`}
     >
-      <Icon className="h-4 w-4" />
+      <Icon className="h-4 w-4 shrink-0" />
     </Button>
   );
 }
@@ -272,7 +272,7 @@ function AppContent() {
         </div>
 
         {/* Tool List */}
-        <nav className="flex-1 overflow-y-auto px-6 py-2 space-y-1">
+        <nav className="flex-1 overflow-y-auto px-1 py-1">
           {filteredTools.map((tool) => {
             const IconComponent = tool.icon;
             const isSelected = selectedTool.id === tool.id;
@@ -280,30 +280,26 @@ function AppContent() {
               <button
                 key={tool.id}
                 onClick={() => setSelectedTool(tool)}
-                className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
-                  isSelected 
-                    ? "text-white shadow-md" 
-                    : "text-gray-300 hover:text-gray-100"
-                }`}
+                className="w-full flex items-center gap-1 px-1 py-1 text-sm font-medium transition-all duration-200 group"
                 style={{
-                  backgroundColor: isSelected ? 'var(--color-blue-primary)' : 'transparent',
-                  borderLeft: isSelected ? '4px solid var(--color-blue-primary)' : '4px solid transparent'
+                  backgroundColor: isSelected ? '#2563eb' : 'transparent',
+                  color: isSelected ? '#fff' : '#d1d5db'
                 }}
                 onMouseEnter={(e) => {
                   if (!isSelected) {
-                    e.currentTarget.style.backgroundColor = 'var(--color-tertiary-bg)';
-                    e.currentTarget.style.borderLeftColor = 'var(--color-blue-primary)';
+                    e.currentTarget.style.backgroundColor = '#374151';
+                    e.currentTarget.style.color = '#fff';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isSelected) {
                     e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.borderLeftColor = 'transparent';
+                    e.currentTarget.style.color = '#d1d5db';
                   }
                 }}
               >
-                <IconComponent className={`w-5 h-5 ${
-                  isSelected ? "text-white" : "text-gray-400 group-hover:text-blue-400"
+                <IconComponent className={`w-4 h-4 shrink-0 ${
+                  isSelected ? "text-white" : "text-gray-400 group-hover:text-white"
                 }`} />
                 <span>{tool.name}</span>
               </button>
