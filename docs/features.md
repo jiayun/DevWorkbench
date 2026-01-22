@@ -307,3 +307,25 @@ Test and build regular expressions with real-time matching and inline highlighti
 - Validating input formats
 - Learning regex syntax
 - Building complex patterns incrementally
+
+---
+
+## 🔤 Pangu Spacing 盤古之白
+
+Automatically add spaces between CJK (Chinese, Japanese, Korean) characters and half-width characters for improved readability.
+
+<!-- 截圖預留空間 -->
+<img src="assets/images/features/pangu-spacing.png" alt="Pangu Spacing" class="feature-screenshot" />
+
+**Features:**
+- Real-time text processing with instant preview
+- Support for Chinese, Japanese, Korean characters
+- Handles mixed CJK and alphanumeric text
+- Character count and space addition statistics
+- Sample text for quick testing
+
+**Use Cases:**
+- Formatting technical documentation with mixed languages
+- Improving readability of blog posts and articles
+- Cleaning up user-generated content
+- Standardizing text formatting in applications

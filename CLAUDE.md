@@ -57,6 +57,8 @@ npx tsc --noEmit
 - [x] **Unix Time Converter** - Convert Unix timestamps to human-readable dates with detailed time information including relative time, day/week of year, leap year status, and multiple format options
 - [x] **Cron Job Parser** - Parse cron expressions, generate human-readable descriptions, predict execution times, and browse comprehensive example collections with category filtering
 - [x] **OpenAPI Spec Filter** - Load OpenAPI spec JSON files, select endpoints with filtering and search, and export filtered spec with only selected endpoints and their referenced components
+- [x] **Regex Tester & Builder** - Test and build regular expressions with real-time matching, syntax highlighting, match navigation, and output formatting with capture groups
+- [x] **盤古之白 (Pangu Spacing)** - Automatically add spaces between CJK characters and half-width characters for improved readability
 
 ## Features to Implement
 - [ ] Color picker and converter

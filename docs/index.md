@@ -92,6 +92,11 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
     <h3>🔍 Regex Tester & Builder</h3>
     <p>Real-time regex matching with inline highlighting and match navigation</p>
   </div>
+
+  <div class="feature-card">
+    <h3>🔤 Pangu Spacing 盤古之白</h3>
+    <p>Auto-add spaces between CJK and half-width characters for readability</p>
+  </div>
 </div>
 
 ## 🚀 Quick Start

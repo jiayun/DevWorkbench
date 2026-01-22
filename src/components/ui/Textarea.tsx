@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const textareaVariants = cva(
-  "flex min-h-[80px] w-full rounded-lg border bg-tertiary px-3 py-2 text-sm text-primary placeholder-tertiary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 resize-none",
+  "flex min-h-[80px] w-full rounded-lg border bg-tertiary text-sm text-primary placeholder-tertiary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 resize-none",
   {
     variants: {
       variant: {
@@ -12,9 +12,9 @@ const textareaVariants = cva(
         success: "border-green-500 focus:border-green-500 focus:ring-green-500"
       },
       size: {
-        sm: "min-h-[60px] px-2 text-xs",
-        default: "min-h-[80px] px-3",
-        lg: "min-h-[120px] px-4 text-base"
+        sm: "min-h-[60px] p-2 text-xs",
+        default: "min-h-[80px] p-3",
+        lg: "min-h-[120px] p-4 text-base"
       }
     },
     defaultVariants: {
@@ -34,9 +34,17 @@ export interface TextareaProps
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, variant, size, error, label, helperText, resizable = false, ...props }, ref) => {
+  ({ className, variant, size, error, label, helperText, resizable = false, style, ...props }, ref) => {
     const textareaVariant = error ? 'error' : variant;
-    
+
+    // Inline padding to ensure it works with Tailwind v4
+    const paddingMap = {
+      sm: '8px',
+      default: '12px',
+      lg: '16px'
+    };
+    const padding = paddingMap[size || 'default'];
+
     return (
       <div className="w-full">
         {label && (
@@ -50,6 +58,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             resizable && "resize-y",
             className
           )}
+          style={{ padding, ...style }}
           ref={ref}
           {...props}
         />

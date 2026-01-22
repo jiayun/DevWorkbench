@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare, Sun, Moon, Monitor, Link, Type, Clock, CalendarClock, Code2, FileJson } from "lucide-react";
+import { Search, Binary, FileText, Hash, List, Shield, Braces, Fingerprint, KeySquare, Sun, Moon, Monitor, Link, Type, Clock, CalendarClock, Code2, FileJson, Space } from "lucide-react";
 import { NumberBaseConverter } from "./components/NumberBaseConverter";
 import { Base64EncoderDecoder } from "./components/Base64EncoderDecoder";
 import { Base58EncoderDecoder } from "./components/Base58EncoderDecoder";
@@ -14,6 +14,7 @@ import { UnixTimeConverter } from "./components/UnixTimeConverter";
 import { CronJobParser } from "./components/CronJobParser";
 import { OpenApiSpecFilter } from "./components/OpenApiSpecFilter";
 import RegexTester from "./components/RegexTester";
+import { PanguSpacing } from "./components/PanguSpacing";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 import { Button } from "./components/ui";
 import "./App.css";
@@ -21,6 +22,7 @@ import "./App.css";
 type Tool = {
   id: string;
   name: string;
+  title?: string; // Optional: displayed in page header (defaults to name)
   description: string;
   icon: React.ComponentType<any>;
   component: React.ComponentType;
@@ -124,6 +126,14 @@ const tools: Tool[] = [
     description: "Test and build regular expressions with real-time matching and syntax highlighting",
     icon: Code2,
     component: RegexTester,
+  },
+  {
+    id: "pangu-spacing",
+    name: "Pangu Spacing",
+    title: "Pangu Spacing 盤古之白",
+    description: "Auto-add spaces between CJK and half-width characters",
+    icon: Space,
+    component: PanguSpacing,
   },
 ];
 
@@ -360,7 +370,7 @@ function AppContent() {
         {/* Header */}
         <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: '1.5rem 2.5rem 0.5rem 2.5rem' }}>
           <div>
-            <h2 className="text-3xl font-bold" style={{ color: 'var(--color-primary-text)' }}>{selectedTool.name}</h2>
+            <h2 className="text-3xl font-bold" style={{ color: 'var(--color-primary-text)' }}>{selectedTool.title || selectedTool.name}</h2>
           </div>
         </div>
 
