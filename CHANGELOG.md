@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-01-22
+
+### Added
+- "Check for Updates..." menu item in application menu
+  - Manual update check from DevWorkbench menu
+  - Standard macOS application menu with Edit and Window menus
+
+### Fixed
+- CI/CD workflow to properly rename updater artifacts with architecture suffix
+  - Prevents filename conflicts when uploading `.app.tar.gz` files
+
 ## [0.7.0] - 2026-01-22
 
 ### Added
@@ -217,7 +228,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic Tauri + React application structure
 - Tailwind CSS + Radix UI component framework
 
-[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.7.1...HEAD
+[0.7.1]: https://github.com/jiayun/DevWorkbench/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/jiayun/DevWorkbench/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/jiayun/DevWorkbench/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/jiayun/DevWorkbench/compare/v0.4.1...v0.5.0

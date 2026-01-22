@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { check, Update } from '@tauri-apps/plugin-updater';
 import { relaunch } from '@tauri-apps/plugin-process';
+import { listen } from '@tauri-apps/api/event';
 
 export type UpdateStatus =
   | 'idle'
@@ -140,6 +141,17 @@ export function UpdateProvider({ children }: { children: React.ReactNode }) {
     }, 3000); // 3 second delay after app starts
 
     return () => clearTimeout(timer);
+  }, [checkForUpdates]);
+
+  // Listen for menu "Check for Updates" event
+  useEffect(() => {
+    const unlisten = listen('menu-check-updates', () => {
+      checkForUpdates();
+    });
+
+    return () => {
+      unlisten.then(fn => fn());
+    };
   }, [checkForUpdates]);
 
   return (

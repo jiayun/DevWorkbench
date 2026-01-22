@@ -113,15 +113,52 @@ jobs:
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
+      - name: Rename updater artifacts to include architecture
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+
+          # Rename aarch64 .app.tar.gz files
+          AARCH64_TAR=$(find artifacts -name "*.app.tar.gz" -path "*aarch64*" | head -1)
+          if [ -f "$AARCH64_TAR" ]; then
+            DIR=$(dirname "$AARCH64_TAR")
+            mv "$AARCH64_TAR" "$DIR/DevWorkbench_${VERSION}_aarch64.app.tar.gz"
+            echo "Renamed aarch64 tar.gz to DevWorkbench_${VERSION}_aarch64.app.tar.gz"
+          fi
+
+          AARCH64_SIG=$(find artifacts -name "*.app.tar.gz.sig" -path "*aarch64*" | head -1)
+          if [ -f "$AARCH64_SIG" ]; then
+            DIR=$(dirname "$AARCH64_SIG")
+            mv "$AARCH64_SIG" "$DIR/DevWorkbench_${VERSION}_aarch64.app.tar.gz.sig"
+            echo "Renamed aarch64 sig to DevWorkbench_${VERSION}_aarch64.app.tar.gz.sig"
+          fi
+
+          # Rename x86_64 .app.tar.gz files
+          X64_TAR=$(find artifacts -name "*.app.tar.gz" -path "*x86_64*" | head -1)
+          if [ -f "$X64_TAR" ]; then
+            DIR=$(dirname "$X64_TAR")
+            mv "$X64_TAR" "$DIR/DevWorkbench_${VERSION}_x64.app.tar.gz"
+            echo "Renamed x64 tar.gz to DevWorkbench_${VERSION}_x64.app.tar.gz"
+          fi
+
+          X64_SIG=$(find artifacts -name "*.app.tar.gz.sig" -path "*x86_64*" | head -1)
+          if [ -f "$X64_SIG" ]; then
+            DIR=$(dirname "$X64_SIG")
+            mv "$X64_SIG" "$DIR/DevWorkbench_${VERSION}_x64.app.tar.gz.sig"
+            echo "Renamed x64 sig to DevWorkbench_${VERSION}_x64.app.tar.gz.sig"
+          fi
+
+          echo "=== Renamed files ==="
+          find artifacts -name "*.app.tar.gz*" -type f
+
       - name: Generate latest.json for updater
         run: |
           VERSION=${{ steps.version.outputs.version }}
           REPO="${{ github.repository }}"
           DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-          # Find signature files
-          MAC_ARM_SIG=$(find artifacts -name "*.app.tar.gz.sig" -path "*aarch64*" | head -1)
-          MAC_X64_SIG=$(find artifacts -name "*.app.tar.gz.sig" -path "*x86_64*" | head -1)
+          # Find signature files (already renamed to include version and arch)
+          MAC_ARM_SIG=$(find artifacts -name "*_aarch64.app.tar.gz.sig" | head -1)
+          MAC_X64_SIG=$(find artifacts -name "*_x64.app.tar.gz.sig" | head -1)
           WINDOWS_SIG=$(find artifacts -name "*.msi.sig" | head -1)
           LINUX_SIG=$(find artifacts -name "*.AppImage.sig" | head -1)
 

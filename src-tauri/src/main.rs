@@ -207,11 +207,73 @@ fn main() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
+        .setup(|app| {
+            use tauri::menu::{MenuBuilder, MenuItemBuilder, SubmenuBuilder, PredefinedMenuItem};
+            use tauri::Emitter;
+
+            // Create "Check for Updates" menu item
+            let check_updates = MenuItemBuilder::with_id("check_updates", "Check for Updates...")
+                .build(app)?;
+
+            // Create App submenu (macOS style)
+            let app_menu = SubmenuBuilder::new(app, "DevWorkbench")
+                .item(&PredefinedMenuItem::about(app, Some("About DevWorkbench"), None)?)
+                .separator()
+                .item(&check_updates)
+                .separator()
+                .item(&PredefinedMenuItem::services(app, None)?)
+                .separator()
+                .item(&PredefinedMenuItem::hide(app, Some("Hide DevWorkbench"))?)
+                .item(&PredefinedMenuItem::hide_others(app, Some("Hide Others"))?)
+                .item(&PredefinedMenuItem::show_all(app, Some("Show All"))?)
+                .separator()
+                .item(&PredefinedMenuItem::quit(app, Some("Quit DevWorkbench"))?)
+                .build()?;
+
+            // Create Edit menu
+            let edit_menu = SubmenuBuilder::new(app, "Edit")
+                .item(&PredefinedMenuItem::undo(app, None)?)
+                .item(&PredefinedMenuItem::redo(app, None)?)
+                .separator()
+                .item(&PredefinedMenuItem::cut(app, None)?)
+                .item(&PredefinedMenuItem::copy(app, None)?)
+                .item(&PredefinedMenuItem::paste(app, None)?)
+                .item(&PredefinedMenuItem::select_all(app, None)?)
+                .build()?;
+
+            // Create Window menu
+            let window_menu = SubmenuBuilder::new(app, "Window")
+                .item(&PredefinedMenuItem::minimize(app, None)?)
+                .item(&PredefinedMenuItem::maximize(app, None)?)
+                .separator()
+                .item(&PredefinedMenuItem::close_window(app, None)?)
+                .build()?;
+
+            // Build the menu bar
+            let menu = MenuBuilder::new(app)
+                .item(&app_menu)
+                .item(&edit_menu)
+                .item(&window_menu)
+                .build()?;
+
+            app.set_menu(menu)?;
+
+            // Handle menu events
+            let app_handle = app.handle().clone();
+            app.on_menu_event(move |_app, event| {
+                if event.id().as_ref() == "check_updates" {
+                    // Emit event to frontend to trigger update check
+                    let _ = app_handle.emit("menu-check-updates", ());
+                }
+            });
+
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
-            greet, 
-            hash_string, 
-            hash_file, 
-            parse_uuid, 
+            greet,
+            hash_string,
+            hash_file,
+            parse_uuid,
             generate_uuids,
             decode_jwt,
             encode_jwt,
