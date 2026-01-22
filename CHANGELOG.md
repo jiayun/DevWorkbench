@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-01-22
+
+### Added
+- Auto-Update feature
+  - Automatic update detection on app launch
+  - Update dialog showing version info and release notes
+  - One-click update with progress indication
+  - Seamless app restart after update installation
+  - Uses Tauri updater plugin with GitHub Releases backend
+
 ## [0.6.0] - 2026-01-22
 
 ### Added
@@ -207,7 +217,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic Tauri + React application structure
 - Tailwind CSS + Radix UI component framework
 
-[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/jiayun/DevWorkbench/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/jiayun/DevWorkbench/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/jiayun/DevWorkbench/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/jiayun/DevWorkbench/compare/v0.4.0...v0.4.1

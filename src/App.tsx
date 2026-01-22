@@ -16,6 +16,8 @@ import { OpenApiSpecFilter } from "./components/OpenApiSpecFilter";
 import RegexTester from "./components/RegexTester";
 import { PanguSpacing } from "./components/PanguSpacing";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import { UpdateProvider } from "./contexts/UpdateContext";
+import { UpdateDialog, UpdateStatusIndicator } from "./components/UpdateDialog";
 import { Button } from "./components/ui";
 import "./App.css";
 
@@ -307,14 +309,15 @@ function AppContent() {
           })}
         </nav>
 
-        {/* Theme Toggle at Bottom */}
+        {/* Footer with Theme Toggle and Update Status */}
         <div className="p-6 pt-4 border-t" style={{ borderColor: 'var(--color-primary-border)' }}>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium" style={{ color: 'var(--color-secondary-text)' }}>
               Theme
             </span>
             <ThemeToggle />
           </div>
+          <UpdateStatusIndicator />
         </div>
 
         </div>
@@ -382,7 +385,10 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <UpdateProvider>
+        <AppContent />
+        <UpdateDialog />
+      </UpdateProvider>
     </ThemeProvider>
   );
 }

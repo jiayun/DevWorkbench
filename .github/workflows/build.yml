@@ -68,6 +68,8 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ''
         with:
           args: ${{ matrix.args }}
 
@@ -80,6 +82,8 @@ jobs:
             src-tauri/target/*/release/bundle/*/*
             src-tauri/target/release/devworkbench
             src-tauri/target/release/devworkbench.exe
+            src-tauri/target/release/bundle/**/*.sig
+            src-tauri/target/*/release/bundle/**/*.sig
           if-no-files-found: ignore
 
   release:
@@ -101,19 +105,78 @@ jobs:
       - name: Debug artifacts structure
         run: |
           echo "=== Artifacts directory structure ==="
-          find artifacts -type f -name "*.dmg" -o -name "*.deb" -o -name "*.AppImage" -o -name "*.msi" -o -name "*.exe" | head -20
+          find artifacts -type f \( -name "*.dmg" -o -name "*.deb" -o -name "*.AppImage" -o -name "*.msi" -o -name "*.exe" -o -name "*.sig" -o -name "*.json" \) | head -30
           echo "=== All files in artifacts ==="
-          ls -la artifacts/*/
+          ls -laR artifacts/
+
+      - name: Get version from tag
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Generate latest.json for updater
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          REPO="${{ github.repository }}"
+          DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          # Find signature files
+          MAC_ARM_SIG=$(find artifacts -name "*.app.tar.gz.sig" -path "*aarch64*" | head -1)
+          MAC_X64_SIG=$(find artifacts -name "*.app.tar.gz.sig" -path "*x86_64*" | head -1)
+          WINDOWS_SIG=$(find artifacts -name "*.msi.sig" | head -1)
+          LINUX_SIG=$(find artifacts -name "*.AppImage.sig" | head -1)
+
+          # Read signatures
+          MAC_ARM_SIGNATURE=""
+          MAC_X64_SIGNATURE=""
+          WINDOWS_SIGNATURE=""
+          LINUX_SIGNATURE=""
+
+          if [ -f "$MAC_ARM_SIG" ]; then MAC_ARM_SIGNATURE=$(cat "$MAC_ARM_SIG"); fi
+          if [ -f "$MAC_X64_SIG" ]; then MAC_X64_SIGNATURE=$(cat "$MAC_X64_SIG"); fi
+          if [ -f "$WINDOWS_SIG" ]; then WINDOWS_SIGNATURE=$(cat "$WINDOWS_SIG"); fi
+          if [ -f "$LINUX_SIG" ]; then LINUX_SIGNATURE=$(cat "$LINUX_SIG"); fi
+
+          cat > latest.json << EOF
+          {
+            "version": "${VERSION}",
+            "notes": "See the full changelog at https://github.com/${REPO}/blob/main/CHANGELOG.md",
+            "pub_date": "${DATE}",
+            "platforms": {
+              "darwin-aarch64": {
+                "signature": "${MAC_ARM_SIGNATURE}",
+                "url": "https://github.com/${REPO}/releases/download/v${VERSION}/DevWorkbench_${VERSION}_aarch64.app.tar.gz"
+              },
+              "darwin-x86_64": {
+                "signature": "${MAC_X64_SIGNATURE}",
+                "url": "https://github.com/${REPO}/releases/download/v${VERSION}/DevWorkbench_${VERSION}_x64.app.tar.gz"
+              },
+              "windows-x86_64": {
+                "signature": "${WINDOWS_SIGNATURE}",
+                "url": "https://github.com/${REPO}/releases/download/v${VERSION}/DevWorkbench_${VERSION}_x64-setup.msi"
+              },
+              "linux-x86_64": {
+                "signature": "${LINUX_SIGNATURE}",
+                "url": "https://github.com/${REPO}/releases/download/v${VERSION}/DevWorkbench_${VERSION}_amd64.AppImage"
+              }
+            }
+          }
+          EOF
+
+          echo "Generated latest.json:"
+          cat latest.json
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           files: |
+            latest.json
             artifacts/**/bundle/**/*.dmg
             artifacts/**/bundle/**/*.deb
             artifacts/**/bundle/**/*.AppImage
             artifacts/**/bundle/**/*.msi
             artifacts/**/*.exe
+            artifacts/**/bundle/**/*.tar.gz
+            artifacts/**/bundle/**/*.tar.gz.sig
           body: |
             ## What's Changed
             
