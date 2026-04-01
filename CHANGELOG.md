@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-04-01
+
+### Added
+- JSON Formatter error tolerance and auto-repair
+  - Automatically unescape escaped JSON strings (e.g. `{\"key\":\"value\"}`)
+  - Repair common JSON issues: trailing commas, single quotes, comments, unquoted keys
+  - Powered by `anyrepair` Rust crate for high-performance repair
+  - Three-state status indicator: Valid (green), Repaired (orange), Error (red)
+  - Detailed issue list showing original parse errors and applied repairs
+
 ## [0.7.1] - 2026-01-22
 
 ### Added
@@ -228,7 +238,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic Tauri + React application structure
 - Tailwind CSS + Radix UI component framework
 
-[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.7.1...HEAD
+[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/jiayun/DevWorkbench/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/jiayun/DevWorkbench/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/jiayun/DevWorkbench/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/jiayun/DevWorkbench/compare/v0.5.0...v0.6.0

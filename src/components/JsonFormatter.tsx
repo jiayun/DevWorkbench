@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useDeferredValue } from "react";
-import { Copy, Settings, Check, X, Search, ChevronUp, ChevronDown } from "lucide-react";
+import { Copy, Settings, Check, X, Search, ChevronUp, ChevronDown, AlertTriangle } from "lucide-react";
+import { invoke } from "@tauri-apps/api/core";
 import { JsonViewer } from './JsonViewer';
 
 interface SearchResult {
@@ -15,6 +16,7 @@ export function JsonFormatter() {
   const [output, setOutput] = useState("");
   const [parsedData, setParsedData] = useState<any>(null);
   const [error, setError] = useState("");
+  const [repairWarning, setRepairWarning] = useState<string[] | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState({
     indentSize: 2,
@@ -38,44 +40,69 @@ export function JsonFormatter() {
   const [isResizing, setIsResizing] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Apply formatting to a parsed JSON object
+  const applyFormatting = (parsed: any) => {
+    let finalObject = parsed;
+    if (settings.sortKeys && typeof parsed === "object" && !Array.isArray(parsed)) {
+      finalObject = sortObjectKeys(parsed);
+    }
+    setParsedData(finalObject);
+
+    const indentChar = settings.useTabs ? "\t" : " ".repeat(settings.indentSize);
+    const formatted = JSON.stringify(finalObject, null, indentChar);
+    const finalOutput = settings.quoteStyle === "single"
+      ? formatted.replace(/"([^"]+)":/g, "'$1':").replace(/: "([^"]*)"/g, ": '$1'")
+      : formatted;
+    setOutput(finalOutput);
+  };
+
   // Format/Validate JSON logic
   useEffect(() => {
     if (!input.trim()) {
       setOutput("");
       setParsedData(null);
       setError("");
+      setRepairWarning(null);
       return;
     }
 
+    // 1. Try standard parse first
     try {
-      // Parse JSON
       const parsed = JSON.parse(input);
       setError("");
-
-      // Sort keys if enabled
-      let finalObject = parsed;
-      if (settings.sortKeys && typeof parsed === "object" && !Array.isArray(parsed)) {
-        finalObject = sortObjectKeys(parsed);
-      }
-
-      // Store parsed data for JsonViewer
-      setParsedData(finalObject);
-
-      // Format with custom settings for text output
-      const indentChar = settings.useTabs ? "\t" : " ".repeat(settings.indentSize);
-      const formatted = JSON.stringify(finalObject, null, indentChar);
-
-      // Apply quote style if single quotes requested
-      const finalOutput = settings.quoteStyle === "single" 
-        ? formatted.replace(/"([^"]+)":/g, "'$1':").replace(/: "([^"]*)"/g, ": '$1'")
-        : formatted;
-
-      setOutput(finalOutput);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Invalid JSON");
-      setOutput("");
-      setParsedData(null);
+      setRepairWarning(null);
+      applyFormatting(parsed);
+      return;
+    } catch {
+      // Standard parse failed, try repair
     }
+
+    // 2. Call Rust repair_json command
+    let cancelled = false;
+    invoke<{ repaired: string; was_repaired: boolean; issues: string[] }>("repair_json", { input })
+      .then((result) => {
+        if (cancelled) return;
+        try {
+          const parsed = JSON.parse(result.repaired);
+          setError("");
+          setRepairWarning(result.was_repaired ? result.issues : null);
+          applyFormatting(parsed);
+        } catch {
+          setError("Repair produced invalid JSON");
+          setOutput("");
+          setParsedData(null);
+          setRepairWarning(null);
+        }
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError(typeof err === "string" ? err : "Invalid JSON");
+        setOutput("");
+        setParsedData(null);
+        setRepairWarning(null);
+      });
+
+    return () => { cancelled = true; };
   }, [input, settings]);
 
   const sortObjectKeys = (obj: any): any => {
@@ -277,15 +304,25 @@ export function JsonFormatter() {
     await navigator.clipboard.writeText(text);
   };
 
-  const handleMinify = () => {
+  const handleMinify = async () => {
     if (!input.trim()) return;
-    
+
     try {
       const parsed = JSON.parse(input);
       setInput(JSON.stringify(parsed));
       setError("");
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Invalid JSON");
+      return;
+    } catch {
+      // Try repair
+    }
+
+    try {
+      const result = await invoke<{ repaired: string; was_repaired: boolean; issues: string[] }>("repair_json", { input });
+      const parsed = JSON.parse(result.repaired);
+      setInput(JSON.stringify(parsed));
+      setError("");
+    } catch (err) {
+      setError(typeof err === "string" ? err : "Invalid JSON");
     }
   };
 
@@ -363,7 +400,18 @@ export function JsonFormatter() {
               <span className="text-sm">{error}</span>
             </div>
           )}
-          {!error && output && (
+          {!error && repairWarning && repairWarning.length > 0 && output && (
+            <div className="flex items-start gap-2 text-orange-500">
+              <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <div className="text-sm">
+                <div className="font-medium">(Input JSON string is invalid, but repaired successfully)</div>
+                {repairWarning.map((issue, i) => (
+                  <div key={i} className="text-orange-400">{issue}</div>
+                ))}
+              </div>
+            </div>
+          )}
+          {!error && !repairWarning && output && (
             <div className="flex items-center gap-2 text-green-500">
               <Check className="w-4 h-4" />
               <span className="text-sm">Valid JSON</span>
@@ -540,7 +588,7 @@ export function JsonFormatter() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Paste your JSON here..."
             className={`flex-1 w-full px-3 py-2 font-mono text-sm border rounded focus:outline-none focus:ring-2 resize-none bg-tertiary text-primary border-primary ${
-              error ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+              error ? "border-red-500 focus:ring-red-500" : repairWarning ? "border-orange-500 focus:ring-orange-500" : "focus:ring-blue-500"
             }`}
           />
         </div>

@@ -20,7 +20,7 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
 - 🔤 **Base58 String Encode/Decode** - Bitcoin/IPFS-friendly encoding without confusing characters
 - 📝 **Multi-line to JSON Array** - Convert multi-line text to JSON array with auto-trim and smart type detection
 - 🔐 **Hash Generator** - Generate MD5/SHA1/SHA2/SHA3/Keccak hashes using Rust for high performance
-- 📝 **JSON Formatter & Validator** - Format, validate, and beautify JSON with collapsible viewer
+- 📝 **JSON Formatter & Validator** - Format, validate, and beautify JSON with collapsible viewer, auto-repair for escaped strings, trailing commas, comments, and other common issues
 - 🆔 **UUID Generator** - Generate and validate UUIDs v1/v3/v4/v5/v7 with bulk generation support
 - 🔑 **JWT Token Tool** - Decode, encode, and verify JSON Web Tokens with multiple algorithms (HS256/384/512, RS256/384/512)
 - 🌐 **URL Tools** - Encode/decode URLs, parse URL structure, query string to JSON, and build URLs from components
@@ -29,6 +29,7 @@ DevWorkbench is a **Totally Vibed Application** - conceived, designed, and imple
 - ⏰ **Cron Job Parser** - Parse cron expressions, generate human-readable descriptions, predict execution times, and browse comprehensive example collections with category filtering
 - 📄 **OpenAPI Spec Filter** - Load OpenAPI spec JSON files, select endpoints with filtering and search, and export filtered spec with only selected endpoints and their referenced components
 - 🔍 **Regex Tester & Builder** - Real-time regex matching with inline highlighting, match navigation, output formatting with capture groups, cheat sheet, and common patterns library
+- 🔤 **盤古之白 (Pangu Spacing)** - Automatically add spaces between CJK characters and half-width characters for improved readability
 
 ### 🚧 Coming Soon
 - 🎨 **Color Picker** - Color converter and palette generator

@@ -37,6 +37,7 @@ rand = "0.8"
 url = "2.5"
 percent-encoding = "2.3"
 regex = "1.11"
+anyrepair = "0.2"
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]

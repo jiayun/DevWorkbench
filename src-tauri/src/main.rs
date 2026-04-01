@@ -25,6 +25,9 @@ use url_tools::{process_url_encode_decode, parse_url, build_url};
 mod regex_tester;
 use regex_tester::{test_regex, replace_regex};
 
+mod json_repair;
+use json_repair::repair_json;
+
 #[derive(Serialize, Deserialize)]
 struct HashResult {
     algorithm: String,
@@ -284,7 +287,8 @@ fn main() {
             parse_url,
             build_url,
             test_regex,
-            replace_regex
+            replace_regex,
+            repair_json
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
