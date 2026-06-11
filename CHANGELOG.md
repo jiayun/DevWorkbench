@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.1] - 2026-06-11
+
+### Added
+- JSON Formatter now repairs Python dict-like input with single-quoted keys and values while preserving double quotes inside string values.
+- Regression coverage for dict-like JSON repair using anonymized sample data.
+
 ## [0.8.0] - 2026-04-01
 
 ### Added
