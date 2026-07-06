@@ -111,6 +111,40 @@ fn normalize_single_quoted_strings(input: &str) -> Option<String> {
                 output.push_str(&serde_json::to_string(&value).ok()?);
                 changed = true;
             }
+            _ if ch.is_ascii_alphabetic() => {
+                // Collect a bare-word identifier. Because we only reach this
+                // branch outside any double- or single-quoted string, such a
+                // token can only be an unquoted literal. Convert the Python
+                // literals True/False/None to their JSON equivalents so the
+                // normalized text validates without falling back to anyrepair
+                // (which would corrupt string values like ISO dates).
+                let mut ident = String::new();
+                ident.push(ch);
+                while let Some(&next) = chars.peek() {
+                    if next.is_ascii_alphanumeric() || next == '_' {
+                        ident.push(next);
+                        chars.next();
+                    } else {
+                        break;
+                    }
+                }
+
+                match ident.as_str() {
+                    "True" => {
+                        output.push_str("true");
+                        changed = true;
+                    }
+                    "False" => {
+                        output.push_str("false");
+                        changed = true;
+                    }
+                    "None" => {
+                        output.push_str("null");
+                        changed = true;
+                    }
+                    _ => output.push_str(&ident),
+                }
+            }
             _ => output.push(ch),
         }
     }
@@ -257,6 +291,19 @@ mod tests {
             .as_str()
             .expect("searchExpression should be a string")
             .contains(r#"TITLE_TEXT:("Alpha Value" "Beta Value" "Gamma Value")"#));
+    }
+
+    #[test]
+    fn preserves_date_string_and_converts_python_literals() {
+        let input = r#"{'flag': True, 'off': False, 'nil': None, 'update_date': {'date_start': '2021-07-06T09:29:51'}}"#;
+        let result = repair_json(input.to_string()).expect("should repair");
+        let parsed: Value = serde_json::from_str(&result.repaired).unwrap();
+
+        assert_eq!(parsed["flag"], true);
+        assert_eq!(parsed["off"], false);
+        assert!(parsed["nil"].is_null());
+        // The date must be preserved verbatim, not mangled by anyrepair.
+        assert_eq!(parsed["update_date"]["date_start"], "2021-07-06T09:29:51");
     }
 
     #[test]

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.2] - 2026-07-06
+
+### Fixed
+- JSON Formatter auto-repair no longer corrupts string values that resemble malformed numbers. Python dict-like payloads containing `True`/`False`/`None` are now normalized to valid JSON directly, bypassing the number-repair fallback that mangled date strings (e.g. `2021-07-06T09:29:51` was becoming `-7-06T09:29:51`).
+
 ## [0.8.1] - 2026-06-11
 
 ### Added
@@ -244,7 +249,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic Tauri + React application structure
 - Tailwind CSS + Radix UI component framework
 
-[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/jiayun/DevWorkbench/compare/v0.8.2...HEAD
+[0.8.2]: https://github.com/jiayun/DevWorkbench/compare/v0.8.1...v0.8.2
+[0.8.1]: https://github.com/jiayun/DevWorkbench/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/jiayun/DevWorkbench/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/jiayun/DevWorkbench/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/jiayun/DevWorkbench/compare/v0.6.0...v0.7.0
